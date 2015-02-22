@@ -1,0 +1,149 @@
+#! /bin/sh
+
+#
+# Driver script for Kaffe.
+# This script invokes the "Kaffe" executable after modifying
+# CLASSPATH and LD_LIBRARY_PATH as needed.
+#
+# We prepend kaffe's lib directory to LD_LIBRARY_PATH.
+#
+# KAFFELIBRARYPATH is defined to kaffe's native lib directory
+# (lib/kaffe) if not set.
+#
+# The effective CLASSPATH is made up of four parts, which 
+# are composed in the following order:
+#
+#	1. a user-specified CLASSPATH or .
+#	2. Klasses.jar in $datadir/kaffe
+#       3. Kaffe extensions jar files in $datadir/kaffe
+#	4. classes.zip in $datadir/kaffe iff it exists.
+#
+# Note that as the last thing we slurp in the files $datadir/kafferc
+# and $HOME/.kafferc (in that order) if they exist. This allows site
+# and user specific JAR files to be automatically added to CLASSPATH.
+#
+
+# If KAFFE_DEBUG is set to either gdb or emacs, a debugging session
+# will be started.  gdb will be started so that the current working
+# directory and the argument list are correct.
+
+prefix="@prefix@"
+exec_prefix="@exec_prefix@"
+PATHSEP='@PATHSEP@'
+DIRSEP='@DIRSEP@'
+: ${KAFFE_LIBDIR="@libdir@"}
+: ${KAFFE_JREDIR="@jredir@"}
+: ${KAFFE_JREBINDIR="@jrebindir@"}
+: ${KAFFE_JRELIBDIR="@jrelibdir@"}
+: ${KAFFE_NATIVE_LIBRARY_DIR="@nativedir@"}
+
+if test x"$(uname -m)"x = x"ia64"x; then
+  # Use ia32 version of Kaffe, if requested
+  ia32mode=no
+  for arg in "$@"; do
+    [ "$arg" = "-ia32" ] && ia32mode=yes
+  done
+  if test x"${ia32mode}"x = x"yes"x; then
+# These break on the script on cygwin
+#    KAFFE_TARGET_ARCH=$(echo ${KAFFE_LIBDIR/ia64/i?86} | sed -e "s/.*\(i.86\)/\1/")
+#    KAFFE_LIBDIR=${KAFFE_LIBDIR/ia64/$KAFFE_TARGET_ARCH}
+#    KAFFE_LIBEXECDIR=${KAFFE_LIBEXECDIR/ia64/$KAFFE_TARGET_ARCH}
+#    KAFFE_NATIVE_LIBRARY_DIR=${KAFFE_NATIVE_LIBRARY_DIR/ia64/$KAFFE_TARGET_ARCH}
+    echo FIXME
+    exit 1
+  fi
+fi
+
+if test x"${KAFFEHOME+set}"x != x"set"x; then
+  KAFFEHOME="@prefix@"
+fi
+export KAFFEHOME
+
+if test x"${BOOTCLASSPATH+set}"x != x"set"x ; then
+	BOOTCLASSPATH=
+fi
+for f in rt.jar comm.jar pjava.jar servlet.jar microsoft.jar rmi.jar; do
+  if test -f "$KAFFE_LIBDIR/$f"; then
+    BOOTCLASSPATH="$BOOTCLASSPATH$PATHSEP$KAFFE_LIBDIR/$f"
+  fi
+  if test -f "$KAFFE_JRELIBDIR/$f"; then
+    BOOTCLASSPATH="$KAFFE_JRELIBDIR/$f$PATHSEP$BOOTCLASSPATH"
+  fi
+done
+
+# And now add all the installed jars to bootclasspath
+for f in "$KAFFE_LIBDIR"/*.jar ; do
+  BOOTCLASSPATH="$BOOTCLASSPATH$PATHSEP$f"
+done
+
+case "$DIRSEP" in /) ;;
+*) BOOTCLASSPATH=`echo "$BOOTCLASSPATH" | sed 's,/,'"$DIRSEP"',g'` ;;
+esac
+export BOOTCLASSPATH
+KAFFELIBRARYPATH="$KAFFE_NATIVE_LIBRARY_DIR$PATHSEP$KAFFE_LIBDIR"${KAFFELIBRARYPATH+"$PATHSEP$KAFFELIBRARYPATH"}${LD_LIBRARY_PATH+"$PATHSEP${LD_LIBRARY_PATH}"}
+export KAFFELIBRARYPATH
+LD_LIBRARY_PATH="$KAFFE_LIBDIR"${LD_LIBRARY_PATH+"$PATHSEP$LD_LIBRARY_PATH"}
+export LD_LIBRARY_PATH
+PATH="$PATH:$KAFFE_LIBDIR" # MS-Windows DLLs must be in the PATH
+export PATH
+
+# Slurp in system and user specific scripts
+if [ -f "@jredir@/etc/kafferc" ]; then
+    . @jredir@/etc/kafferc
+fi
+if [ -f "${HOME}/.kafferc" ]; then
+    . "${HOME}/.kafferc"
+fi
+
+if test x"${KAFFE_DEBUG+set}"x != x"set"x; then
+    exec $KAFFE_JREBINDIR/@kaffebin_TRANSF@ ${1+"$@"}
+else
+    KAFFE_DEBUG_TEMPFILE=`@MKTEMP@ /tmp/kaffe.XXXXXX` || exit 1
+
+    case `"$KAFFE_DEBUG" --version </dev/null 2>/dev/null` in
+    "GDB"* | "GNU gdb"*)
+	# start command-line gdb within the correct working directory,
+	# and set up the specified argument list
+	{
+	    echo "shell rm -f $KAFFE_DEBUG_TEMPFILE"
+	    echo "cd `pwd`"
+	    echo "set args $*"
+	} > $KAFFE_DEBUG_TEMPFILE
+	exec "$KAFFE_DEBUG" -command $KAFFE_DEBUG_TEMPFILE $KAFFE_JREBINDIR/@kaffebin_TRANSF@
+	rm -f $KAFFE_DEBUG_TEMPFILE ;;
+    "GNU DDD"*)
+	# Tell DDD to start gdb within the correct working directory,
+	# and set up the specified argument list
+	{
+	    echo "shell rm -f $KAFFE_DEBUG_TEMPFILE"
+	    echo "cd `pwd`"
+	    echo "set args $*"
+	} > $KAFFE_DEBUG_TEMPFILE
+        exec "$KAFFE_DEBUG" --debugger "${GDB-gdb} -command $KAFFE_DEBUG_TEMPFILE" \
+		$KAFFE_JREBINDIR/@kaffebin_TRANSF@
+	rm -f $KAFFE_DEBUG_TEMPFILE ;;
+    "GNU Emacs"*)
+	# start gdb within GNU Emacs, move into the current working
+	# directory and set up the specified argument list
+	exec "$KAFFE_DEBUG" -eval "(progn (gdb \"gdb $KAFFE_JREBINDIR/@kaffebin_TRANSF@\") (gud-call \"cd `pwd`\") (gud-call \"set args $*\"))";;
+    XEmacs*)
+	# start gdb within XEmacs, move into the current working
+	# directory and set up the specified argument list
+	exec "$KAFFE_DEBUG" -eval "(progn (gdb \"$KAFFE_JREBINDIR/@kaffebin_TRANSF@\") (gdb-call \"cd `pwd`\") (gdb-call \"set args $*\"))";;
+    CGDB*)
+	# start gdb within cgdb, move into the current working
+	# directory and set up the specified argument list
+	{
+	    echo "shell rm -f $KAFFE_DEBUG_TEMPFILE"
+	    echo "cd `pwd`"
+	    echo "set args $*"
+	} > $KAFFE_DEBUG_TEMPFILE
+	exec "$KAFFE_DEBUG" -x $KAFFE_DEBUG_TEMPFILE $KAFFE_JREBINDIR/kaffe-bin
+	rm -f $KAFFE_DEBUG_TEMPFILE ;;
+    valgrind*)
+	# Start kaffe in valgrind
+	exec "$KAFFE_DEBUG" $KAFFE_JREBINDIR/kaffe-bin ${1+"$@"} ;;
+    *) echo you must set KAFFE_DEBUG to either emacs, gdb, ddd, cgdb or valgrind >&2;;
+    esac
+fi
+exit 1

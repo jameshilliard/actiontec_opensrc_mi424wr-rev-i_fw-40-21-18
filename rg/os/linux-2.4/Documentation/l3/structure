@@ -1,0 +1,36 @@
+L3 Bus Driver
+-------------
+
+The structure of the driver is as follows:
+
+	+----------+	+----------+	+----------+
+	| client 1 |	| client 2 |	| client 3 |
+	+-----^----+	+----^-----+	+----^-----+
+	      |		     |               |
+	+-----v--------------v---------------v-----+
+	|                                          |
+	+-----^-------+              +-------^-----+
+	      |	      |     core     |       |
+	+-----v----+  |	             |  +----v-----+
+	| device   |  |	             |  | device   |
+	| driver 1 |  |              |	| driver 2 |
+	+-----^----+  |              |  +----^-----+
+	      |	      |	  services   |       |
+	+-----v-------+              +-------v-----+
+	|                                          |
+	+-----------------^----^-------------------+
+			  |    |
+			  |  +-v---------+
+			  |  | algorithm |
+			  |  |  driver   |
+			  |  +-v---------+
+			  |    |
+			+-v----v-+
+			|  bus   |
+			| driver |
+			+--------+
+
+Clients talk to the core to attach device drivers and bus adapters, and
+to instruct device drivers to perform actions.  Device drivers then talk
+to the core to perform L3 bus transactions via the algorithm driver and
+ultimately bus driver.

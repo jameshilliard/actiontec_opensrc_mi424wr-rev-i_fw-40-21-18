@@ -1,0 +1,154 @@
+#
+# @configure_input@
+#
+
+# Paths
+
+VPATH = @srcdir@
+builddir= @builddir@
+srcdir = @srcdir@
+top_srcdir =@top_srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+bindir = @bindir@
+libdir = @libdir@
+mandir = @mandir@
+includedir = @includedir@
+
+# Shell commands.
+
+CC	= @CC@
+RANLIB	= @RANLIB@
+INSTALL	= @INSTALL@
+AR	= ar r
+RM	= rm -f
+LN_S    = @LN_S@
+
+# Build macros.
+CFLAGS	= @CFLAGS@ -I$(srcdir) -I$(builddir)
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS	= -L. @LDFLAGS@
+LIBS	= -lst @LIBS@
+
+# Other macros.
+
+NEED_OSS     = @NEED_OSS@
+NEED_SUNAU   = @NEED_SUNAU@
+NEED_ALSA    = @NEED_ALSA@
+PLAY_SUPPORT = @PLAY_SUPPORT@
+GSM_SUPPORT  = @GSM_SUPPORT@
+
+# Objects.
+
+FOBJ	= 8svx.o adpcm.o aiff.o au.o auto.o avr.o cdr.o \
+	  cvsd.o dat.o g711.o g721.o g723_16.o g723_24.o g723_40.o \
+	  g72x.o gsm.o hcom.o ima_rw.o maud.o mp3.o nulfile.o prc.o \
+	  raw.o sf.o smp.o sndrtool.o sphere.o tx16w.o voc.o vorbis.o \
+	  vox.o wav.o wve.o
+
+EOBJ	= avg.o band.o bandpass.o breject.o btrworth.o chorus.o compand.o \
+	  copy.o dcshift.o deemphas.o earwax.o echo.o echos.o \
+	  fade.o FFT.o filter.o flanger.o highp.o highpass.o lowp.o \
+	  lowpass.o mask.o mcompand.o noiseprof.o noisered.o pan.o \
+	  phaser.o pitch.o polyphas.o rate.o repeat.o resample.o \
+	  reverb.o reverse.o silence.o speed.o stat.o stretch.o swap.o \
+	  synth.o trim.o vibro.o vol.o
+
+
+GSMOBJ_0 =
+GSMOBJ_1 =  gsm/add.o gsm/code.o gsm/decode.o gsm/long_term.o gsm/lpc.o \
+	    gsm/preprocess.o gsm/rpe.o gsm/gsm_destroy.o \
+	    gsm/gsm_decode.o gsm/gsm_encode.o gsm/gsm_create.o \
+	    gsm/gsm_option.o gsm/short_term.o gsm/table.o
+
+OSSOBJ_0    =
+OSSOBJ_1    = oss.o
+SUNAUOBJ_0  =
+SUNAUOBJ_1  = sunaudio.o
+ALSAOBJ_0   =
+ALSAOBJ_1   = alsa.o
+EXTRAOBJS   = $(OSSOBJ_$(NEED_OSS)) $(SUNAUOBJ_$(NEED_SUNAU)) $(ALSAOBJ_$(NEED_ALSA)) $(GSMOBJ_$(GSM_SUPPORT))
+
+LIBOBJS = $(FOBJ) $(EOBJ) getopt.o handlers.o misc.o stio.o \
+	  util.o $(EXTRAOBJS)
+
+# Building libgsm.a is kinda a hack.  It switches to a different
+# makefile with hardcoded options.  We really want the object files
+# only so that they can be included inside libst.  This semi-fake
+# target is just an easy way to make sure that makefile builds
+# the objects instead of this makefile.
+GSM_0     =
+GSM_1     = gsm/libgsm.a
+PLAY_0    =
+PLAY_1    = play
+
+all: sox soxmix $(PLAY_$(PLAY_SUPPORT))
+
+sox: $(GSM_$(GSM_SUPPORT)) libst.a sox.o
+	$(CC) $(LDFLAGS) -o sox sox.o $(LIBS)
+
+soxmix.o: sox.c
+	$(CC) $(CFLAGS) -DSOXMIX -c $(srcdir)/sox.c -o soxmix.o
+
+soxmix: $(GSM_$(GSM_SUPPORT)) libst.a soxmix.o
+	$(CC) $(LDFLAGS) -o soxmix soxmix.o $(LIBS)
+
+libst.a: $(LIBOBJS)
+	$(AR) libst.a $(LIBOBJS) 
+	$(RANLIB) libst.a
+
+gsm/libgsm.a:
+	cd gsm && $(MAKE)
+
+PLAY_INSTALL_0    =
+PLAY_INSTALL_1    = install-play
+
+install: sox soxmix $(PLAY_INSTALL_$(PLAY_SUPPORT))
+	$(top_srcdir)/mkinstalldirs $(bindir)
+	$(INSTALL) -c -m 755 sox $(bindir)
+	$(INSTALL) -c -m 755 soxmix $(bindir)
+
+install-play:
+	if [ -f $(bindir)/rec ] ; then $(RM) $(bindir)/rec; fi
+	$(top_srcdir)/mkinstalldirs $(bindir)
+	$(INSTALL) -c -m 755 play $(bindir)
+	cd $(bindir) && $(LN_S) play rec
+
+install-lib: libst.a
+	$(top_srcdir)/mkinstalldirs $(libdir)
+	$(top_srcdir)/mkinstalldirs $(includedir)
+	$(INSTALL) -c -m 755 libst-config $(bindir)
+	$(INSTALL) -c -m 644 libst.a $(libdir)
+	$(RANLIB) $(libdir)/libst.a
+	$(INSTALL) -c -m 644 $(srcdir)/st.h $(includedir)
+	$(INSTALL) -c -m 644 ststdint.h $(includedir)
+
+PLAY_UNINSTALL_0    =
+PLAY_UNINSTALL_1    = uninstall-play
+
+uninstall: $(PLAY_UNINSTALL_$(PLAY_SUPPORT))
+	$(RM) $(bindir)/sox
+	$(RM) $(bindir)/soxmix
+
+uninstall-play:
+	$(RM) $(bindir)/play
+	$(RM) $(bindir)/rec
+
+uninstall-lib:
+	$(RM) $(libdir)/libst.a
+	$(RM) $(includedir)/st.h
+	$(RM) $(includedir)/ststdint.h
+
+clean:
+	$(RM) *.o libst.a
+	cd gsm && $(RM) *.o libgsm.a
+
+distclean:
+	$(RM) *~ *.o *.raw *.sf core sox soxmix libst.a play libst-config
+	cd gsm && $(RM) *~ *.o core libgsm.a Makefile
+	$(RM) stconfig.h ststdint.h Makefile
+
+# Not all platforms use CPPFLAGS concept by default so define custom
+# rule for .c.o to make sure its used.
+.c.o:
+	${CC} ${CFLAGS} ${CPPFLAGS} -c $<

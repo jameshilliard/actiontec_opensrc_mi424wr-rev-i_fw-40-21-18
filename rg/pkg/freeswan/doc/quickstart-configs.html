@@ -1,0 +1,191 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+<TITLE>Introduction to FreeS/WAN</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=iso-8859-1">
+<STYLE TYPE="text/css"><!--
+BODY { font-family: serif }
+H1 { font-family: sans-serif }
+H2 { font-family: sans-serif }
+H3 { font-family: sans-serif }
+H4 { font-family: sans-serif }
+H5 { font-family: sans-serif }
+H6 { font-family: sans-serif }
+SUB { font-size: smaller }
+SUP { font-size: smaller }
+PRE { font-family: monospace }
+--></STYLE>
+</HEAD>
+<BODY>
+<A HREF="toc.html">Contents</A>
+<A HREF="quickstart-firewall.html">Previous</A>
+<A HREF="faq.html">Next</A>
+<HR>
+<H1><A name="quick_configs">FreeS/WAN quick start examples</A></H1>
+<P>These are sample<A href="manpage.d/ipsec.conf.5.html"> ipsec.conf(5)</A>
+ configuration files for opportunistic encryption, with comments. Much
+ of this configuration will be unnecessary with the new defaults
+ proposed for FreeS/WAN 2.x.</P>
+<H2><A name="qc.opp.client">config for initiate-only opportunistic
+ encryption</A></H2>
+<P>Full instructions for this setup are in our<A href="quickstart.html#opp.client">
+ quickstart guide</A>.</P>
+<P>The ipsec.conf file for an initiate-only opportunistic setup is:</P>
+<PRE># general IPsec setup
+config setup
+        # Use the default interface
+        interfaces=%defaultroute
+        # Use auto= parameters in conn descriptions to control startup actions.
+        plutoload=%search
+        plutostart=%search
+
+# defaults for subsequent connection descriptions
+conn %default
+        # How to authenticate gateways
+        authby=rsasig
+        # default is
+        # load connection description into Pluto's database
+        # so it can respond if another gatway initiates
+        # individual connection descriptions may override this
+        auto=add
+
+# description for opportunistic connections
+conn me-to-anyone
+        left=%defaultroute         # all connections should use default route
+        right=%opportunistic       # anyone we can authenticate
+        rightrsasigkey=%dns        # look up their key in DNS
+        auto=route                 # set up for opportunistic
+        rekey=no                   # let unused connections die
+        leftid=@xy.example.com     # our identity for IPSec negotiations
+                                   # must match DNS and ipsec.secrets</PRE>
+<P>Normally, the last line above is the only one that you need to edit.
+ However, some people may need to customize the<VAR> interfaces=</VAR>
+ line in the &quot;config setup&quot; section. All other sections are identical
+ for any standalone machine doing opportunistic encryption.</P>
+<P>The @ sign in the<VAR> leftid=</VAR> makes the ID go &quot;over the wire&quot;
+ as a Fully Qualified Domain Name (FQDN). Without it, an IP address
+ would be used and this won't work.</P>
+<P>The conn is not used to supply either public key. Your private key is
+ in<A href="manpage.d/ipsec.secrets.5.html"> ipsec.secrets(5)</A> and,
+ for opportunistic encryption, the public keys for remote gateways are
+ all looked up in DNS.</P>
+<P>FreeS/WAN authenticates opportunistic encryption by<A href="#gen_rsa">
+ RSA signature</A> only, so &quot;public key&quot; and &quot;private key&quot; refer to
+ these keys.</P>
+<P>While the<VAR> left</VAR> and<VAR> right</VAR> designations here are
+ arbitrary, we follow a convention of using<VAR> left</VAR> for local
+ and<VAR> right</VAR> for remote.</P>
+<P><A href="quickstart.html#config.opp.client">Continue configuring
+ initiate-only opportunism.</A></P>
+<H2><A name="qc.incoming.opp.conf">ipsec.conf for incoming opportunistic
+ encryption</A></H2>
+ Use the ipsec.conf above, except that the section describing
+ opportunistic connections is now:
+<PRE>
+# description for opportunistic connections
+conn me-to-anyone
+        left=%defaultroute         # all connections should use default route
+        right=%opportunistic       # anyone we can authenticate
+        rightrsasigkey=%dns        # look up their key in DNS
+        auto=route                 # set up for opportunistic
+        rekey=no                   # let unused connections die</PRE>
+<P>Note that<VAR> leftid=</VAR> has been removed.</P>
+<P><A href="quickstart.html#incoming.opp.conf">Continue configuring full
+ opportunism.</A></P>
+<H2><A name="qc.rw.client">ipsec.conf for road warrior client</A></H2>
+<P>Here is our new connection, with comments:</P>
+<PRE>conn us-to-office
+        #
+        # information obtained from office system admin
+        # goes to the right of the = signs in these lines
+        # values shown here are just for example
+        #
+        left=1.2.3.4                # gateway IP address
+        leftsubnet=42.42.42.0/24   # the office network
+        leftid=@gateway.example.com
+        # real keys are much longer than shown here
+        leftrsasigkey=0s1LgR7/oUM...
+        #
+        # our stuff
+        #
+        # all connections should use our default route
+        # also controls the source address on IPsec packets
+        right=%defaultroute
+        # our identity for IPsec negotiations
+        rightid=@xy.example.com</PRE>
+<P>Everything else remains as it was when we had only opportunistic
+ connections.</P>
+<P><A href="quickstart.html#rw.client">Return to our quickstart
+ document.</A></P>
+<H2><A name="qc.modular.rw.client">A modular ipsec.conf</A></H2>
+<P>Once you have more than one connection, you may want to design your
+ ipsec.conf in a modular fashion. This will help you avoid retyping
+ information. Use<VAR> also=</VAR> to include one full or partial
+ connection description within another.</P>
+<P>Here is a sample modular ipsec.conf file for our situation. Since the<VAR>
+ right...</VAR> information is common to both our connections, we place
+ it in the partial connection our_stuff, which looks like:</P>
+<PRE>conn our_stuff
+        # all connections should use our default route
+        # also controls the source address on IPsec packets
+        right=%defaultroute
+        # our identity for IPsec negotiations
+        # must match what is in DNS and ipsec.secrets(5)
+        rightid=@xy.example.com</PRE>
+<P>We then include this information in other conns with the line:</P>
+<PRE>	also=our_stuff</PRE>
+<P>For this to work,<VAR> conn our_stuff</VAR> must come last.</P>
+<P>The resulting modular ipsec.conf looks like:</P>
+<PRE># general IPsec setup
+config setup
+        # Use the default interface
+        interfaces=%defaultroute
+        # Use auto= parameters in conn descriptions to control startup actions.
+        plutoload=%search
+        plutostart=%search
+
+# description for opportunistic connections
+conn me-to-anyone
+        also=our_stuff             # our system details, stored below
+        left=%opportunistic        # anyone we can authenticate
+        leftrsasigkey=%dns         # look up their key in DNS
+        auto=route                 # set up for opportunistic
+        rekey=no                   # let unused connections die
+
+# pre-configured link to office network
+# added for this example
+conn us-to-office
+        also=our_stuff             # our system details, stored below
+        #
+        # information obtained from office system admin
+        # goes to the right of the = signs in these lines
+        # values shown here are just for example
+        #
+        left=1.2.3.4                # gateway IP address
+        leftsubnet=42.42.42.0/24   # the office network
+        leftid=@gateway.example.com
+        # real keys are much longer than shown here
+        leftrsasigkey=0s1LgR7/oUM...
+
+# description of our system
+# included in other connection descriptions via also= lines
+# must come after the lines that use it
+conn our_stuff
+        # all connections should use our default route
+        # also controls the source address on IPsec packets
+        right=%defaultroute
+        # our identity for IPsec negotiations
+        # must match what is in DNS and ipsec.secrets(5)
+        rightid=@xy.example.com</PRE>
+<P>Note that you cannot put an<VAR> auto=start</VAR> line into an
+ included connection like<VAR> our_stuff</VAR>.</P>
+<P>Of course, if need be, you can mix modular and nonmodular elements in
+ any ipsec.conf.</P>
+<P><A href="quickstart.html#rw.client">Go back to configuring a road
+ warrior.</A></P>
+<HR>
+<A HREF="toc.html">Contents</A>
+<A HREF="quickstart-firewall.html">Previous</A>
+<A HREF="faq.html">Next</A>
+</BODY>
+</HTML>

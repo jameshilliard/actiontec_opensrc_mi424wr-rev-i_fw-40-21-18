@@ -1,0 +1,145 @@
+This file is a list of known bugs, short-comings and oddities.  
+Treat it as an TODO list.   This file is divided in three sections.
+
+MISSING AND/OR BROKEN FEATURES
+---------------------------------------------------------------------------
+
+* File.getCanonicalPath() is not properly implemented.
+  This needs a native implementation.
+
+* java.net.Socket:
+
+  Gerhard Paulus <gpaulus@stud.uni-frankfurt.de> reports:
+  +  a host name "" is not taken as local host (as in JDK)
+  +  if a socket is closed and a thread is reading from the socket's input
+  stream then this thread should be able to catch the SocketException
+  "Socket closed" (as in JDK)  This might be fixed now.
+
+* Kaffe does not currently provide its own implementation of RMI.
+
+* Kaffe's java.lang.Character class does not conform to Sun's spec.  The 
+  handling of unicode characters is incomplete.
+
+* Some run-time classes may not serialize or deserialize according to their
+  serial forms.
+
+* DecimalFormat is broken :  no formatting at all and decimals are cut off.
+  There are problems with date & calendar.
+
+  Reported by: Gerhard Paulus <gpaulus@stud.uni-frankfurt.de>
+  See http://rufus.w3.org/tools/Kaffe/messages/3785.html,
+	http://rufus.w3.org/tools/Kaffe/messages/3784.html
+
+* Runtime.runFinalizersOnExit() does not run the finalizers of all objects
+  on exit, but only of those objects that are finalizable at the time.  It 
+  hadn't even occurred to us that Sun wants us to run the finalizers of live 
+  objects when exiting, but this is what the 1.2 JDK doc says:
+  
+      Enable or disable finalization on exit; doing so specifies that the 
+      finalizers of all objects that have finalizers that have not yet been 
+      automatically invoked are to be run before the Java runtime exits. 
+      By default, finalization on exit is disabled. 
+      Deprecated. This method is inherently unsafe. It may result in 
+      finalizers being called on live objects while other threads are 
+      concurrently manipulating those objects, resulting in erratic behavior 
+      or deadlock.
+
+ARCHITECTURE-SPECIFIC PROBLEMS
+---------------------------------------------------------------------------
+
+* Kaffe fails to work for several people under SunOS 4.1.3.  The error
+  message seems to be "Can not find native library in path".  This problem
+  is unclear: either a problem in the kaffe script that use @libdir@ and set 
+  LD_LIBRARY_PATH (less likely), or a problem in the dynamic linking 
+  mechanisms on this system.  Check the mailing list archive for more info.
+
+* There have been reports of problems with exception handling on Linux 2.1.
+  These problems have to do with libc versions.  Unfortunately, no patches
+  have been submitted.  As a matter of precautious, make sure you run your
+  kaffe binary on the system on which it was compiled, that is, don't run
+  Linux 2.0 binaries on 2.1 or vice versa.  The test LostFrame in 
+  test/regression (and possibly others) should fail if you're affected
+  by this problem.  We would really appreciate a mechanism that would
+  allow us to detect and handle different libc versions at run-time.
+
+* On netbsd1.3/arm32, the % operator for long data types is broken.
+  This means that the sign of such an operation may come out wrong.
+  Java says it must be equal to the sign of the dividend.  This is
+  mostly due to a bug in __moddi3.  FreeBSD <=2.2.8 and <=3.0 have
+  the same problem, but there it's only in libc, not in libgcc, so
+  we instruct configure to explicitly link with libgcc.
+
+
+THINGS WHERE KAFFE'S BEHAVIOR DIFFERS
+---------------------------------------------------------------------------
+
+* Class.getFields() returns Fields in reverse order compared to Sun's jdk.
+  Apparently, this causes some software such Cygnus's kawa to fail in 
+  certain circumstances.  It seems like they should fix that.
+
+
+MISCELLANEOUS & TODO
+---------------------------------------------------------------------------
+
+* Add some architecture-specific stack pointer alignment macro.  Currently,
+  alignment is sizeof (jlong); apparently, some architectures require more
+  specific alignments.
+
+* While Kaffe currently doesn't compile with other compilers than Cygnus
+  cygwin32 gcc compiler, we do know that people are trying to compile it
+  with compilers such as Visual C++.  Jongwon Kim <freefish@chollian.net>
+  reports that FIELD_OFFSET in classMethod.h conflicts with winnt.h.
+
+* JNI incompatibilities pointed out by Johannes Deisenhofer 
+  <joe@dillingen.baynet.de>:
+
+ - NewXXXArray() should return jXXXArray instead of jarray
+   This is a problem in C++, since these types are not simply casted to jref
+
+  Note kaffe's jni.h doesn't even define these array types as of yet.
+
+* The call to `native' in external.c is unprotected in the interpreter.
+  In the jitter, this call is protected by locking the class.
+
+* When verifying a method, we lock the whole class.  This means that other
+  threads attempting the call other methods may be blocked until the
+  verification succeeds.  This could lead to deadlock.
+  
+* OutOfMemoryErrors are not handled properly.  Don't even try to write 
+  applications that attempt catch and recover from them.  Running out of
+  memory may cause seemingly unrelated assertion failures, such as
+  "Assertion `jitting == 0 || !!!"reentered jitter"' failed."
+  Try increasing the total heap size using "-mx" in this case.
+
+* Stopping threads at inopportune times may corrupt the VM.
+
+* Classloaders don't keep classes alive if they are only an initiating loader of
+  that class, but did not define that class.  This will cause problems with
+  class gc in the face of delegation if the loader to which the loading was 
+  delegated becomes unreachable before the loader that delegated it.
+  A possible fix is to walk the centry for each loader; this would also
+  allows us to get rid of the loadedClasses hashtable in 
+  java/lang/ClassLoader.java.
+
+* kaffeh leaves incomplete output files around if it bails because it cannot
+  find the class file.
+
+* 'configure' may take long time on systems like NetBSD. It looks stopping
+  eternally to check maximum length of command line arguments. This is a
+  bug of autoconf, and current workaround is to be patient (drinking coffe
+  or going to bed) or use 'bash' rather than 'sh' distributed with the os.
+  (This was fixed in latest configure versions, so newer kaffe will configure faster.
+  Also note that running configure with -C will cache most reaults and help
+  reconfiguring on old machines)
+  
+* on some platforms GNU make may mysteriously fail when building java classes
+  from rt.jar. The reason is a too restrticted shell limit as probably make tries
+  to open too many file descriptors. Unlimit your shell (unlimit/limit in csh and
+  ulimit in bash). Known to be affected are darwin 5.x and 6.x standard limits.
+
+* on some platforms when the user has already spawned many processes "make check"
+  may fail due to insufficient system resources. Good ways to work this around
+  are stopping unneded processes, restarting the computer, logging out and in
+  again or once again unlimit your shell limits to the maximum allowed.
+  In case of problems try a combination of the above, unlimiting with a fresh and
+  idle system.

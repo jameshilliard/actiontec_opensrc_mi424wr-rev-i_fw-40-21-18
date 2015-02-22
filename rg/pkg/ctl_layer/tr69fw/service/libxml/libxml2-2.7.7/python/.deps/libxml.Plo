@@ -1,0 +1,485 @@
+libxml.lo: libxml.c /usr/include/python2.5/Python.h \
+ /usr/include/python2.5/patchlevel.h /usr/include/python2.5/pyconfig.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/bin/../lib/gcc/mips-linux-uclibc/4.4.2/include-fixed/limits.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/bin/../lib/gcc/mips-linux-uclibc/4.4.2/include-fixed/syslimits.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/limits.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/bin/../lib/gcc/mips-linux-uclibc/4.4.2/include-fixed/features.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/uClibc_config.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/uClibc_arch_features.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/sys/cdefs.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/posix1_lim.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/local_lim.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/linux/limits.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/uClibc_local_lim.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/posix2_lim.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/xopen_lim.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/stdio_lim.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/stdio.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/bin/../lib/gcc/mips-linux-uclibc/4.4.2/include/stddef.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/types.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/wordsize.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/kernel_types.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/typesizes.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/pthreadtypes.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/sched.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/uClibc_stdio.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/wchar.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/wchar.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/uClibc_mutex.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/pthread.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/sched.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/time.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/time.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/uClibc_clk_tck.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/signal.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/sigset.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/initspin.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/sigthread.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/uClibc_pthread.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/bin/../lib/gcc/mips-linux-uclibc/4.4.2/include/stdarg.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/string.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/errno.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/errno.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/errno_values.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/stdlib.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/waitflags.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/waitstatus.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/endian.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/endian.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/sys/types.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/sys/select.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/select.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/sys/sysmacros.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/alloca.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/unistd.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/posix_opt.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/environments.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/confname.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/getopt.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/assert.h \
+ /usr/include/python2.5/pyport.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/stdint.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/math.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/huge_val.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/huge_valf.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/huge_vall.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/inf.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/nan.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/mathdef.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/sgidefs.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/mathcalls.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/sys/time.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/sys/stat.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/stat.h \
+ /usr/include/python2.5/pymem.h /usr/include/python2.5/object.h \
+ /usr/include/python2.5/objimpl.h /usr/include/python2.5/pydebug.h \
+ /usr/include/python2.5/unicodeobject.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/ctype.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/uClibc_touplow.h \
+ /usr/include/python2.5/intobject.h /usr/include/python2.5/boolobject.h \
+ /usr/include/python2.5/longobject.h /usr/include/python2.5/floatobject.h \
+ /usr/include/python2.5/complexobject.h \
+ /usr/include/python2.5/rangeobject.h \
+ /usr/include/python2.5/stringobject.h \
+ /usr/include/python2.5/bufferobject.h \
+ /usr/include/python2.5/tupleobject.h /usr/include/python2.5/listobject.h \
+ /usr/include/python2.5/dictobject.h /usr/include/python2.5/enumobject.h \
+ /usr/include/python2.5/setobject.h /usr/include/python2.5/methodobject.h \
+ /usr/include/python2.5/moduleobject.h \
+ /usr/include/python2.5/funcobject.h /usr/include/python2.5/classobject.h \
+ /usr/include/python2.5/fileobject.h /usr/include/python2.5/cobject.h \
+ /usr/include/python2.5/traceback.h /usr/include/python2.5/sliceobject.h \
+ /usr/include/python2.5/cellobject.h /usr/include/python2.5/iterobject.h \
+ /usr/include/python2.5/genobject.h /usr/include/python2.5/descrobject.h \
+ /usr/include/python2.5/weakrefobject.h /usr/include/python2.5/codecs.h \
+ /usr/include/python2.5/pyerrors.h /usr/include/python2.5/pystate.h \
+ /usr/include/python2.5/pyarena.h /usr/include/python2.5/modsupport.h \
+ /usr/include/python2.5/pythonrun.h /usr/include/python2.5/ceval.h \
+ /usr/include/python2.5/sysmodule.h /usr/include/python2.5/intrcheck.h \
+ /usr/include/python2.5/import.h /usr/include/python2.5/abstract.h \
+ /usr/include/python2.5/compile.h /usr/include/python2.5/code.h \
+ /usr/include/python2.5/eval.h /usr/include/python2.5/pystrtod.h \
+ /usr/include/python2.5/pyfpe.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/signum.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/siginfo.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/sigaction.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/sigcontext.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/sigstack.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/ucontext.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/sys/ucontext.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/setjmp.h \
+ /opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/setjmp.h \
+ /usr/include/python2.5/fileobject.h ../include/libxml/xmlmemory.h \
+ ../include/libxml/xmlversion.h ../include/libxml/xmlexports.h \
+ ../include/libxml/threads.h ../include/libxml/globals.h \
+ ../include/libxml/parser.h ../include/libxml/tree.h \
+ ../include/libxml/xmlstring.h ../include/libxml/xmlregexp.h \
+ ../include/libxml/dict.h ../include/libxml/hash.h \
+ ../include/libxml/valid.h ../include/libxml/xmlerror.h \
+ ../include/libxml/list.h ../include/libxml/xmlautomata.h \
+ ../include/libxml/entities.h ../include/libxml/encoding.h \
+ ../include/libxml/xmlIO.h ../include/libxml/SAX.h \
+ ../include/libxml/xlink.h ../include/libxml/SAX2.h \
+ ../include/libxml/xpath.h ../include/libxml/xpathInternals.h \
+ ../include/libxml/c14n.h ../include/libxml/xmlreader.h \
+ ../include/libxml/relaxng.h ../include/libxml/xmlschemas.h \
+ ../include/libxml/xmlsave.h libxml_wrap.h \
+ ../include/libxml/parserInternals.h ../include/libxml/HTMLparser.h \
+ ../include/libxml/chvalid.h ../include/libxml/catalog.h \
+ ../include/libxml/nanoftp.h ../include/libxml/nanohttp.h \
+ ../include/libxml/uri.h ../include/libxml/debugXML.h \
+ ../include/libxml/HTMLtree.h ../include/libxml/xinclude.h \
+ ../include/libxml/xpointer.h ../include/libxml/xmlunicode.h libxml2-py.h \
+ libxml2-export.c
+
+/usr/include/python2.5/Python.h:
+
+/usr/include/python2.5/patchlevel.h:
+
+/usr/include/python2.5/pyconfig.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/bin/../lib/gcc/mips-linux-uclibc/4.4.2/include-fixed/limits.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/bin/../lib/gcc/mips-linux-uclibc/4.4.2/include-fixed/syslimits.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/limits.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/bin/../lib/gcc/mips-linux-uclibc/4.4.2/include-fixed/features.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/uClibc_config.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/uClibc_arch_features.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/sys/cdefs.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/posix1_lim.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/local_lim.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/linux/limits.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/uClibc_local_lim.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/posix2_lim.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/xopen_lim.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/stdio_lim.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/stdio.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/bin/../lib/gcc/mips-linux-uclibc/4.4.2/include/stddef.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/types.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/wordsize.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/kernel_types.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/typesizes.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/pthreadtypes.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/sched.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/uClibc_stdio.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/wchar.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/wchar.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/uClibc_mutex.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/pthread.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/sched.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/time.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/time.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/uClibc_clk_tck.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/signal.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/sigset.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/initspin.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/sigthread.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/uClibc_pthread.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/bin/../lib/gcc/mips-linux-uclibc/4.4.2/include/stdarg.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/string.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/errno.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/errno.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/errno_values.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/stdlib.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/waitflags.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/waitstatus.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/endian.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/endian.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/sys/types.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/sys/select.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/select.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/sys/sysmacros.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/alloca.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/unistd.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/posix_opt.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/environments.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/confname.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/getopt.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/assert.h:
+
+/usr/include/python2.5/pyport.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/stdint.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/math.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/huge_val.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/huge_valf.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/huge_vall.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/inf.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/nan.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/mathdef.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/sgidefs.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/mathcalls.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/sys/time.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/sys/stat.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/stat.h:
+
+/usr/include/python2.5/pymem.h:
+
+/usr/include/python2.5/object.h:
+
+/usr/include/python2.5/objimpl.h:
+
+/usr/include/python2.5/pydebug.h:
+
+/usr/include/python2.5/unicodeobject.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/ctype.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/uClibc_touplow.h:
+
+/usr/include/python2.5/intobject.h:
+
+/usr/include/python2.5/boolobject.h:
+
+/usr/include/python2.5/longobject.h:
+
+/usr/include/python2.5/floatobject.h:
+
+/usr/include/python2.5/complexobject.h:
+
+/usr/include/python2.5/rangeobject.h:
+
+/usr/include/python2.5/stringobject.h:
+
+/usr/include/python2.5/bufferobject.h:
+
+/usr/include/python2.5/tupleobject.h:
+
+/usr/include/python2.5/listobject.h:
+
+/usr/include/python2.5/dictobject.h:
+
+/usr/include/python2.5/enumobject.h:
+
+/usr/include/python2.5/setobject.h:
+
+/usr/include/python2.5/methodobject.h:
+
+/usr/include/python2.5/moduleobject.h:
+
+/usr/include/python2.5/funcobject.h:
+
+/usr/include/python2.5/classobject.h:
+
+/usr/include/python2.5/fileobject.h:
+
+/usr/include/python2.5/cobject.h:
+
+/usr/include/python2.5/traceback.h:
+
+/usr/include/python2.5/sliceobject.h:
+
+/usr/include/python2.5/cellobject.h:
+
+/usr/include/python2.5/iterobject.h:
+
+/usr/include/python2.5/genobject.h:
+
+/usr/include/python2.5/descrobject.h:
+
+/usr/include/python2.5/weakrefobject.h:
+
+/usr/include/python2.5/codecs.h:
+
+/usr/include/python2.5/pyerrors.h:
+
+/usr/include/python2.5/pystate.h:
+
+/usr/include/python2.5/pyarena.h:
+
+/usr/include/python2.5/modsupport.h:
+
+/usr/include/python2.5/pythonrun.h:
+
+/usr/include/python2.5/ceval.h:
+
+/usr/include/python2.5/sysmodule.h:
+
+/usr/include/python2.5/intrcheck.h:
+
+/usr/include/python2.5/import.h:
+
+/usr/include/python2.5/abstract.h:
+
+/usr/include/python2.5/compile.h:
+
+/usr/include/python2.5/code.h:
+
+/usr/include/python2.5/eval.h:
+
+/usr/include/python2.5/pystrtod.h:
+
+/usr/include/python2.5/pyfpe.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/signum.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/siginfo.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/sigaction.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/sigcontext.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/sigstack.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/ucontext.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/sys/ucontext.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/setjmp.h:
+
+/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1/usr/include/bits/setjmp.h:
+
+/usr/include/python2.5/fileobject.h:
+
+../include/libxml/xmlmemory.h:
+
+../include/libxml/xmlversion.h:
+
+../include/libxml/xmlexports.h:
+
+../include/libxml/threads.h:
+
+../include/libxml/globals.h:
+
+../include/libxml/parser.h:
+
+../include/libxml/tree.h:
+
+../include/libxml/xmlstring.h:
+
+../include/libxml/xmlregexp.h:
+
+../include/libxml/dict.h:
+
+../include/libxml/hash.h:
+
+../include/libxml/valid.h:
+
+../include/libxml/xmlerror.h:
+
+../include/libxml/list.h:
+
+../include/libxml/xmlautomata.h:
+
+../include/libxml/entities.h:
+
+../include/libxml/encoding.h:
+
+../include/libxml/xmlIO.h:
+
+../include/libxml/SAX.h:
+
+../include/libxml/xlink.h:
+
+../include/libxml/SAX2.h:
+
+../include/libxml/xpath.h:
+
+../include/libxml/xpathInternals.h:
+
+../include/libxml/c14n.h:
+
+../include/libxml/xmlreader.h:
+
+../include/libxml/relaxng.h:
+
+../include/libxml/xmlschemas.h:
+
+../include/libxml/xmlsave.h:
+
+libxml_wrap.h:
+
+../include/libxml/parserInternals.h:
+
+../include/libxml/HTMLparser.h:
+
+../include/libxml/chvalid.h:
+
+../include/libxml/catalog.h:
+
+../include/libxml/nanoftp.h:
+
+../include/libxml/nanohttp.h:
+
+../include/libxml/uri.h:
+
+../include/libxml/debugXML.h:
+
+../include/libxml/HTMLtree.h:
+
+../include/libxml/xinclude.h:
+
+../include/libxml/xpointer.h:
+
+../include/libxml/xmlunicode.h:
+
+libxml2-py.h:
+
+libxml2-export.c:

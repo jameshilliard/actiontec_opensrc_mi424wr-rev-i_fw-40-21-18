@@ -1,0 +1,62 @@
+BHR DHCPv6 README FILE
+by Yang Rong
+8/25/2010
+
+1.Folders and files
+-------------------------------------------
+./server: source code and sample configure file of DHCPv6 server
+./client: source code and sample configure file of DHCPv6 client
+./relay: source code of DHCPv6 relay
+./common: common codes for DHCPv6 server, client and relay
+./missing: the codes DHCPv6 in use but missed in openrg's library
+
+2.Compiling
+-------------------------------------------
+(1)Extract all codes to rg/pkg/dhcpv6
+(2)Cd rg/pkg/dhcpv6 & make
+(3)Elf files will be created in rg/build/pkg/dhcpv6/
+
+3.Configuring
+-------------------------------------------
+Stateless server: 
+  Edit or create dhcp6s.conf and add:
+#=========================================================
+  option domain-name-servers 2001:db8::35;
+  option domain-name "domain.org";
+#=========================================================
+  Once server is started with this configuration, it will answer to info-requests about your nameservers and domain. 
+  Please note that this configuration implies that your hosts get their IPv6 addresses by an other means than DHCPv6 (e.g. Router Advertisements).
+
+Stateful server: 
+  Add the following to your configuration file:
+#=========================================================
+	interface eth0 {
+	    address-pool mynetwork 3600;
+	};
+
+	pool mynetwork {
+	    range 2001:db8:1:2::1000 to 2001:db8:1:2::2000;
+	};
+#=========================================================
+
+Prefix delegation: 
+	Edit dhcp6s.conf:
+#=========================================================
+	host myrouter {
+	    duid 00:01:00:01:aa:bb;
+	    prefix 2001:db8:1111::/48 infinity;
+	};
+#=========================================================
+
+4.Implementation
+-------------------------------------------
+(1)Download elf and it's configure file to BHR Router
+(2)Usage: dhcp6s [-c configfile] [-dDf] [-k ctlkeyfile] [-p ctlport] [-P pidfile] interface
+  Example:
+    # dhcp6s eth0
+  This start DHCPv6 server with default configure file: /var/dhcp6s.conf (you can modify this location in rg/pkg/dhcpv6/server/Makefile)
+    # dhcp6s -c dhcp6s.conf eth0
+  This start DHCPv6 server with the configure file user specified
+    # dhcp6s -c dhcp6s.conf -D -f eth0
+  This start DHCPv6 server with debug information
+

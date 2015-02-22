@@ -1,0 +1,123 @@
+#! /bin/sh
+# do random checks to see if IPsec was installed and started properly
+#
+# Copyright (C) 2001 Michael Richardson <mcr@freeswan.org>
+# 
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2 of the License, or (at your
+# option) any later version.  See <http://www.fsf.org/copyleft/gpl.txt>.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# RCSID $Id: check.in,v 1.2 2003/11/30 14:44:57 derry Exp $
+
+LOGS=${LOGS-/var/log}
+CONFS=${IPSEC_CONFS-/etc}
+me="ipsec check"
+
+set -e
+
+PATH=/sbin:/usr/bin:/usr/local/sbin:@IPSEC_SBINDIR@:$PATH export PATH
+
+echo "Checking your system to see if IPsec got installed and started correctly"
+ipsec --version
+
+echo -n "Checks:"
+
+if [ -f /proc/net/ipsec_eroute ]
+then
+    echo -n ' eroute'
+else
+    echo -n ' KLIPS-not-running-missing-/proc/net/ipsec_eroute'
+fi
+
+if [ -f ${CONFS}/ipsec.secrets ]
+then
+    echo -n ' secrets'
+else
+    echo -n " missing-${CONFS}/ipsec.secrets "
+fi
+
+if ipsec whack --status >/dev/null
+then
+    echo -n ' pluto'
+else
+    echo -n ' pluto-not-running! '
+fi
+
+if [ -f /etc/sysconfig/ipchains ]
+then
+    if ipchains --check input -p udp --src 1.2.3.4 500 --dst 2.3.4.5 500 -i eth0
+    then
+	echo -n ' port-500-open'
+    else
+	echo -n ' port-500-blocked'
+    fi
+fi
+echo '.'
+
+echo "DNS checks: "
+
+host=`hostname`
+
+if host -t key $host | grep -v '(0x4200|16896)' >/dev/null
+then
+    echo "  Forward KEY found for $host"
+else
+    echo "  No forward KEY found."
+fi
+
+
+pubfile=/tmp/fspub$$
+privfile=/tmp/fspriv$$
+
+echo false >$pubfile
+echo false >$privfile
+
+/sbin/ifconfig -a | grep 'inet addr' | while IFS=': ' read inet blurb addr rest
+do
+    case $addr in
+	127.*) ;;
+	10.*) echo true >$privfile;;
+	172.1[6789].*.*) echo true >$privfile;;
+	172.2?.*.*) echo true >$privfile;;
+	172.3[01].*.*) echo true >$privfile;;
+	192.168.*.*) echo true >$privfile;;
+	*) echo $addr;;
+    esac
+done | sort -u | sed -e 's,\., ,g' | while read a b c d rest
+do
+  legitaddr=$a.$b.$c.$d
+
+  echo true >$pubfile
+
+  if host -t key $d.$c.$b.$a.in-addr.arpa. | grep -v '(0x4200|16896)' >/dev/null
+  then
+    echo "  Address $legitaddr has KEY record."
+  else
+    echo "  Address $legitaddr lacks KEY record."
+  fi
+done
+
+private=`cat $pubfile`
+public=`cat $privfile`
+
+if $private
+then
+    :
+else
+    if $public
+    then
+	:
+    else
+	echo "  Failed to find any public IP addresses"
+    fi
+fi
+
+#
+# XXX - go look for subnet behind me's text records. 
+#

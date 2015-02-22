@@ -1,0 +1,9 @@
+version.h
+ifconfig
+hostname
+arp
+netstat
+route
+rarp
+slattach
+plipconfig   

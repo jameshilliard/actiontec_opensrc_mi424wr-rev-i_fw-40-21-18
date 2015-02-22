@@ -1,0 +1,1 @@
+HAVE_VA_COPY=1

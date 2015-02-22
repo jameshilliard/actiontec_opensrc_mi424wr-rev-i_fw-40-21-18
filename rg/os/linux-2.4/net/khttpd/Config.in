@@ -1,0 +1,9 @@
+#
+# kHTTPd
+#
+tristate '  Kernel httpd acceleration (EXPERIMENTAL)' CONFIG_KHTTPD
+if [ "$CONFIG_KHTTPD" != "n" ]; then
+  if [ "$CONFIG_IPV6" != "n" ]; then
+    bool '    Use IPv6 socket for khttpd' CONFIG_KHTTPD_IPV6
+  fi
+fi

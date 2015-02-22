@@ -1,0 +1,97 @@
+
+Board Overview
+--------------
+
+The IXDP425 is an evaluation platform for Intel's IXP425 network processor.
+
+The IXP425 contains on chip dual-UARTs, PCI host bridge, USB endpoint,
+two 10/100 NPEs (Network Programmable Engines) and 1 WAN NPE, and 16 GPIOs.
+
+The IXDP425 contains four PCI slots, a set of 7 segment LEDs, 16MB 
+of flash, and a serial PROM connected to two GPIO lines.
+
+Port Status
+-----------
+
+Supported:
+
+- MTD/JFFS2 access of on board flash
+- NFS root
+- RAMDISK root
+- Serial console on ttyS0
+- PCI E100 card
+
+Not Supported:
+
+- NPEs
+- USB endpoint
+- I2C access
+
+Building the Kernel
+-------------------
+
+Note: You will need a toolchain that has proper support for big endian builds.
+
+make ixdp425_config
+make oldconfig
+make dep 
+make zImage
+
+This will build an image setup for BOOTP/NFS root support.  To change this,
+just change the "root=" option on the commandline.
+
+Preparing the Hardware
+----------------------
+
+Make sure you do an 'fis init' command once you boot up to intialize
+RedBoot's flash filesystem.
+
+Connect the serial port on your host to the serial port labeled UART0
+on the board.
+
+Configure minicom for 115200N81
+
+Loading the Kernel
+------------------
+
+   RedBoot> load -r -v -b 0x11608000 zImage
+   RedBoot> go 0x11608000
+
+
+Root Devices
+------------
+
+A kernel is not useful without a root filesystem, and you have several
+choices with this board:  NFS root, RAMDISK, or JFFS/JFFS2.  For development 
+purposes, it is suggested that you use NFS root for easy access to various 
+tools.  Once you're ready to deploy, probably want to utilize JFFS/JFFS2 on 
+the flash device.  
+
+
+MTD on the IXDP425
+------------------
+
+Please read the file Documentation/arm/XScale/IOP3xx/IQ80310 for information
+on mapping RedBoot FIS partitions to MTD partitions.
+
+
+Using >64MB RAM
+---------------
+
+By default, the kernel is configure to only use 64MB of memory.  There
+is a very good reason for this.  The inbound PCI window on the IXP425
+is only 64MB in size, so if you are using more memory than this, all
+PCI DMA buffers above 64MB need to be bounced down to the 64MB 
+GFP_DMA area.  This is very expensive and will lead to performance
+degradation. To use more then 64MB of memory, you need to turn on
+CONFIG_IXP425_LARGE_SDRAM and then updated the "mem=" portion
+of the command line appropriately.
+
+Contributors
+------------
+
+Original porting done by Jungo Software
+
+Cleanedup and maintained by Deepak Saxena <dsaxena@mvista.com>
+
+

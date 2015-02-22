@@ -1,0 +1,33 @@
+RGSRC=../../../
+include $(RGSRC)/envir.mak
+
+ARCHCONFIG_FIRST_TASKS+= mad_config 
+
+FIRST_TASKS+= mad_make
+
+FIRST_CLEAN+= mad_clean
+
+DISTCLEAN_FIRST_TASK+= mad_distclean
+
+RAMDISK_LIB_FILES+= libmad.so.0.2.1
+
+include $(RGMK)
+
+mad_config:
+	./configure
+
+mad_make: actual_make $(RAMDISK_LIB_FILES)
+
+actual_make:
+	make -f Makefile
+
+$(RAMDISK_LIB_FILES):
+	$(RG_CP) ./.libs/$@ ./$@
+
+mad_clean:
+	rm -f $(RAMDISK_LIB_FILES)
+	make -f Makefile clean
+
+mad_distclean: mad_clean
+	make -f Makefile distclean
+

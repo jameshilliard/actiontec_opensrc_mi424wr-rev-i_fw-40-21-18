@@ -1,0 +1,8 @@
+gdbreplay
+gdbserver
+reg-i386-linux.c
+reg-m68k.c
+reg-mips.c
+reg-arm.c
+reg-i386.c
+reg-ppc.c

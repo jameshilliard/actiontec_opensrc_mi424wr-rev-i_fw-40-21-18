@@ -1,0 +1,44 @@
+#!/bin/bash
+#
+# Usage: ./ap_end <bridge> <wireless> <wired>
+# e.g.: ./ap_end br0 ath0 eth0
+
+set -x
+
+# kill process if it is running
+#kill_process()
+#{
+#	running_process=$(ps -A|grep ${1})
+#	if [ -n "$running_process" ]; then
+#		killall -s SIGTERM $running_process 2>/dev/null;
+#		sleep 1;
+#		return 0;
+#	fi
+#	return -1;
+#}
+
+down_interface()
+{
+	ifconfig ${1} down 2>/dev/null
+}
+
+# kill "hostapd" deamon if it is running
+main_daemon=hostapd
+#kill_process $main_daemon
+killall $main_daemon
+
+# remove interface directory if it exists
+if [ -d /var/run/$main_daemon ]; then
+	rm -rf /var/run/$main_daemon
+fi
+
+
+if [ -n "$1" -a -n "$2" -a -n "$3" ]; then
+	down_interface $2;
+	down_interface $3;
+	brctl delif $1 $2
+	brctl delif $1 $3
+	down_interface $1;
+	brctl delbr $1
+fi
+

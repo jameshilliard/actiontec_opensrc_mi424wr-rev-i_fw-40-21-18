@@ -1,0 +1,155 @@
+#! /bin/sh
+# do random checks to see if IPsec was installed and started properly
+#
+# Copyright (C) 2001 Michael Richardson <mcr@freeswan.org>
+# 
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2 of the License, or (at your
+# option) any later version.  See <http://www.fsf.org/copyleft/gpl.txt>.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# RCSID $Id: verify.in,v 1.2 2003/11/30 14:45:18 derry Exp $
+
+LOGS=${LOGS-/var/log}
+CONFS=${IPSEC_CONFS-/etc}
+me="ipsec verify"
+
+set -e
+
+printmsg() {
+    printf "%-60s" "$1"
+}
+
+PATH=/sbin:/usr/bin:/usr/local/sbin:@IPSEC_SBINDIR@:$PATH export PATH
+
+echo "Checking your system to see if IPsec got installed and started correctly"
+
+printmsg "Version check and ipsec on-path"
+if ipsec --version >/dev/null
+then
+    echo '[OK]'
+else
+    echo '[FAILED]'
+fi
+
+printmsg "Checking for KLIPS support in kernel"
+if [ -f /proc/net/ipsec_eroute ]
+then
+    echo '[OK]'
+else
+    echo '[FAILED]'
+fi
+
+printmsg "Checking for RSA private key (${CONFS}/ipsec.secrets)"
+if [ -f ${CONFS}/ipsec.secrets ]
+then
+    echo '[OK]'
+else
+    echo '[FAILED]'
+fi
+
+printmsg "Checking that pluto is running"
+if ipsec whack --status >/dev/null
+then
+    echo '[OK]'
+else
+    echo '[FAILED]'
+fi
+ 
+/bin/ls /proc/sys/net/ipv4/conf | while read net
+do
+    if [ -f /etc/sysconfig/ipchains ]
+    then
+	printmsg "Checking if IPchains has port 500 hole ($net)"
+	if ipchains --check input -p udp --src 1.2.3.4 500 --dst 2.3.4.5 500 -i $net
+	then
+	    echo '[OK]'
+	else
+	    echo '[BLOCKED]'
+	fi
+    fi
+
+#	if [ -f /etc/sysconfig/iptables ]
+#	then
+#	    printmsg "Checking if IPtables has port 500 hole ($net)"
+#	    if ipchains --check input -p udp --src 1.2.3.4 500 --dst 2.3.4.5 500 -i $net
+#	    then
+#		echo '[OK]'
+#	    else
+#		echo '[BLOCKED]'
+#	    fi
+#	else
+#	    echo '[NO-IPCHAINS]'
+#	fi
+done
+    
+echo "DNS checks. "
+
+host=`hostname`
+
+printmsg "Looking for forward key for $host"
+if host -t key $host | grep -v '(0x4200|16896)' >/dev/null
+then
+    echo '[OK]'
+else
+    echo '[FAILED]'
+fi
+ 
+
+pubfile=/tmp/fspub$$
+privfile=/tmp/fspriv$$
+
+echo false >$pubfile
+echo false >$privfile
+
+/sbin/ifconfig -a | grep 'inet addr' | while IFS=': ' read inet blurb addr rest
+do
+    case $addr in
+	127.*) ;;
+	10.*) echo true >$privfile;;
+	172.1[6789].*.*) echo true >$privfile;;
+	172.2?.*.*) echo true >$privfile;;
+	172.3[01].*.*) echo true >$privfile;;
+	192.168.*.*) echo true >$privfile;;
+	*) echo $addr;;
+    esac
+done | sort -u | sed -e 's,\., ,g' | while read a b c d rest
+do
+    legitaddr=$a.$b.$c.$d
+
+    echo true >$pubfile
+
+    printmsg "Looking for KEY in reverse map: $d.$c.$b.$a.in-addr.arpa"
+    if host -t key $d.$c.$b.$a.in-addr.arpa. | grep -v '(0x4200|16896)' >/dev/null
+    then
+	echo '[OK]'
+    else
+	echo '[FAILED]'
+    fi
+ 
+done
+
+private=`cat $pubfile`
+public=`cat $privfile`
+
+printmsg "Does the machine have at least one non-private address"
+if $private
+then
+    echo '[OK]'
+else
+    if $public
+    then
+	echo '[OK]'
+    else
+	echo '[FAILED]'
+    fi
+fi
+
+#
+# XXX - go look for subnet behind me's text records. 
+#

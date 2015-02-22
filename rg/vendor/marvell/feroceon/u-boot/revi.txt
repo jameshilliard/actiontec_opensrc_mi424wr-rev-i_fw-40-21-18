@@ -1,0 +1,7 @@
+export PATH=$PATH:/usr/local/openrg/arm-none-linux-gnueabi/bin:
+export CROSS_COMPILE=arm-none-linux-gnueabi-; export ARCH=arm
+make distclean
+make mrproper
+make mi424wr_i_config
+make
+

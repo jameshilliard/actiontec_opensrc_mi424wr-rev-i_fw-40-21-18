@@ -1,0 +1,130 @@
+
+Board Overview
+--------------
+
+The IXDP2400 is an evaluation platform for Intel's IXP2400 network 
+processor.  The IXP2400 is a high-speed network proccessor that contains 
+8 Microengines for network applications, built in 16550 UART, GPIO, 
+and a built in PCI host/slave bridge.
+
+The IXDP2400 is a dual NPU board in which both processors are sitting
+on the PCI bus.  Each one has it's own network interface (82559) and serial 
+console. The Master NPU handles Egress operations and the slave NPU handles 
+Ingress operations. In addition, the master NPU has a TVM sensor connected
+to it over two GPIO lines that are being used as an I2C interface.
+
+Port Status
+-----------
+
+Supported:
+
+- MTD/JFFS2 access of on board flash
+- NFS root
+- RAMDISK root
+- Serial console on ttyS0
+- PCI E100 card
+
+Not Supported/Coming Soon:
+
+- TVM -- I have code but working on cleaning it up
+- Slave Driver to load kernel image over PCI -- Need to do some more testing
+
+Not Planned:
+
+- Microengines: To make use of the microengines, you need a third party
+  stack such as the intel IXASDK or Teja.
+
+Building the Kernel
+-------------------
+
+Note: You will need a toolchain that has proper support for big endian builds.
+
+make ixdp2400_config
+make oldconfig
+make dep 
+make zImage
+
+This will build an image setup for BOOTP/NFS root support.  To change this,
+just change the "root=" option on the commandline.
+
+Preparing the Hardware
+----------------------
+
+Make sure you do an 'fis init' command once you boot up to intialize
+RedBoot's flash filesystem.
+
+Connect the serial port on 
+your board to the serial port on your host.
+
+Configure minicom for 57600N81.
+
+Note that you must be using a version of RedBoot from Intel that supports the 
+'exec' command or Linux will not work on the 2400. The version I am using is:
+
+
+RedBoot(tm) bootstrap and debug environment, version R1.24 - built 16:00:39, Dec
+ 12 2002
+
+Please contact Intel regarding how to get an updated RedBoot image.
+
+
+Loading the Kernel
+------------------
+
+Master-RedBoot> load -r -v -b 0x1d008000 zImage.ixp2000
+Raw file loaded 0x1d008000-0x1d0a812c
+Master-RedBoot> exec 0x1d008000
+
+
+Now do the same on the slave side.
+
+Root Devices
+------------
+
+A kernel is not useful without a root filesystem, and you have several
+choices with this board:  NFS root, RAMDISK, or JFFS/JFFS2.  For development 
+purposes, it is suggested that you use NFS root for easy access to various 
+tools.  Once you're ready to deploy, probably want to utilize JFFS/JFFS2 on 
+the flash device.  
+
+To use a ramdisk, load it to location 0x1c600000
+
+MTD on the IXDP2400
+------------------
+
+Please read the file Documentation/arm/XScale/IOP3xx/IQ80310 for information
+on mapping RedBoot FIS partitions to MTD partitions.
+
+NOTES
+-----
+
+Each NPU on the board has memory from physical 0x00000000 to 0x2000000;
+however, Linux by default is configure to run only in the top 64MB of
+RAM.  The reasoning for this is b/c the lower portion of memory is meant
+to be used by the microengines libraries in the Intel SDK.  If you want
+to use all 512MB of memory, you need to change the ZRELADDR value in 
+arch/arm/boot/Makefile, and change the PHYS_OFFSET variable in 
+include/asm/arch/memory.h. At some point in the future this might be 
+made into a configuration variable.
+
+If you plan to use the slowport on the IXP2400 in your board, please read 
+the notes in include/asm-arm/arch-ixp2000/ixp2000.h on the proper way
+to access it.  Since you will probably be multiplexing several different 
+devices on the port, you need to follow the instructions there for things
+to work properly.
+
+If you are designing a custom board with dual NPUs: DO NOT PUT TWO NPUs
+ON THE SAME BUS EACH WITH IT'S OWN ETHERNET.  The PCI bus is a single
+master bus and all interrupts should be routed to a single device on the
+board. The IXDP2400 is breaking this and requires some ugly hacks in 
+the code to make things work. Please do not do this.  If you need multiple 
+PCI domains, use a non-transparent P2P bridge on your board between the 
+egress and ingress sides.  Please. 
+
+Contributors
+------------
+
+Original porting done by Naeem M. Afzal (Intel Corporation)
+
+Maintained by Deepak Saxena <dsaxena@mvista.com>
+

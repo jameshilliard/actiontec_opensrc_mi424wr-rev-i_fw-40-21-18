@@ -1,0 +1,498 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html">
+  <title>Quick FreeS/WAN installation and configuration</title>
+  <meta name="keywords"
+  content="Linux, IPsec, VPN, security, FreeSWAN, installation, quickstart">
+  <!--
+
+  Written by Sandy Harris for the Linux FreeS/WAN project
+  Revised by Claudia Schmeing for same
+  Freely distributable under the GNU General Public License
+
+  More information at www.freeswan.org
+  Feedback to users@lists.freeswan.org
+
+  CVS information:
+  RCS ID:          $Id: quickstart.html,v 1.2 2003/11/30 14:27:29 derry Exp $
+  Last changed:    $Date: 2003/11/30 14:27:29 $
+  Revision number: $Revision: 1.2 $
+
+  CVS revision numbers do not correspond to FreeS/WAN release numbers.
+  -->
+</head>
+<BODY>
+<H1><A name="quick_guide">Quickstart Guide to Opportunistic Encryption</A></H1>
+
+<H2><A name="opp.setup">Purpose</A></H2>
+
+<P>This page will get you started using Linux FreeS/WAN with opportunistic
+ encryption (OE). OE enables you to set up IPsec tunnels
+ to a site without co-ordinating with the site administrator,
+ and without hand configuring each tunnel.
+ If enough sites support OE, a &quot;FAX effect&quot; occurs, and
+ many of us can communicate without eavesdroppers.</P>
+
+<P>Opportunistic encryption is new technology and we are still working
+out some fine points. Please see 
+<A HREF="opportunism.known-issues">this list</A> of known issues.
+</P>
+
+
+<H2><A name="opp.dns">Requirements</A></H2>
+
+<P>To set up opportunistic encryption, you will need:</P>
+<UL>
+<LI>to be running Linux</LI>
+<LI>to install Linux FreeS/WAN 1.98b or better</LI>
+<LI>either control over your reverse DNS (for full opportunism) or 
+the ability to write to some forward domain (for initiator-only)</LI>
+<LI>(for full opportunism) a static IP</LI>
+</UL>
+
+<P>Note: Only Linux FreeS/WAN supports opportunistic encryption.</P>
+
+<H2><A name="easy.install">RPM installation</A></H2>
+
+<P>Our instructions are for a recent Red Hat with a stock Red Hat kernel.
+For other ways to install, see our 
+<A href="install.html#install">install document</A>.</P>
+
+<H3>Download RPMs</H3>
+
+<P>Check your kernel version with</P>
+<PRE>   uname -a</PRE>
+
+<P>From our
+<A href="ftp://ftp.xs4all.nl/pub/crypto/freeswan/RedHat-RPMs">FTP site</A>, 
+get the kernel module which matches your kernel. For example:</P>
+<PRE>    freeswan-module-1.99_2.4.18_3-0.i386.rpm</PRE>
+<P>Note: Our kernel modules 
+<B>will only work on the Red Hat kernel they were built for</B>,
+since they are very sensitive to small changes in the kernel.</P>
+
+<P>Get FreeS/WAN utilities to match. For example:</P>
+<PRE>    freeswan-1.99_2.4.18_3-0.i386.rpm</PRE>
+
+
+
+<H3>Check signatures</H3>
+
+<P>While you're at our ftp site, grab the RPM signing key</P>
+<PRE>    freeswan-rpmsign.asc</PRE>
+
+<P>If you're running RedHat 8.x, import this key into the RPM database:</P>
+<PRE>    rpm --import freeswan-rpmsign.asc</PRE>
+
+<P>For RedHat 7.x systems, you'll need to add it to your PGP keyring:</P>
+<PRE>    pgp -ka freeswan-rpmsign.asc</PRE>
+
+<P>Check the signatures on both RPMs using:</P>
+<PRE>    rpm --checksig freeswan-module-1.99_2.4.18_3-0.i386.rpm
+    rpm --checksig freeswan-1.99_2.4.18_3-0.i386.rpm</PRE>
+
+<P>You should see:</P>
+<PRE>    freeswan-module-1.99_2.4.18_3-0.i386.rpm: pgp md5 OK
+    freeswan-1.99_2.4.18_3-0.i386.rpm: pgp md5 OK</PRE>
+
+
+<H3>Install the RPMs</H3>
+
+<P>Become root:</P>
+<PRE>    su</PRE>
+
+<P>Install your RPMs with:<P>
+<PRE>    rpm -ivh freeswan-module-1.99_2.4.18_3-0.i386.rpm</PRE>
+<PRE>    rpm -ivh freeswan-1.99_2.4.18_3-0.i386.rpm</PRE>
+
+<P>Then, start FreeS/WAN:</P>
+<PRE>    service ipsec start</PRE>
+
+
+
+<H3><A name="testinstall">Test</A></H3>
+<P>To check that you have a successful install, run:</P>
+<PRE>    ipsec verify</PRE>
+
+<P>You should see at least:</P>
+<PRE>
+    Checking your system to see if IPsec got installed and started correctly
+    Version check and ipsec on-path                             [OK]
+    Checking for KLIPS support in kernel                        [OK]
+    Checking for RSA private key (/etc/ipsec.secrets)           [OK]
+    Checking that pluto is running                              [OK]
+</PRE>
+
+<P>If any of these first four checks fails, see our 
+<A href="trouble.html#install.check">troubleshooting guide</A>.
+</P>
+
+<H2><A name="opp.setups.list">Our Opportunistic Setups</A></H2>
+<H3>Full or partial opportunism?</H3>
+<P>Determine the fullest form of opportunism your system can support.</P>
+<UL>
+<LI>For <A HREF="#opp.incoming">full opportunism</A>, you'll need a static
+IP and and either control over your reverse DNS or an ISP
+that can add the required TXT + KEY Records for you.</LI>
+<LI>If you have a dynamic IP, and/or write access to forward DNS only,
+you can do <A HREF="#opp.client">initiate-only opportunism</A></LI>
+<LI>To protect traffic bound for real IPs behind your gateway, use
+<A HREF="#opp.gate">this form of full opportunism</A>.</LI>
+</UL>
+
+<H2><A name="opp.client">Initiate-only setup</A></H2>
+
+<H3>Restrictions</H3>
+<P>When you set yourself up as an opportunistic initiator:</P>
+<UL>
+<LI>there will be <STRONG> no incoming connection requests</STRONG>; you
+ can initiate all the IPsec connections you need.</LI>
+<LI><STRONG>only one machine is visible</STRONG> on your end of the
+ connection.</LI>
+<LI>At one point, we thought that you could also have NATted nodes behind
+this machine, but this doesn't seem to work with iptables rules. Feel free
+to prove us wrong.</LI>
+</UL>
+
+
+<H3><A name="dns.txt.client">Put your public key in DNS</A></H3>
+
+<H4>Find a domain you can use</H4>
+<P>Find a DNS forward domain where you can publish your key. 
+You'll need access to the DNS zone files for that domain.  For the following 
+examples, we'll use "example.com".</P>
+<P>Dynamic IP users take note: the domain where you place your key
+ need not be associated with the IP address for your system, 
+ or even with your system's usual hostname.</P>
+
+<H4>Choose your ID</H4>
+<P>Choose a name within that domain which you will use to identify your 
+ machine. Normally, but not always, your ID is the same as your machine 
+name. Our machine is called xy, and we'll choose the corresponding FQDN 
+xy.example.com.</P>
+
+<H4>Create a KEY record</H4>
+
+<P>Generate a DNS KEY record containing your system's public key
+ with the command:</P>
+<PRE>    ipsec showhostkey</PRE>
+<P>This command takes the contents of
+/etc/ipsec.secrets and reformats it into something usable by ISC's BIND.
+ The result should look like this (with the key data trimmed down for
+ clarity):</P>
+<PRE>    ; RSA 2048 bits   xy.example.com   Sat Apr 15 13:53:22 2000
+    xy.example.com.   IN   KEY   0x4200 4 1 AQOF8tZ2...+buFuFn/</PRE>
+
+<P>Change xy.example.com to your FQDN.</P>
+
+<H4>Publish the KEY</H4>
+
+<P>Insert the record into DNS, or have a system adminstrator do it
+for you. It may take up to 48 hours for the record to propagate, but 
+it's usually much quicker.</P>
+
+<H3>Test that your key has been published</H3>
+
+<H4>ipsec verify</H4>
+
+<P>Check your DNS work</P>
+
+<PRE>    ipsec verify</PRE>
+
+<P>You ought to see something like:</P>
+
+<PRE>    Looking for forward key for xy.example.com      [OK]
+</PRE>
+
+<P>For this type of opportunism, only the forward key test is relevant.</P>
+
+<H4>...or with a direct nameserver query</H4>
+
+<P>If your FreeS/WAN is older than 1.98b, simply query your 
+nameserver (here, 1.2.3.254):
+</P>
+<PRE>    dig @1.2.3.254 xy.example.com KEY</PRE>
+
+<P>You should see (with the key again shortened):</P>
+<PRE>    ;; ANSWER SECTION:
+    xy.example.com.		6835	IN	KEY	16896 4 1 AQO6DJc6LIwGq82ehvIGLKn4S...
+</PRE>
+
+<H3><A name="config.opp.client">Configure for Opportunism</A></H3>
+
+<P>In <VAR>/etc/ipsec.conf</VAR> find <VAR>conn me-to-anyone</VAR>
+
+<P>Make it look like:</P>
+<PRE>conn me-to-anyone
+        left=%defaultroute        
+        leftrsasigkey=%dnsondemand
+        right=%opportunistic      
+        rightrsasigkey=%dnsondemand     
+        keylife=1h
+        rekey=no                  
+        leftid=@xy.example.com   # put your ID here 
+        auto=route               # be sure this is enabled</PRE>
+
+<P>Put your FQDN ID, preceded by an @sign, in place of 
+<VAR>@xy.example.com</VAR>. Be sure <VAR>auto=route</VAR> is enabled.</VAR>
+
+<P>Restart FreeS/WAN so that the new configuration takes effect:</P>
+<PRE>    service ipsec restart</PRE>
+
+<P><A href="quickstart-configs.html#qc.opp.client">More information</A>.</P>
+
+<H3>Test</H3>
+<P>That's it! <A HREF=#opp.test>Test your connection</H4>.
+
+<H2><A name="opp.incoming">Full Opportunism</A></H2>
+
+<P>This allows you to initiate and receive opportunistic
+connections from one machine.</P>
+
+<H3><A name="incoming.opp.dns">Put KEY and TXT records in DNS</A></H3>
+
+<H4>Your KEY record</H4>
+
+<P>Generate a KEY record:</P>
+<PRE>    ipsec showhostkey</PRE>
+
+<P>This command takes the contents of
+/etc/ipsec.secrets and reformats it into something usable by ISC's BIND.
+It will yield (with key data trimmed for clarity):</P>
+<PRE>    ; RSA 2048 bits   xy.example.com   Sat Apr 15 13:53:22 2000
+  xy.example.com   IN   KEY   0x4200 4 1 AQOF8tZ2...+buFuFn/</PRE>
+
+<P>Edit it to insert the IP address in reverse map format.
+ In our example, 1.2.3.4 becomes 4.3.2.1.in-addr.arpa. The result:</P>
+
+<PRE>    ; RSA 2048 bits   xy.example.com   Sat Apr 15 13:53:22 2000
+  4.3.2.1.in-addr.arpa.   IN   KEY   0x4200 4 1 AQOF8tZ2...+buFuFn/</PRE>
+
+<H4>Your TXT record</H4>
+
+<P>This lets others know that this 
+ machine can receive opportunistic connections. It also lets them know
+ that the machine is authorized to encrypt on its own behalf.</P>
+
+<P>Use the command:</P>
+<PRE>    ipsec showhostkey --txt 1.2.3.4</PRE>
+<P>where you replace 1.2.3.4 with your public IP.</P>
+
+<P>The record (with key shortened) looks like:</P>
+<PRE>    ; RSA 2048 bits  xy.example.com   Sat Apr 15 13:53:22 2000
+    IN TXT  &quot;X-IPsec-Server(10)=1.2.3.4&quot; &quot; AQOF8tZ2...+buFuFn/&quot;</PRE>
+
+
+<H4>Publish both records</H4>
+
+<P>Send these records to your ISP, to be published in your IP's reverse map.
+It may take up to 48 hours for these to propagate, but usually takes
+much less time.</P>
+
+
+<H3>Test your DNS records</H3>
+
+<P>Test that your KEY has been published by querying your nameserver 
+(here, 1.2.3.254):</P>
+<PRE>    dig @1.2.3.254 4.3.2.1.in-addr.arpa. KEY</PRE>
+
+<P>You should see (with the key shortened for clarity):</P>
+<PRE>    ;; ANSWER SECTION:
+    xy.example.com.		6835	IN	KEY	16896 4 1 AQO6DJc6LIwGq82ehvIGLKn4S...
+</PRE>
+
+<P>Next, test that your TXT record is visible:
+<PRE>    dig @1.2.3.254 4.3.2.1.in-addr.arpa. TXT</PRE>
+
+<P>You should see (with the key shortened for clarity):</P>
+<PRE>    ;; ANSWER SECTION:
+    xy.example.com.		6835	IN	KEY	16896 4 1 AQO6DJc6LIwGq82ehvIGLKn4S...
+</PRE>
+
+
+<H3>Configure</H3>
+
+<P>Find <VAR>conn me-to-anyone</VAR> in <VAR>/etc/ipsec.conf</VAR>:
+
+<P>Adjust it to look like:</P>
+<PRE>conn me-to-anyone
+        left=%defaultroute
+        leftrsasigkey=%dnsondemand
+        right=%opportunistic
+        rightrsasigkey=%dnsondemand
+        keylife=1h
+        rekey=no
+        auto=route               # be sure this is enabled
+                                 # Note there is NO leftid= </PRE>
+
+<P>If you've previously configured for initiator-only opportunism, remove 
+<VAR>leftid=</VAR></P>
+<PRE>    #leftid=xy.example.com</PRE>
+
+<P>Restart FreeS/WAN so that it reads the new settings:</P>
+<PRE>    service ipsec restart</PRE>
+
+<P>If you are running a default install of RedHat 8.0, take note: you will
+need to alter your iptables rule setup to allow IPSec traffic through your
+firewall. See <A HREF="firewall.html#simple.rules">our firewall document</A>
+for sample rules you can add to /etc/sysconfig/iptables to permit this.</P>
+
+<A HREF="quickstart-configs.html#qc.incoming.opp.conf">More information.</A>
+
+<H3>Test</H3>
+
+<P>That's it. Now, <A HREF=#opp.test>test your connection</H4>.
+
+<!--
+<H4><A name="incoming.opp.firewall">Firewalling incoming opportunistic
+ connections</A></H4>
+<P>There is a particular security concern when you allow incoming 
+ opportunism.</P>
+<P>Incoming opportunistic packets enter your machine via an IPSec tunnel. 
+ That is, they all appear as ESP (protocol 50) packets, concealing whatever 
+ port and protocol characteristics the packet within the tunnel has. Contained
+ in the tunnel as they pass through <VAR>ppp0</VAR> or <VAR>eth0</VAR>, 
+ these packets can bypass your usual firewall rules on these interfaces.</P>
+<P>Since you will be exchanging opportunistic packets with peers who
+ are not familiar to you, you will want to firewall your <VAR>ipsec</VAR> 
+ interfaces the way you would any publicly accessible interface.</P>
+<P>A simple way to do this is to create one iptables(8) table with 
+ all your filtering rules for incoming packets, and apply the entire table to 
+ all public interfaces, including <VAR>ipsec</VAR> interfaces.</P>
+<A HREF="quickstart-firewall.html#quick.firewall">Here's more on firewalling 
+ with opportunistic encryption.</A>
+-->
+
+<H2><A name="opp.gate">An Opportunistic Gateway</A></H2>
+
+<H3>Start from full opportunism</H3>
+
+Do as <A HREF="opp.incoming">above</A>, with one difference -- collect
+all the DNS records you'll need before contacting your ISP.
+
+
+<H3>TXT records for each protected machine</H3>
+
+<P>You need these so that your Opportunistic peers can:
+<UL>
+<LI>discover the gateway's address, knowing only the IP address
+ that packets are bound for</LI>
+<LI>verify that the gateway is authorised to encrypt for that endpoint</LI>
+</UL>
+
+<P>On the gateway, generate a TXT record with:
+<PRE>    ipsec showhostkey --txt 1.2.3.4</PRE>
+<P>Use your gateway address in place of 1.2.3.4</P>
+
+<P>You should see (keys are trimmed for clarity throughout our example):</P>
+<PRE>    ; RSA 2048 bits  gateway.example.com   Sat Apr 15 13:53:22 2000
+    IN TXT  &quot;X-IPsec-Server(10)=1.2.3.4&quot; &quot; AQOF8tZ2...+buFuFn/&quot;</PRE>
+
+<P><B>This MUST BE the same key as in your gateway's KEY record, or nothing
+will work.</B><P>
+
+<P>In a text file, make one copy of this TXT record for each subnet
+  node:</P>
+<PRE>    ; RSA 2048 bits  gateway.example.com   Sat Apr 15 13:53:22 2000
+    IN TXT  &quot;X-IPsec-Server(10)=1.2.3.4&quot; &quot; AQOF8tZ2...+buFuFn/&quot;
+
+    ; RSA 2048 bits  gateway.example.com   Sat Apr 15 13:53:22 2000
+    IN TXT  &quot;X-IPsec-Server(10)=1.2.3.4&quot; &quot; AQOF8tZ2...+buFuFn/&quot;
+
+    ; RSA 2048 bits  gateway.example.com   Sat Apr 15 13:53:22 2000
+    IN TXT  &quot;X-IPsec-Server(10)=1.2.3.4&quot; &quot; AQOF8tZ2...+buFuFn/&quot;</PRE>
+
+<P>Above each entry, insert a line like this:</P>
+<PRE>    1.42.42.42.in-addr.arpa. IN PTR arthur.example.com</PRE>
+
+<P>It must include:</P>
+<UL>
+<LI>The subnet node's address in reverse map format. For example, 42.42.42.1
+becomes <VAR>1.42.42.42.in-addr.arpa.</VAR>  Note the final period.</LI>
+<LI><VAR>IN PTR</VAR></LI>
+<LI>The node's name, ie. <VAR>arthur.example.com</VAR></LI>
+</UL>
+
+<P>The result will be a file full of TXT records, like this:</P>
+<PRE>    1.42.42.42.in-addr.arpa. IN PTR arthur.example.com 
+    ; RSA 2048 bits  gateway.example.com   Sat Apr 15 13:53:22 2000
+    IN TXT  &quot;X-IPsec-Server(10)=1.2.3.4&quot; &quot; AQOF8tZ2...+buFuFn/&quot;
+
+    2.42.42.42.in-addr.arpa. IN PTR ford.example.com 
+    ; RSA 2048 bits  gateway.example.com   Sat Apr 15 13:53:22 2000
+    IN TXT  &quot;X-IPsec-Server(10)=1.2.3.4&quot; &quot; AQOF8tZ2...+buFuFn/&quot;
+
+    3.42.42.42.in-addr.arpa. IN PTR trillian.example.com 
+    ; RSA 2048 bits  gateway.example.com   Sat Apr 15 13:53:22 2000
+    IN TXT  &quot;X-IPsec-Server(10)=1.2.3.4&quot; &quot; AQOF8tZ2...+buFuFn/&quot;</PRE>
+
+
+<H3>Publish your records</H3>
+
+<P>Ask your ISP to publish these records in your reverse map.</P>
+
+<H3>...and test them</H3>
+
+<P>Check a couple of records with commands like this one:</P>
+<PRE>    dig @1.2.3.254 1.42.42.42.in-addr.arpa. TXT</PRE>
+<P>Replace 1.2.3.254 with your nameserver's IP, and 
+ 1.42.42.42.in-addr.arpa. with the reverse-format IP of one of your subnet 
+ nodes.</P>
+
+<P>You should see:</P>
+
+<PRE>ANSWER SECTION:
+1.42.42.42.in-addr.arpa. 180	IN	TXT	&quot;X-IPsec-Server(10)=1.2.3.4 &quot; AQOF8tZ2...+buFuFn/&quot;</PRE>
+
+
+<H3><A name="gate.opp.conf">ipsec.conf(5) for an opportunistic gateway</A>
+</H3>
+
+<P>In <VAR>/etc/ipsec.conf</VAR> place this before <VAR>me-to-anyone</VAR>:</P>
+<PRE>conn subnet-to-anyone
+       also=me-to-anyone
+       leftsubnet=42.42.42.0/24</PRE>
+
+<A HREF="quickstart-configs.html#qc.gate.opp.conf">More detail.</A>
+
+<P>Once again, restart FreeS/WAN to complete the configuration changes:</P>
+<PRE>    service ipsec restart</PRE>
+
+
+<H3>Test</H3>
+
+<P>Proceed to the next section and test away.</P>
+
+
+<H2><A NAME="opp.test">Testing opportunistic connections</A></H2>
+
+
+<P>The quick method is:<P>
+<PRE>   links oetest.freeswan.org</PRE>
+<P>A thought for the paranoid -- the feds are probably watching that site.
+You should see:</P>
+<PRE>
+   You  seem  to  be  connecting  from:  1.2.3.4 which DNS says is:
+   xy.example.com
+     _________________________________________________________________
+
+   Status E-route
+   OE    enabled    16    192.139.46.73/32    ->    1.2.3.4/32   =>
+   tun0x2097@1.2.3.5
+   OE    enabled    176    192.139.46.77/32    ->   1.2.3.4/32   =>
+   tun0x208a@1.2.3.5
+</PRE>
+
+<P>If you do not see this, see <A HREF="faq.html#oppofaq">this section
+of the FAQ.</a></P>
+
+<P>Congratulations! Your machine will now encrypt whenever it can.</P>
+
+<H2>Now what?</H2>
+
+<P>If you haven't already, read up on our known issues, below. 
+Or, proceed to make some <A HREF="config.html">vpn connections</A>.
+</P>
+
+</BODY>
+</HTML>

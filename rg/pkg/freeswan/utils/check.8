@@ -1,0 +1,23 @@
+.TH IPSEC_CHECK 8 "8 June 2002"
+.\" RCSID $Id: check.8,v 1.2 2003/11/30 14:44:56 derry Exp $
+.SH NAME
+ipsec check \- see if FreeSWAN has been installed correctly
+.SH SYNOPSIS
+.B ipsec
+.B check
+.SH DESCRIPTION
+.I check
+examines a system for a number of common system faults: KLIPS not
+loading, no secrets file generated, and pluto not running. In addition,
+it looks for appropriate KEY records in forward and reverse DNS for 
+IP addresses of the host.
+.SH FILES
+.nf
+/proc/net/ipsec_eroute
+/etc/ipsec.secrets
+.fi
+.SH HISTORY
+Written for the Linux FreeS/WAN project
+<http://www.freeswan.org>
+by Michael Richardson.
+.SH BUGS

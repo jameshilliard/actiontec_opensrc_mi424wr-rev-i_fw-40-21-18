@@ -1,0 +1,262 @@
+#! /bin/sh
+#
+# Perform a standard set of test on the Kaffe system.  This script should
+# be built up as we add more test and so, hopefully, avoid re-releasing
+# bugs which have been fixed.
+#
+# Copyright (c) 1996-2000
+#	Transvirtual Technologies, Inc.  All rights reserved.
+#
+# See the file "license.terms" for information on usage and redistribution 
+# of this file. 
+
+KAFFEHOME="@prefix@"
+export KAFFEHOME
+
+: ${JAVA=$KAFFEHOME/bin/kaffe} ${SRCDIR=@srcdir@} ${PATHSEP='@PATHSEP@'}
+: ${JASMIN=@JASMIN@}
+# If you want to use jikes as default compiler for the regression tests uncomment the line below.
+test -z "@JIKES@" || : ${JIKES="@JIKES@ -nowarn -bootclasspath @top_builddir@/libraries/javalib/rt.jar"}
+: ${JAVAC=${JIKES-"$JAVA -ss 512k -noverify at.dms.kjc.Main"}" -classpath \".${PATHSEP}@GNU_CRYPTO_JAR@${PATHSEP}@JAVAX_SECURITY_JAR@${PATHSEP}${SRCDIR}${PATHSEP}compile_time${PATHSEP}${CLASSPATH}\""}
+: ${TIMEOUT=300}
+: ${HARDTIMEOUT=5}
+overallerror=0
+error=0
+
+if test -n "${VERBOSE+set}"; then
+  VERBOSE=echo
+else
+  VERBOSE=:
+fi
+
+# Don't let these variables mess up the order of `sort'
+# if test -n "${LC_ALL+set}"; then
+  LC_ALL=C; export LC_ALL
+# fi
+# if test -n "${LANG+set}"; then
+  LANG=C; export LANG
+# fi
+
+$VERBOSE $0 ${1+"$@"}
+
+mybasename () {
+    echo "$1" | sed 's%.*/%%'
+}
+
+compile()
+{
+	echo ERROR > ${RESULT}
+	JAVAC_FLAGS=`cat ${1+"$@"} | sed 's/\/\/ javac flags://p;d'`
+	$VERBOSE ${JAVAC} -d . ${JAVAC_FLAGS} ${1+"$@"}
+	eval ${JAVAC} -d . ${JAVAC_FLAGS} ${1+"$@"} > ${RESULT} 2>&1
+	if echo " $JAVAC_FLAGS" | grep " -nowarn" >/dev/null; then
+		OUTPUT=`cat ${RESULT} | sed '/warning/d; /caution/d; /deprecated/d'`
+	else
+		OUTPUT=`cat ${RESULT} | sed '/deprecated/d;'`
+	fi
+	if test "${OUTPUT}" != "" ; then
+		echo "error compiling:"
+		cat ${RESULT}
+		error=1
+	fi
+	rm -f ${RESULT}
+}
+
+#
+# Run a test, optionally sorted
+#
+run()
+{
+	RESULT="$1.fail"
+	TMPRESULT="$1.tmp"
+	# Use security provider from source code
+#	SECURITY_PROVIDER_URL=-Dgnu.classpath.home.url=file://@abssrcdir@/libraries/clib/
+	SECURITY_PROVIDER_URL="-Dgnu.classpath.home.url=file://@abssrcdir@/libraries/clib/"
+	$VERBOSE $JAVA $SECURITY_PROVIDER_URL ${JAVA_TEST_FLAGS} $*
+	env CLASSPATH=${CLASSPATH}${PATHSEP}run_time $JAVA $SECURITY_PROVIDER_URL ${JAVA_TEST_FLAGS} $* <&0 >$TMPRESULT 2>&1 &
+	error=$?
+	pid=$!
+	$VERBOSE "Background pid: $pid"
+	(sleep $TIMEOUT; echo "Timeout - $TIMEOUT seconds - killed" >> $TMPRESULT; kill $pid; sleep $HARDTIMEOUT; echo "Still alive $HARDTIMEOUT seconds after SIGTERM - SIGKILL sent)" >> $TMPRESULT; kill -KILL $pid) &
+	killerpid=$!
+	$VERBOSE "Killer process pid: $killerpid with timeout of $TIMEOUT seconds"
+	wait $pid
+	kill $killerpid
+	if test "x$SORT" = "xyes"; then
+	    # grep will take care of stripping \r from DOS-like output
+	    sort $TMPRESULT | grep '.*' > $RESULT
+	else
+	    # grep will take care of stripping \r from DOS-like output
+	    grep '.*' $TMPRESULT > "$RESULT"
+	fi
+	if test "x$NO_LINE_NUMBERS" = "xyes"; then
+	    mv "$RESULT" "$TMPRESULT"
+	    sed 's/\.java\:[0123456789]*/\.java\:XXXX/g' $TMPRESULT > $RESULT
+	fi
+	if test "x$NO_STACK_TRACE" = "xyes"; then
+	    mv "$RESULT" "$TMPRESULT"
+	    sed '/at .*\.java/d' $TMPRESULT > $RESULT
+	fi
+	rm -f $TMPRESULT
+	if test ! -f "$1.out"; then
+		if test "$error" = 0 || test "$error" = 77; then
+		    mv "$RESULT" "$1.out"
+		    $VERBOSE output preserved in "$1.out"
+		else
+		    $VERBOSE output preserved in "$1.fail"
+		fi
+	elif cmp -s "$RESULT" "$1.out" ; then
+	        $VERBOSE got expected output in "$1.out"
+		rm -f "$RESULT"
+	else
+	        $VERBOSE output differs from "$1.out", saving in "$1.fail"
+		if test "$error" != 77; then
+		    error=1
+		fi
+	fi
+	if test -f core; then
+		$VERBOSE saving core in "$1.core"
+		mv core "$1.core"
+	fi
+}
+
+# Execution options
+#
+# Sources: <source1> [<source2> ...]
+# Specify another source file to compiled with this test.
+#
+# Unsafe
+# Add the CLASSPATH value to the BOOTCLASSPATH so the test can access kaffe
+# internal classes.
+#
+# Skip Run
+# Skip this test.
+#
+# Sort Output
+# Sort the output of the test.
+#
+# Expected Output: <expected test output>
+# A multi-line comment that contains the expected output of the test.
+#
+# java args: <class name> [optional arguments]
+# Specify the arguments to use when running the 'java' command.
+runtest()
+{
+	error=0
+	basename=`mybasename "$1" | sed 's/\.java$//'`
+	RESULT=$basename.fail
+	JAVA_SRCS=${1+"$@"}
+	EXTRA_SRCS=`sed 's/\/\/ [Ss]ources://p;d' < "$1"`
+	for SRC in $EXTRA_SRCS; do
+	    SRC=`dirname "$1"`/$SRC
+	    JAVA_SRCS="$JAVA_SRCS $SRC"
+	done
+	$VERBOSE JAVA_SRCS="$JAVA_SRCS"
+	compile $JAVA_SRCS
+	if grep '// [Uu]nsafe' < "$1" > /dev/null; then
+	    BOOTCLASSPATH="${BOOTCLASSPATH}${PATHSEP}${CLASSPATH}"
+	    CLASSPATH=""
+	fi
+	if grep '// [Ss]kip [Rr]un' < "$1" > /dev/null; then
+	    error=0
+	elif test $error = 0 ; then
+	    if grep '// [Ss]ort [Oo]utput' < "$1" >/dev/null; then
+		SORT="yes"
+	    else
+		SORT="no"
+	    fi
+	    if grep '// [Nn]o [Ll]ine [Nn]umbers' < "$1" > /dev/null; then
+		NO_LINE_NUMBERS="yes"
+	    else
+		NO_LINE_NUMBERS="no"
+	    fi
+	    if grep '// [Nn]o [Ss]tack [Tt]race' < "$1" > /dev/null; then
+		NO_STACK_TRACE="yes"
+	    else
+		NO_STACK_TRACE="no"
+	    fi
+	    sed '/^\/\* [Ee]xpected [Oo]utput:/,/\*\//p; d' < "$1" |
+	      sed '1d;$d' > $basename.out
+	    cmp -s $basename.out /dev/null && rm -f $basename.out
+	    JAVA_FLAGS=`sed 's/\/\/ java args://p;d' < "$1"`
+	    test -n "$JAVA_FLAGS" || JAVA_FLAGS='$basename'
+	    eval run $JAVA_FLAGS
+	fi
+	if test $error != 0 && test $overallerror != 1; then
+	    overallerror=$error
+	fi
+}
+
+runjasmintest()
+{
+	error=0
+	basename=`mybasename "$1" | sed 's/\.j$//'`
+	RESULT=$basename.fail
+	JAVA_SRCS=${1+"$@"}
+	EXTRA_SRCS=`sed 's/\/\/ [Ss]ources://p;d' < "$1"`
+	for SRC in $EXTRA_SRCS; do
+	    SRC=`dirname "$1"`/$SRC
+	    JAVA_SRCS="$JAVA_SRCS $SRC"
+	done
+	$VERBOSE JAVA_SRCS="$JAVA_SRCS"
+	JAVAC=$JASMIN
+	compile $JAVA_SRCS
+	if grep '; [Ss]kip [Rr]un' < "$1" > /dev/null; then
+	    error=0
+	elif test "$error" = 0 ; then
+	    if grep '; [Ss]ort [Oo]utput' < "$1" >/dev/null; then
+		SORT="yes"
+	    else
+		SORT="no"
+	    fi
+	    if grep '; [Nn]o [Ll]ine [Nn]umbers' < "$1" > /dev/null; then
+		NO_LINE_NUMBERS="yes"
+	    else
+		NO_LINE_NUMBERS="no"
+	    fi
+	    if grep '; [Nn]o [Ss]tack [Tt]race' < "$1" > /dev/null; then
+		NO_STACK_TRACE="yes"
+	    else
+		NO_STACK_TRACE="no"
+	    fi
+	    sed '/^; [Ee]xpected [Oo]utput:/,//p; d' < "$1" |
+		sed '1d' | sed '/^$/q' | sed '/^$/d' |
+		sed 's/^; //g;s/^;//g' > $basename.out
+	    cmp -s $basename.out /dev/null && rm -f $basename.out
+	    JAVA_FLAGS=`sed 's/; java args://p;d' < "$1"`
+	    test -n "$JAVA_FLAGS" || JAVA_FLAGS='$basename'
+	    eval run $JAVA_FLAGS
+	fi
+	if test "$error" != 0 && test "$overallerror" != 1; then
+	    overallerror=$error
+	fi
+}
+
+ignoretest()
+{
+	error=0
+	echo "$1 ... ignored" 1>&2
+}
+
+for src in ${1+"$@"}; do
+    $VERBOSE testing $src
+    case "$src" in
+    *.class.save)
+	cp "$src" `mybasename "$src" | sed 's/\.save$//'`
+	run `mybasename "$src" | sed 's/\.class\.save$//'`
+	rm -f `mybasename "$src" | sed 's/\.save$//'`
+	;;
+    *.class)
+	run `mybasename "$src" | sed 's/\.class$//'`
+	;;
+    *.java)
+	runtest "$src"
+	;;
+    *)
+	run "$src"
+	;;
+    esac
+done
+
+# All done okay
+exit $overallerror

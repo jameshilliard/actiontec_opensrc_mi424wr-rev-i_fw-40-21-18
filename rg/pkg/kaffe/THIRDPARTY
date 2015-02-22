@@ -1,0 +1,807 @@
+Kaffe uses code from other free software projects. Only code licensed
+under a GPL compatible license can be merged in. You can find the
+licenses of third party sources either in their respective sources, or
+in license*.terms files in the top directory, or here.
+
+* javax.sound 
+
+This code has been merged in from tritonus.org. The tritonus project
+offers many other codecs beside those shipped with kaffe, most notably
+GSM, MP3 and ogg support. Kaffe tracks this project's CVS HEAD.
+
+Thanks to Matthias Pfisterer from the tritonus project, who was very
+helpful during the merge.
+
+Tritonus is distrubuted under the GNU Library General Public License. 
+See license-lesser.terms for details.
+
+More information on tritonus is available from http://tritonus.org.
+
+* gjdoc, javap, gnu.classpath.tools
+
+This code has been merged in from the GNU Classpath tools project.
+Kaffe is tracking this project's CVS HEAD.
+
+The GNU Classpath tools project is distributed under the GNU General 
+Public License Version 2.
+
+See license.terms for the text of the GNU General Public License 
+Version 2.
+
+More information on gjdoc and cp-tools can be found at
+http://www.gnu.org/software/cp-tools/.
+
+* gnu.bytecode
+
+This code has been merged in from Kawa. Kaffe is tracking this 
+project's CVS HEAD.
+
+The gnu.bytecode classes are licensed under the GNU General Public 
+License Version 2 or any later version. The exact copyright notice 
+is:
+
+ "The Java classes (with related files and documentation) in these packages
+  are copyright (C) 1996-2001, 2002  Per Bothner.
+
+  These classes are distributed in the hope that they will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License [included below] for more details.
+
+  These classes are free software.  You can use and re-distribute a class
+  without restriction (in source or binary form) as long as you use a
+  version has not been modified in any way from a version released
+  by Per Bothner, Cygnus Solutions, or the Free Software Foundation.
+  (See the Kawa manual for more information.)
+  You may make and distribute a modified version, provided you follow
+  the terms of the GNU General Public License; either version 2,
+  or (at your option) any later version.  (Version 2 is included below.)
+
+  If you have questions, contact Per Bothner,
+  18651 Cynthia Avenue, Cupertino CA 95014, USA.
+  By email per@bothner.com."
+
+See license.terms for the text of the GNU General Public License
+Version 2.
+
+More information on Kawa can be found at
+http://www.gnu.org/software/kawa/.
+
+* gnu.crypto, javax.crypto, javax.security.auth, javax.security.sasl,
+  org.ietf.jgss
+
+This code has been merged in from GNU Crypto.  Kaffe tracks this
+projects' CVS HEAD.
+
+Licensed under the GNU General Public License with a special exception:
+
+  "Linking this library statically or dynamically with other modules is
+  making a combined work based on this library.  Thus, the terms and
+  conditions of the GNU General Public License cover the whole
+  combination.
+
+  As a special exception, the copyright holders of this library give
+  you permission to link this library with independent modules to
+  produce an executable, regardless of the license terms of these
+  independent modules, and to copy and distribute the resulting
+  executable under terms of your choice, provided that you also meet,
+  for each linked independent module, the terms and conditions of the
+  license of that module.  An independent module is a module which is
+  not derived from or based on this library.  If you modify this
+  library, you may extend this exception to your version of the
+  library, but you are not obligated to do so.  If you do not wish to
+  do so, delete this exception statement from your version."
+
+See license.terms for details of the GNU GPL.
+
+More information on GNU Crypto is available from 
+http://www.gnu.org/software/gnu-crypto/.
+
+* com.jcraft.jzlib
+
+This code has been merged in from Jessie. Kaffe tracks this
+projects' CVS HEAD.
+
+JZLib is licensed under a BSD-style license without an advertising 
+clause:
+
+Copyright (c) 2000,2001,2002,2003 ymnk, JCraft,Inc. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+  1. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
+
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in
+     the documentation and/or other materials provided with the distribution.
+
+  3. The names of the authors may not be used to endorse or promote products
+     derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL JCRAFT,
+INC. OR ANY CONTRIBUTORS TO THIS SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+More information on JZLib is available from
+http://www.jcraft.com/jzlib/.
+
+* javax.net, javax.net.ssl, javax.security.cert, org.metastatic
+
+This code has been merged in from Jessie. Kaffe tracks this
+projects' CVS HEAD.
+
+Jessie is distributed under the terms of the GNU General Public
+License. The implementations of javax.net, javax.net.ssl, and 
+javax.security.cert packages are additionally covered by the following
+exception:
+
+    "Linking this library statically or dynamically with other modules
+    is making a combined work based on this library. Thus, the terms 
+    and conditions of the GNU General Public License cover the whole 
+    combination.
+
+    As a special exception, the copyright holders of this library 
+    give you permission to link this library with independent modules 
+    to produce an executable, regardless of the license terms of 
+    these independent modules, and to copy and distribute the 
+    resulting executable under terms of your choice, provided that you 
+    also meet, for each linked independent module, the terms and 
+    conditions of the license of that module. An independent module 
+    is a module which is not derived from or based on this library. If
+    you modify this library, you may extend this exception to your 
+    version of the library, but you are not obligated to do so. If you 
+    do not wish to do so, delete this exception statement from your 
+    version."
+
+More information on Jessie is available from 
+http://www.nongnu.org/jessie/.
+
+* org.ietf.jgss
+
+The documentation of some of the files in org/ietf/jgss/ is derived from
+the text of RFC 2853: Generic Security Service API Version 2: Java Bindings.
+That document is covered under the following license notice:
+
+Copyright (C) The Internet Society (2000).  All Rights Reserved.
+
+This document and translations of it may be copied and furnished to
+others, and derivative works that comment on or otherwise explain it
+or assist in its implementation may be prepared, copied, published and
+distributed, in whole or in part, without restriction of any kind,
+provided that the above copyright notice and this paragraph are
+included on all such copies and derivative works.  However, this
+document itself may not be modified in any way, such as by removing
+the copyright notice or references to the Internet Society or other
+Internet organizations, except as needed for the purpose of developing
+Internet standards in which case the procedures for copyrights defined
+in the Internet Standards process must be followed, or as required to
+translate it into languages other than English.
+
+* org.xbill.DNS
+
+This code has been taken from DNSJava 2.0.0. 
+
+dnsjava is placed under the BSD license.  Several files are also under
+additional licenses; see the individual files for details.
+
+Copyright (c) 1999-2003, Brian Wellington
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+      this list of conditions and the following disclaimer in the documentation
+      and/or other materials provided with the distribution.
+    * Neither the name of the dnsjava project nor the names of its contributors
+      may be used to endorse or promote products derived from this software
+      without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+The license for the additional files is:
+
+org/xbill/DNS/Tokenizer.java:
+
+// Copyright (c) 2003-2004 Brian Wellington (bwelling@xbill.org)
+//
+// Copyright (C) 2003-2004 Nominum, Inc.
+//
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
+//
+// THE SOFTWARE IS PROVIDED "AS IS" AND NOMINUM DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL NOMINUM BE LIABLE FOR ANY
+// SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+// OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+//
+
+* org/xbill/DNS/ZoneTransferIn.java
+
+// Copyright (c) 2003-2004 Brian Wellington (bwelling@xbill.org)
+// Parts of this are derived from lib/dns/xfrin.c from BIND 9; its copyright
+// notice follows.
+
+/*
+ * Copyright (C) 1999-2001  Internet Software Consortium.
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND INTERNET SOFTWARE CONSORTIUM
+ * DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL
+ * INTERNET SOFTWARE CONSORTIUM BE LIABLE FOR ANY SPECIAL, DIRECT,
+ * INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING
+ * FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+ * NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
+ * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
+* gnu.inet
+
+FTP URL Connection handler and utility classes are taken from GNU 
+Inetlib's CVS. 
+
+They are licensed under the terms of the GNU General Public License \
+with the following clarification and special exception:
+
+    "As a special exception, if you link this library with other files 
+    to produce an executable, this library does not by itself cause 
+    the resulting executable to be covered by the GNU General Public 
+    License. This exception does not however invalidate any other 
+    reasons why the executable file might be covered by the GNU General
+    Public License."
+
+* Class library
+
+Parts of kaffe's class library were merged in from GNU
+Classpath. Work continues on replacing kaffe's classes where they
+have been superseeded by GNU Classpath's implementation. Kaffe tracks
+this projects's CVS HEAD.
+
+Thanks to Stuart Ballard and Ito Kazumitsu, who started the merge
+effort, and Mark Wielaard, who provided a lot of useful advice on GNU
+Classpath's implementation.
+
+GNU Classpath is licensed under the terms of the GNU General Public 
+License  with the following clarification and special exception:
+
+   "Linking this library statically or dynamically with other modules 
+  is making a combined work based on this library. Thus, the terms and 
+  conditions of the GNU General Public License cover the whole 
+  combination.
+
+    As a special exception, the copyright holders of this library give 
+  you permission to link this library with independent modules to 
+  produce an executable, regardless of the license terms of these 
+  independent modules, and to copy and distribute the resulting 
+  executable under terms of your choice, provided that you also meet, 
+  for each linked independent module, the terms and conditions of the 
+  license of that module. An independent module is a module which is 
+  not derived from or based on this library. If you modify this library, 
+  you may extend this exception to your version of the library, but you 
+  are not obligated to do so. If you do not wish to do so, delete this 
+  exception statement from your version."
+
+See license.terms for the text of the GNU General Public License.
+
+More information on GNU Classpath is available from 
+http://www.gnu.org/software/classpath/classpath.html.
+
+* libraries/clib/fdlibm
+
+fdlimb contains general algorithms useful for runtimes and compilers to
+support strict double and float mathematical operations.
+
+fdlibm files carry the following notices:
+
+  Copyright (c) 1991 by AT&T.
+
+  Permission to use, copy, modify, and distribute this software for any
+  purpose without fee is hereby granted, provided that this entire notice
+  is included in all copies of any software which is or includes a copy
+  or modification of this software and in all copies of the supporting
+  documentation for such software.
+
+  THIS SOFTWARE IS BEING PROVIDED "AS IS", WITHOUT ANY EXPRESS OR IMPLIED
+  WARRANTY.  IN PARTICULAR, NEITHER THE AUTHOR NOR AT&T MAKES ANY
+  REPRESENTATION OR WARRANTY OF ANY KIND CONCERNING THE MERCHANTABILITY
+  OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
+
+  Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
+
+  Developed at SunPro, a Sun Microsystems, Inc. business.
+  Permission to use, copy, modify, and distribute this
+  software is freely granted, provided that this notice
+  is preserved.
+
+The upstream for fdlibm is libgcj (http://gcc.gnu.org/java/), they sync
+again with the 'real' upstream (http://www.netlib.org/fdlibm/readme).
+
+* Replacement functions for getaddrinfo
+
+This code comes from Motoyuki Kasahara's <m-kasahr@sra.co.jp>
+getaddrinfo() and getnameinfo() implementations for traditional IPv4 
+systems available at http://www.sra.co.jp/people/m-kasahr/getaddrinfo/ 
+under the following GPL-compatible BSD like license:
+
+"Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+3. Neither the name of the project nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE PROJECT AND CONTRIBUTORS ``AS IS'' AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED.  IN NO EVENT SHALL THE PROJECT OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
+
+At the time of writing, Kaffe uses getaddrinfo 1.6.1.
+
+* Replacement functions for inet_ntop and inet_pton.
+
+These functions came from ircii available at 
+http://www.eterna.com.au/ircii/ which is licensed 
+under a BSD-type license without an advertisment clause.
+
+"/*
+ * Copyright (c) 1990 Michael Sandrof.
+ * Copyright (c) 1991, 1992 Troy Rollo.
+ * Copyright (c) 1992-2004 Matthew R. Green.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHORS ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
+
+One module of the source code, scandir.c is copyright (c) 1983
+by the Regents of the University of California, with modifications
+by various contributors.  All rights are reserved by the
+University of California.  
+
+One module of the source code, stringlist.c, is
+Copyright (c) 1994, 1999 The NetBSD Foundation, Inc.
+
+One module of the source code, stringlist.h, is
+Copyright (c) 1994 Christos Zoulas
+
+Two modules of the source code, get{addr,name}info.c, are
+Copyright (C) 1995, 1996, 1997, and 1998 WIDE Project.
+
+Two modules of the source code, inet_{ntop,pton}.c are
+Copyright (c) 1996 by Internet Software Consortium."
+
+The inet_ntop.c and inet_pton.c have the following permissive BSD-type
+license without an advertisement clause:
+
+"/* Copyright (c) 1996 by Internet Software Consortium.
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND INTERNET SOFTWARE CONSORTIUM DISCLAIMS
+ * ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL INTERNET SOFTWARE
+ * CONSORTIUM BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+ * DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+ * PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
+ * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ */"
+
+* Alpha, ARM, ia64, M68k, MIPS, S390 and SPARC atomic compare_and_swap, 
+  Linux sigcontextinfo
+
+Taken from GNU libc 2.3.2, which is licensed under the GNU Lesser General 
+Public License. See file license-lesser.terms for details.
+
+More information on GNU libc is available at 
+http://www.gnu.org/software/libc/libc.html.
+
+* Configure.in tests for isinf, isnan, finite
+
+Taken from Sablotron 1.0, which is dually licensed licensed under MPL 1.1 
+and GPL. It is available from 
+http://www.gingerall.cz/charlie/ga/xml/p_sab.xml.
+
+* m4/valist.m4
+
+Based on code taken from Quakeforge's CVS. Quakeforge is licensed under the
+GNU General Public License. See license.terms for details.
+
+Many thanks to Bill Currie from Quakeforge for the macros.
+
+More information on Quakeforge is available at http://www.quakeforge.net/.
+
+* m4/iconv.m4, m4/lib-ld.m4, m4/lib-link.m4, m4/lib-prefix.m4
+
+Autoconf macros for libiconv. Taken from GNU gettext CVS. Licensed under
+the GNU General Public License with a special exception:
+
+  " As a special exception to the GNU General
+  Public License, this file may be distributed as part of a program
+  that contains a configuration script generated by Autoconf, under
+  the same distribution terms as the rest of that program."
+
+See license.terms for details of the GNU GPL.
+
+More information on GNU gettext is available from 
+http://www.gnu.org/software/gettext/.
+
+* m4/alsa.m4
+
+Autoconf/automake macros taken from ALSA CVS.  Licensed under the GPL/LGPL.
+
+* m4/esd.m4
+
+Autoconf macros taken from GNOME ESounD CVS. Licensed under the GPL/LGPL.
+
+* m4/ax_cflags_gcc_option.m4, m4/ax_cflags_warn_all.m4, m4/acx_pthread.m4,
+  m4/compile_value.m4
+
+Autoconf macros to check for accepted warning and compiler options, pthreads 
+and compile time values. Taken from the Autoconf Macro Archive at 
+http://ac-archive.sourceforge.net/.
+
+Licensed under the GNU General Public License with a special exception:
+
+    Every Autoconf macro presented on this web site is free software; you
+    can redistribute it and/or modify it under the terms of the GNU 
+    General Public License as published by the Free Software Foundation; 
+    either version 2, or (at your option) any later version.
+
+    They are distributed in the hope that they will be useful, but WITHOUT 
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+    FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License 
+    for more details. (You should have received a copy of the GNU General 
+    Public License along with this program; if not, write to the Free 
+    Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 
+    02110-1301, USA.)
+
+    As a special exception, the Free Software Foundation gives unlimited 
+    permission to copy, distribute and modify the configure scripts that 
+    are the output of Autoconf. You need not follow the terms of the GNU 
+    General Public License when using or distributing such scripts, even 
+    though portions of the text of Autoconf appear in them. The GNU 
+    General Public License (GPL) does govern all other use of the material 
+    that constitutes the Autoconf program.
+
+    Certain portions of the Autoconf source text are designed to be copied 
+    (in certain cases, depending on the input) into the output of 
+    Autoconf. We call these the "data" portions. The rest of the Autoconf 
+    source text consists of comments plus executable code that decides 
+    which of the data portions to output in any given case. We call these 
+    comments and executable code the "non-data" portions. Autoconf never 
+    copies any of the non-data portions into its output.
+
+    This special exception to the GPL applies to versions of Autoconf 
+    released by the Free Software Foundation. When you make and distribute 
+    a modified version of Autoconf, you may extend this special exception 
+    to the GPL to apply to your modified version as well, *unless* your 
+    modified version has the potential to copy into its output some of the 
+    text that was the non-data portion of the version that you started 
+    with. (In other words, unless your change moves or copies text from 
+    the non-data portions to the data portions.) If your modification has 
+    such potential, you must delete any notice of this special exception to 
+    the GPL from your modified version.
+
+* m4/solarispthread.m4
+
+Derived from the test in Python 2.3.4 configure.in file by wrapping it in
+AC_DEFUN. Python is available from http://www.python.org. Python 2.3.4 comes 
+under a GPL compatible license:
+
+   PSF LICENSE AGREEMENT FOR PYTHON 2.3
+   ------------------------------------
+
+   1. This LICENSE AGREEMENT is between the Python Software Foundation
+   ("PSF"), and the Individual or Organization ("Licensee") accessing and
+   otherwise using Python 2.3 software in source or binary form and its
+   associated documentation.
+
+   2. Subject to the terms and conditions of this License Agreement, PSF
+   hereby grants Licensee a nonexclusive, royalty-free, world-wide
+   license to reproduce, analyze, test, perform and/or display publicly,
+   prepare derivative works, distribute, and otherwise use Python 2.3
+   alone or in any derivative version, provided, however, that PSF's
+   License Agreement and PSF's notice of copyright, i.e., "Copyright (c)
+   2001, 2002, 2003, 2004 Python Software Foundation; All Rights Reserved" are
+   retained in Python 2.3 alone or in any derivative version prepared by
+   Licensee.
+
+   3. In the event Licensee prepares a derivative work that is based on
+   or incorporates Python 2.3 or any part thereof, and wants to make
+   the derivative work available to others as provided herein, then
+   Licensee hereby agrees to include in any such work a brief summary of
+   the changes made to Python 2.3.
+
+   4. PSF is making Python 2.3 available to Licensee on an "AS IS"
+   basis.  PSF MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
+   IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, PSF MAKES NO AND
+   DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
+   FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON 2.3 WILL NOT
+   INFRINGE ANY THIRD PARTY RIGHTS.
+
+   5. PSF SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON
+   2.3 FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS
+   A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON 2.3,
+   OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
+
+   6. This License Agreement will automatically terminate upon a material
+   breach of its terms and conditions.
+
+   7. Nothing in this License Agreement shall be deemed to create any
+   relationship of agency, partnership, or joint venture between PSF and
+   Licensee.  This License Agreement does not grant permission to use PSF
+   trademarks or trade name in a trademark sense to endorse or promote
+   products or services of Licensee, or any third party.
+
+   8. By copying, installing or otherwise using Python 2.3, Licensee
+   agrees to be bound by the terms and conditions of this License
+   Agreement.
+
+* m4/gmp.m4
+
+This code has been taken from GNU m4. Kaffe is tracking this project's CVS. 
+The code is licensed under GNU General Public License v2 or later.
+
+See license.terms for the text of GNU General Public License v2. 
+
+More information on GNU m4 is available at http://www.gnu.org/software/m4/.
+
+* binreloc
+
+Merged in BinReloc from http://www.autopackage.org/docs/binreloc/ . BinReloc 
+provides an easy-to-use API that uses dynamic linker and kernel magic to find 
+out the full path of your aplication or library. 
+
+BinReloc is in public domain.
+
+* Boem-Weiser garbage collector.
+
+Merged in the Boehm-Weiser garbage collector from
+http://www.hpl.hp.com/personal/Hans_Boehm/gc/. 
+
+Copyright (c) 1988, 1989 Hans-J. Boehm, Alan J. Demers
+Copyright (c) 1991-1996 by Xerox Corporation.  All rights reserved.
+Copyright (c) 1996-1999 by Silicon Graphics.  All rights reserved.
+Copyright (c) 1999-2003 by Hewlett-Packard Company. All rights reserved.
+
+The file linux_threads.c is also
+Copyright (c) 1998 by Fergus Henderson.  All rights reserved.
+
+The files Makefile.am, and configure.in are
+Copyright (c) 2001 by Red Hat Inc. All rights reserved.
+
+Several files supporting GNU-style builds are copyrighted by the Free
+Software Foundation, and carry a different license from that given
+below.
+
+THIS MATERIAL IS PROVIDED AS IS, WITH ABSOLUTELY NO WARRANTY EXPRESSED
+OR IMPLIED.  ANY USE IS AT YOUR OWN RISK.
+
+Permission is hereby granted to use or copy this program
+for any purpose,  provided the above notices are retained on all copies.
+Permission to modify the code and to distribute modified code is granted,
+provided the above notices are retained, and a notice that the code was
+modified is included with the above copyright notice.
+
+A few of the files needed to use the GNU-style build procedure come with
+slightly different licenses, though they are all similar in spirit.  A few
+are GPL'ed, but with an exception that should cover all uses in the
+collector.  (If you are concerned about such things, I recommend you look
+at the notice in config.guess or ltmain.sh.)
+
+This is version 6.3alpha1 of a conservative garbage collector for C and C++.
+
+
+* gnu.getopt
+
+This code has been merged from GNU Getopt 1.0.9
+
+Licensed under the GNU General Public License. See licence.terms for more 
+details. 
+
+Homepage: http://www.urbanophile.com/arenn/hacking/
+
+* ANTLR
+
+Gjdoc is using ANTLR. Files from ANTRL 2.7.5, necessary to run
+gjdoc are under tools/gjdoc/javalib/antlr.
+
+ANTLR is in the public domain:
+
+  SOFTWARE RIGHTS
+
+  ANTLR 1989-2004 Developed by Terence Parr
+  Partially supported by University of San Francisco & jGuru.com
+
+  We reserve no legal rights to the ANTLR--it is fully in the
+  public domain. An individual or company may do whatever
+  they wish with source code distributed with ANTLR or the
+  code generated by ANTLR, including the incorporation of
+  ANTLR, or its output, into commercial software.
+
+  We encourage users to develop software with ANTLR. However,
+  we do ask that credit is given to us for developing
+  ANTLR. By "credit", we mean that if you use ANTLR or
+  incorporate any source code into one of your programs
+  (commercial product, research project, or otherwise) that
+  you acknowledge this fact somewhere in the documentation,
+  research report, etc... If you like ANTLR and have
+  developed a nice tool with the output, please mention that
+  you developed it using ANTLR. In addition, we ask that the
+  headers remain intact in our source code. As long as these
+  guidelines are kept, we expect to continue enhancing this
+  system and expect to make other tools available as they are
+  completed.
+
+  The primary ANTLR guy:
+
+  Terence Parr
+  parrt@cs.usfca.edu
+  parrt@antlr.org
+
+More information on ANTLR is available from http://www.antlr.org
+
+* locale properties
+
+The files in libraries/javalib/gnu/java/locale were taken from GNU Classpath.
+They were generated by  gnu.localegen from the files distributed from date 
+provided by CLDR.
+
+All these files are distributed under the following terms:
+
+  Copyright (C) 1991-2005 Unicode, Inc. All rights reserved. Distributed
+  under the Terms of Use in http://www.unicode.org/copyright.html.
+
+  Permission is hereby granted, free of charge, to any person obtaining
+  a copy of the Unicode data files and any associated documentation (the
+  "Data Files") or Unicode software and any associated documentation
+  (the "Software") to deal in the Data Files or Software without
+  restriction, including without limitation the rights to use, copy,
+  modify, merge, publish, distribute, and/or sell copies of the Data
+  Files or Software, and to permit persons to whom the Data Files or
+  Software are furnished to do so, provided that (a) the above copyright
+  notice(s) and this permission notice appear with all copies of the
+  Data Files or Software, (b) both the above copyright notice(s) and
+  this permission notice appear in associated documentation, and (c)
+  there is clear notice in each modified Data File or in the Software as
+  well as in the documentation associated with the Data File(s) or
+  Software that the data or software has been modified.
+
+  THE DATA FILES AND SOFTWARE ARE PROVIDED "AS IS", WITHOUT WARRANTY OF
+  ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+  WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+  NONINFRINGEMENT OF THIRD PARTY RIGHTS. IN NO EVENT SHALL THE COPYRIGHT
+  HOLDER OR HOLDERS INCLUDED IN THIS NOTICE BE LIABLE FOR ANY CLAIM, OR
+  ANY SPECIAL INDIRECT OR CONSEQUENTIAL DAMAGES, OR ANY DAMAGES
+  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+  OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THE DATA FILES OR
+  SOFTWARE.
+
+  Except as contained in this notice, the name of a copyright holder
+  shall not be used in advertising or otherwise to promote the sale, use
+  or other dealings in these Data Files or Software without prior
+  written authorization of the copyright holder.
+
+* libraries/clib/native/VMRuntime.c
+
+  This file comes from CACAO. More information on CACAO is available from
+  http://www.cacaojvm.org. Kaffe tracks this file's CVS HEAD.
+
+  This file is distributed under the following terms:
+
+     This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation; either version 2, or (at
+   your option) any later version.
+
+   This program is distributed in the hope that it will be useful, but
+   WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software Foundation,
+   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+* libraries/javalib/org/objectweb/asm153
+
+  These files were taken from the ObjectWeb ASM bytecode transformation
+  library, release 1.5.3. The asm package was renamed to reflect the version
+  used to avoid conflicts with asm library used in external programs.
+
+  The files are distributed under the following terms:
+
+   ASM: a very small and fast Java bytecode manipulation framework
+   Copyright (c) 2000,2002,2003 INRIA, France Telecom
+   All rights reserved.
+
+   Redistribution and use in source and binary forms, with or without
+   modification, are permitted provided that the following conditions
+   are met:
+   1. Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+   2. Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+   3. Neither the name of the copyright holders nor the names of its
+      contributors may be used to endorse or promote products derived from
+      this software without specific prior written permission.
+
+   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+   ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+   THE POSSIBILITY OF SUCH DAMAGE.
+
+  More information on the ASM project is available at 
+  http://asm.objectweb.org/

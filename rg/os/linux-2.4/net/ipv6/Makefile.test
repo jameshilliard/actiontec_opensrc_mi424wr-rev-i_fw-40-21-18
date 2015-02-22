@@ -1,0 +1,48 @@
+#
+#      Makefile to build IPv6 module
+#
+#      $Id: Makefile.test,v 1.1.1.1 2007/05/07 23:29:16 jungo Exp $
+#
+#      This program is free software; you can redistribute it and/or
+#      modify it under the terms of the GNU General Public License
+#      as published by the Free Software Foundation; either version
+#      2 of the License, or (at your option) any later version.
+#
+
+CC	= gcc
+LD      = ld
+INCLUDE = /usr/src/linux/include
+CCFLAGS	= -Wall -Wstrict-prototypes -O -finline-functions -I$(INCLUDE) -D__KERNEL__ -DMODULE -DLINUX 
+LDFLAGS = -m elf_i386 -r
+MOD     = ipv6.o
+DEPS    = Makefile.dep
+
+CFILES  = af_inet6.c reassembly.c datagram.c ip6_input.c ndisc.c \
+          route.c exthdrs.c ip6_output.c sit.c icmp.c ipv6_sockglue.c proc.c \
+          sysctl_net_ipv6.c ip6_fib.c mcast.c protocol.c tcp_ipv6.c \
+          addrconf.c ip6_flowlabel.c mipglue.c raw.c udp.c
+
+OFILES  = af_inet6.o reassembly.o datagram.o ip6_input.o ndisc.o \
+          route.o exthdrs.o ip6_output.o sit.o icmp.o ipv6_sockglue.o proc.o \
+          sysctl_net_ipv6.o ip6_fib.o mcast.o protocol.o tcp_ipv6.o \
+          addrconf.o ip6_flowlabel.o mipglue.o raw.o udp.o
+
+$(MOD) : dep $(OFILES)
+	$(LD) $(LDFLAGS) -o $(MOD) $(OFILES)
+
+
+dep :
+	@if [ ! -e $(DEPS) ] ; then \
+	 echo -n "Resolving dependencies..." ; \
+	 $(CC) -I$(INCLUDE) -D__KERNEL__ -MM $(CFILES) > $(DEPS) ; \
+	 echo "done."; \
+	 fi
+
+$(OFILES) : %.o : %.c
+	$(CC) $(CCFLAGS) -o $@ -c $<
+
+-include $(DEPS)
+
+clean :
+	rm -f $(MOD) $(OFILES) $(DEPS) *~
+

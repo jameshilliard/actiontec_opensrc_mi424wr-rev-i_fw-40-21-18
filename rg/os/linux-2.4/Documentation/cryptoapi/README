@@ -1,0 +1,59 @@
+-*- text -*- 
+		    The International Kernel Patch
+		    ==============================
+		     (aka Linux Kernel CryptoAPI)
+
+				   
+  What is the International Kernel Patch?
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Due to previous regulations on export and use of crypto, especially
+in the US, the Linux source distribution has not contained crypto up
+to this point. The International Kernel Patch has tried to remedy this
+situation by providing the missing functionality in the form of a
+unified patch to the Linux kernel source.
+
+  Lately, some US export restrictions have been lifted, and it is
+therefore possible that crypto will be part of the linux kernel source
+code in the future. However, until that happens, this is where you can
+get crypto support in your linux kernel.
+
+  The International Kernel Patch is not endorsed by Linus Torvalds and
+should therefore not be considered to be part of the official Linux
+kernel source.
+
+
+  What is the Linux Kernel CryptoAPI?
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  The Linux Kernel CryptoAPI provide a framework of ciphers and digests
+that can be used to encrypt and decrypt data inside kernel space.  The API
+is a non-intrusive patch in that it does not modify any of the existing
+kernel source code.  It can be compiled into the kernel or loaded as a
+kernel module for dynamic loading and unloading during runtime.
+  On a high level the CryptoAPI distribution includes the following:
+
+	   - an interface for accessing different kinds of cryptographic
+	   functions
+
+	   - a set of well known cipher and digest functions
+
+	   - a set of different block modes for each cipher
+
+
+  What is the CryptoAPI good for ?
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  If you need to have any secure computing enviornment which requires
+encryption in kernel space.  A common use for this is filesystem level 
+encryption, which allows partitions or files mounted as filesystems to be
+encrypted on the device level.  Thus, anyone who attempts
+to access the information on the drive without the proper encryption key
+and algorithm will see random looking garbage.  Some other possible uses of
+theCryptoAPI are encrypting network traffic and swap space.
+  For examples of how to use the structures and functions in the CryptoAPI
+see <./cryptoapi.txt> and for information on filesystem encryption see 
+<./cryptoloop.txt>.
+  
+--
+$Id: README,v 1.1.1.1 2007/05/07 23:29:53 jungo Exp $

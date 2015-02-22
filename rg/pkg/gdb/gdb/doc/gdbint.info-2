@@ -1,0 +1,712 @@
+This is gdbint.info, produced by makeinfo version 4.7 from
+./gdbint.texinfo.
+
+INFO-DIR-SECTION Software development
+START-INFO-DIR-ENTRY
+* Gdb-Internals: (gdbint).	The GNU debugger's internals.
+END-INFO-DIR-ENTRY
+
+   This file documents the internals of the GNU debugger GDB.
+Copyright
+1990,1991,1992,1993,1994,1996,1998,1999,2000,2001,2002,2003,2004
+Free Software Foundation, Inc.  Contributed by Cygnus Solutions.
+Written by John Gilmore.  Second Edition by Stan Shebs.
+
+   Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled "GNU
+Free Documentation License".
+
+File: gdbint.info,  Node: Index,  Prev: GNU Free Documentation License,  Up: Top
+
+Index
+*****
+
+[index]
+* Menu:
+
+* *ADDRESS_CLASS_TYPE_FLAGS_TO_NAME:     Target Architecture Definition.
+                                                             (line  281)
+* *gdbarch_data:                         Coding.             (line  132)
+* _initialize_language:                  Language Support.   (line   79)
+* a.out format:                          Symbol Handling.    (line  199)
+* add_cmd:                               User Interface.     (line   21)
+* add_com:                               User Interface.     (line   21)
+* add_setshow_cmd:                       User Interface.     (line   26)
+* add_setshow_cmd_full:                  User Interface.     (line   26)
+* add_symtab_fns:                        Symbol Handling.    (line   23)
+* adding a new host:                     Host Definition.    (line   13)
+* adding a symbol-reading module:        Symbol Handling.    (line   23)
+* adding a target:                       Target Architecture Definition.
+                                                             (line 1451)
+* adding debugging info reader:          Symbol Handling.    (line  333)
+* adding source language:                Language Support.   (line   17)
+* ADDR_BITS_REMOVE:                      Target Architecture Definition.
+                                                             (line  521)
+* address classes:                       Target Architecture Definition.
+                                                             (line  262)
+* address representation:                Target Architecture Definition.
+                                                             (line  145)
+* address spaces, separate data and code: Target Architecture Definition.
+                                                             (line  145)
+* ADDRESS_CLASS_NAME_TO_TYPE_FLAGS:      Target Architecture Definition.
+                                                             (line  535)
+* ADDRESS_CLASS_NAME_to_TYPE_FLAGS:      Target Architecture Definition.
+                                                             (line  286)
+* ADDRESS_CLASS_NAME_TO_TYPE_FLAGS_P:    Target Architecture Definition.
+                                                             (line  546)
+* ADDRESS_CLASS_TYPE_FLAGS:              Target Architecture Definition.
+                                                             (line  274)
+* ADDRESS_CLASS_TYPE_FLAGS (BYTE_SIZE, DWARF2_ADDR_CLASS): Target Architecture Definition.
+                                                             (line  550)
+* ADDRESS_CLASS_TYPE_FLAGS_P:            Target Architecture Definition.
+                                                             (line  559)
+* ADDRESS_CLASS_TYPE_FLAGS_TO_NAME:      Target Architecture Definition.
+                                                             (line  563)
+* ADDRESS_CLASS_TYPE_FLAGS_TO_NAME_P:    Target Architecture Definition.
+                                                             (line  567)
+* ADDRESS_TO_POINTER:                    Target Architecture Definition.
+                                                             (line  253)
+* ADJUST_BREAKPOINT_ADDRESS:             Target Architecture Definition.
+                                                             (line  646)
+* algorithms:                            Algorithms.         (line    6)
+* ALIGN_STACK_ON_STARTUP:                Host Definition.    (line   93)
+* allocate_symtab:                       Language Support.   (line   83)
+* assumptions about targets:             Coding.             (line  531)
+* ATTR_NORETURN:                         Host Definition.    (line  178)
+* BELIEVE_PCC_PROMOTION:                 Target Architecture Definition.
+                                                             (line  579)
+* BFD library:                           Support Libraries.  (line    9)
+* BIG_BREAKPOINT:                        Target Architecture Definition.
+                                                             (line  601)
+* BITS_BIG_ENDIAN:                       Target Architecture Definition.
+                                                             (line  584)
+* BPT_VECTOR:                            Target Architecture Definition.
+                                                             (line 1435)
+* BREAKPOINT <1>:                        Target Architecture Definition.
+                                                             (line  590)
+* BREAKPOINT:                            Algorithms.         (line   95)
+* breakpoint address adjusted:           Target Architecture Definition.
+                                                             (line  646)
+* BREAKPOINT_FROM_PC:                    Target Architecture Definition.
+                                                             (line  615)
+* breakpoints:                           Algorithms.         (line   38)
+* bug-gdb mailing list:                  Getting Started.    (line   72)
+* C data types:                          Coding.             (line  406)
+* call stack frame:                      Algorithms.         (line   14)
+* CALL_DUMMY_LOCATION:                   Target Architecture Definition.
+                                                             (line  679)
+* CANNOT_FETCH_REGISTER:                 Target Architecture Definition.
+                                                             (line  685)
+* CANNOT_STEP_HW_WATCHPOINTS:            Algorithms.         (line  247)
+* CANNOT_STORE_REGISTER:                 Target Architecture Definition.
+                                                             (line  690)
+* CC_HAS_LONG_LONG:                      Host Definition.    (line  138)
+* char:                                  Target Architecture Definition.
+                                                             (line   92)
+* CHILD_PREPARE_TO_STORE:                Native Debugging.   (line  134)
+* cleanup:                               User Interface.     (line  223)
+* cleanups:                              Coding.             (line   12)
+* CLEAR_SOLIB:                           Native Debugging.   (line  243)
+* CLI:                                   User Interface.     (line   12)
+* code pointers, word-addressed:         Target Architecture Definition.
+                                                             (line  145)
+* coding standards:                      Coding.             (line  214)
+* COFF debugging info:                   Symbol Handling.    (line  300)
+* COFF format:                           Symbol Handling.    (line  214)
+* command implementation:                Getting Started.    (line   60)
+* command interpreter:                   User Interface.     (line   12)
+* comment formatting:                    Coding.             (line  380)
+* compiler warnings:                     Coding.             (line  270)
+* CONVERT_REGISTER_P:                    Target Architecture Definition.
+                                                             (line  471)
+* converting between pointers and addresses: Target Architecture Definition.
+                                                             (line  145)
+* converting integers to addresses:      Target Architecture Definition.
+                                                             (line  991)
+* converting targets to multi-arch:      Target Architecture Definition.
+                                                             (line 1503)
+* create_new_frame:                      Algorithms.         (line   17)
+* CRLF_SOURCE_FILES:                     Host Definition.    (line   99)
+* current_language:                      Language Support.   (line   75)
+* D10V addresses:                        Target Architecture Definition.
+                                                             (line  145)
+* data output:                           User Interface.     (line  254)
+* data-pointer, per-architecture/per-module: Coding.         (line  100)
+* DEBUG_PTRACE:                          Native Debugging.   (line  246)
+* debugging GDB:                         Debugging GDB.      (line    6)
+* DECR_PC_AFTER_BREAK:                   Target Architecture Definition.
+                                                             (line  701)
+* DEFAULT_PROMPT:                        Host Definition.    (line  106)
+* deprecate_cmd:                         User Interface.     (line   32)
+* DEPRECATED_BIG_REMOTE_BREAKPOINT:      Target Architecture Definition.
+                                                             (line  609)
+* DEPRECATED_EXTRACT_STRUCT_VALUE_ADDRESS: Target Architecture Definition.
+                                                             (line  756)
+* DEPRECATED_EXTRACT_STRUCT_VALUE_ADDRESS_P: Target Architecture Definition.
+                                                             (line  763)
+* DEPRECATED_FP_REGNUM:                  Target Architecture Definition.
+                                                             (line  766)
+* DEPRECATED_FRAME_CHAIN:                Target Architecture Definition.
+                                                             (line  810)
+* DEPRECATED_FRAME_CHAIN_VALID:          Target Architecture Definition.
+                                                             (line  813)
+* DEPRECATED_FRAME_INIT_SAVED_REGS:      Target Architecture Definition.
+                                                             (line  821)
+* DEPRECATED_FRAME_SAVED_PC:             Target Architecture Definition.
+                                                             (line  834)
+* DEPRECATED_FRAMELESS_FUNCTION_INVOCATION: Target Architecture Definition.
+                                                             (line  774)
+* DEPRECATED_FUNCTION_START_OFFSET:      Target Architecture Definition.
+                                                             (line  873)
+* DEPRECATED_GET_SAVED_REGISTER:         Target Architecture Definition.
+                                                             (line  920)
+* DEPRECATED_IBM6000_TARGET:             Target Architecture Definition.
+                                                             (line  924)
+* DEPRECATED_INIT_EXTRA_FRAME_INFO:      Target Architecture Definition.
+                                                             (line  944)
+* DEPRECATED_INIT_FRAME_PC:              Target Architecture Definition.
+                                                             (line  949)
+* DEPRECATED_LITTLE_REMOTE_BREAKPOINT:   Target Architecture Definition.
+                                                             (line  609)
+* DEPRECATED_POP_FRAME:                  Target Architecture Definition.
+                                                             (line 1156)
+* DEPRECATED_PUSH_ARGUMENTS.:            Target Architecture Definition.
+                                                             (line 1160)
+* DEPRECATED_REG_STRUCT_HAS_ADDR:        Target Architecture Definition.
+                                                             (line 1139)
+* DEPRECATED_REGISTER_RAW_SIZE:          Target Architecture Definition.
+                                                             (line  397)
+* DEPRECATED_REGISTER_VIRTUAL_SIZE:      Target Architecture Definition.
+                                                             (line  402)
+* DEPRECATED_REMOTE_BREAKPOINT:          Target Architecture Definition.
+                                                             (line  609)
+* DEPRECATED_SIGTRAMP_END:               Target Architecture Definition.
+                                                             (line  966)
+* DEPRECATED_SIGTRAMP_START:             Target Architecture Definition.
+                                                             (line  965)
+* DEPRECATED_STACK_ALIGN:                Target Architecture Definition.
+                                                             (line 1281)
+* DEPRECATED_USE_STRUCT_CONVENTION:      Target Architecture Definition.
+                                                             (line 1407)
+* deprecating commands:                  User Interface.     (line   32)
+* design:                                Coding.             (line  526)
+* DEV_TTY:                               Host Definition.    (line  109)
+* DIRNAME_SEPARATOR:                     Coding.             (line  596)
+* DISABLE_UNSETTABLE_BREAK:              Target Architecture Definition.
+                                                             (line  707)
+* discard_cleanups:                      Coding.             (line   39)
+* do_cleanups:                           Coding.             (line   35)
+* DOS text files:                        Host Definition.    (line  100)
+* DW_AT_address_class:                   Target Architecture Definition.
+                                                             (line  262)
+* DW_AT_byte_size:                       Target Architecture Definition.
+                                                             (line  262)
+* DWARF 1 debugging info:                Symbol Handling.    (line  313)
+* DWARF 2 debugging info:                Symbol Handling.    (line  321)
+* DWARF2_REG_TO_REGNUM:                  Target Architecture Definition.
+                                                             (line  736)
+* DWARF_REG_TO_REGNUM:                   Target Architecture Definition.
+                                                             (line  732)
+* ECOFF debugging info:                  Symbol Handling.    (line  306)
+* ECOFF format:                          Symbol Handling.    (line  228)
+* ECOFF_REG_TO_REGNUM:                   Target Architecture Definition.
+                                                             (line  740)
+* ELF format:                            Symbol Handling.    (line  261)
+* END_OF_TEXT_DEFAULT:                   Target Architecture Definition.
+                                                             (line  744)
+* evaluate_subexp:                       Language Support.   (line   58)
+* experimental branches:                 Versions and Branches.
+                                                             (line   99)
+* expression evaluation routines:        Language Support.   (line   58)
+* expression parser:                     Language Support.   (line   21)
+* EXTRACT_RETURN_VALUE:                  Target Architecture Definition.
+                                                             (line  748)
+* extract_typed_address:                 Target Architecture Definition.
+                                                             (line  191)
+* FDL, GNU Free Documentation License:   GNU Free Documentation License.
+                                                             (line    6)
+* fetch_core_registers:                  Native Debugging.   (line   63)
+* FETCH_INFERIOR_REGISTERS:              Native Debugging.   (line  142)
+* field output functions:                User Interface.     (line  254)
+* file names, portability:               Coding.             (line  564)
+* FILENAME_CMP:                          Coding.             (line  590)
+* find_pc_function:                      Symbol Handling.    (line  122)
+* find_pc_line:                          Symbol Handling.    (line  122)
+* find_sym_fns:                          Symbol Handling.    (line   18)
+* finding a symbol:                      Symbol Handling.    (line  119)
+* fine-tuning gdbarch structure:         Target Architecture Definition.
+                                                             (line   33)
+* FOPEN_RB:                              Host Definition.    (line  112)
+* FP0_REGNUM:                            Native Debugging.   (line  149)
+* frame:                                 Algorithms.         (line   14)
+* frame chain:                           Algorithms.         (line   30)
+* frame pointer register:                Algorithms.         (line   23)
+* frame_align:                           Target Architecture Definition.
+                                                             (line  779)
+* FRAME_FP:                              Algorithms.         (line   17)
+* FRAME_NUM_ARGS:                        Target Architecture Definition.
+                                                             (line  829)
+* frame_pop:                             Target Architecture Definition.
+                                                             (line 1156)
+* full symbol table:                     Symbol Handling.    (line   90)
+* function prototypes:                   Coding.             (line  428)
+* function usage:                        Coding.             (line  410)
+* FUNCTION_EPILOGUE_SIZE:                Target Architecture Definition.
+                                                             (line  867)
+* fundamental types:                     Symbol Handling.    (line  164)
+* GCC2_COMPILED_FLAG_SYMBOL:             Target Architecture Definition.
+                                                             (line  888)
+* GCC_COMPILED_FLAG_SYMBOL:              Target Architecture Definition.
+                                                             (line  888)
+* GDB_MULTI_ARCH:                        Target Architecture Definition.
+                                                             (line  894)
+* gdb_osabi:                             Target Architecture Definition.
+                                                             (line  114)
+* GDB_OSABI_ARM_APCS:                    Target Architecture Definition.
+                                                             (line   85)
+* GDB_OSABI_ARM_EABI_V1:                 Target Architecture Definition.
+                                                             (line   79)
+* GDB_OSABI_ARM_EABI_V2:                 Target Architecture Definition.
+                                                             (line   82)
+* GDB_OSABI_FREEBSD_AOUT:                Target Architecture Definition.
+                                                             (line   58)
+* GDB_OSABI_FREEBSD_ELF:                 Target Architecture Definition.
+                                                             (line   61)
+* GDB_OSABI_GO32:                        Target Architecture Definition.
+                                                             (line   73)
+* GDB_OSABI_HURD:                        Target Architecture Definition.
+                                                             (line   46)
+* GDB_OSABI_LINUX:                       Target Architecture Definition.
+                                                             (line   55)
+* GDB_OSABI_NETBSD_AOUT:                 Target Architecture Definition.
+                                                             (line   64)
+* GDB_OSABI_NETBSD_ELF:                  Target Architecture Definition.
+                                                             (line   67)
+* GDB_OSABI_NETWARE:                     Target Architecture Definition.
+                                                             (line   76)
+* GDB_OSABI_OSF1:                        Target Architecture Definition.
+                                                             (line   52)
+* GDB_OSABI_SOLARIS:                     Target Architecture Definition.
+                                                             (line   49)
+* GDB_OSABI_SVR4:                        Target Architecture Definition.
+                                                             (line   43)
+* GDB_OSABI_UNKNOWN:                     Target Architecture Definition.
+                                                             (line   39)
+* GDB_OSABI_WINCE:                       Target Architecture Definition.
+                                                             (line   70)
+* GDB_TARGET_IS_HPPA:                    Target Architecture Definition.
+                                                             (line  903)
+* gdbarch_data:                          Coding.             (line  108)
+* gdbarch_in_function_epilogue_p:        Target Architecture Definition.
+                                                             (line  959)
+* gdbarch_init_osabi:                    Target Architecture Definition.
+                                                             (line  120)
+* gdbarch_register_osabi:                Target Architecture Definition.
+                                                             (line   98)
+* gdbarch_register_osabi_sniffer:        Target Architecture Definition.
+                                                             (line  107)
+* gdbarch_return_value:                  Target Architecture Definition.
+                                                             (line 1212)
+* GDBINIT_FILENAME:                      Host Definition.    (line   78)
+* generic host support:                  Host Definition.    (line   46)
+* GET_LONGJMP_TARGET <1>:                Native Debugging.   (line  156)
+* GET_LONGJMP_TARGET <2>:                Target Architecture Definition.
+                                                             (line  909)
+* GET_LONGJMP_TARGET:                    Algorithms.         (line  121)
+* hardware breakpoints:                  Algorithms.         (line   45)
+* hardware watchpoints:                  Algorithms.         (line  137)
+* HAVE_CONTINUABLE_WATCHPOINT:           Algorithms.         (line  243)
+* HAVE_DOS_BASED_FILE_SYSTEM:            Coding.             (line  573)
+* HAVE_LONG_DOUBLE:                      Host Definition.    (line  147)
+* HAVE_MMAP:                             Host Definition.    (line  115)
+* HAVE_NONSTEPPABLE_WATCHPOINT:          Algorithms.         (line  239)
+* HAVE_STEPPABLE_WATCHPOINT:             Algorithms.         (line  235)
+* HAVE_TERMIO:                           Host Definition.    (line  120)
+* host:                                  Overall Structure.  (line   50)
+* host, adding:                          Host Definition.    (line   13)
+* i386_cleanup_dregs:                    Algorithms.         (line  388)
+* I386_DR_LOW_GET_STATUS:                Algorithms.         (line  296)
+* I386_DR_LOW_RESET_ADDR:                Algorithms.         (line  292)
+* I386_DR_LOW_SET_ADDR:                  Algorithms.         (line  289)
+* I386_DR_LOW_SET_CONTROL:               Algorithms.         (line  286)
+* i386_insert_hw_breakpoint:             Algorithms.         (line  371)
+* i386_insert_watchpoint:                Algorithms.         (line  343)
+* i386_region_ok_for_watchpoint:         Algorithms.         (line  321)
+* i386_remove_hw_breakpoint:             Algorithms.         (line  371)
+* i386_remove_watchpoint:                Algorithms.         (line  343)
+* i386_stopped_by_hwbp:                  Algorithms.         (line  382)
+* i386_stopped_by_watchpoint:            Algorithms.         (line  335)
+* i386_stopped_data_address:             Algorithms.         (line  328)
+* I386_USE_GENERIC_WATCHPOINTS:          Algorithms.         (line  267)
+* IN_SOLIB_CALL_TRAMPOLINE:              Target Architecture Definition.
+                                                             (line  972)
+* IN_SOLIB_DYNSYM_RESOLVE_CODE:          Target Architecture Definition.
+                                                             (line  980)
+* IN_SOLIB_RETURN_TRAMPOLINE:            Target Architecture Definition.
+                                                             (line  976)
+* inferior_created:                      GDB Observers.      (line   83)
+* INNER_THAN:                            Target Architecture Definition.
+                                                             (line  953)
+* insert or remove hardware breakpoint:  Algorithms.         (line  221)
+* INT_MAX:                               Host Definition.    (line  123)
+* INT_MIN:                               Host Definition.    (line  124)
+* INTEGER_TO_ADDRESS:                    Target Architecture Definition.
+                                                             (line  991)
+* IS_ABSOLUTE_PATH:                      Coding.             (line  584)
+* IS_DIR_SEPARATOR:                      Coding.             (line  579)
+* ISATTY:                                Host Definition.    (line  130)
+* item output functions:                 User Interface.     (line  254)
+* KERNEL_U_ADDR:                         Native Debugging.   (line  172)
+* KERNEL_U_ADDR_HPUX:                    Native Debugging.   (line  180)
+* L_SET:                                 Host Definition.    (line  166)
+* language parser:                       Language Support.   (line   25)
+* language support:                      Language Support.   (line    6)
+* legal papers for code contributions:   Debugging GDB.      (line   42)
+* length_of_subexp:                      Language Support.   (line   58)
+* libgdb:                                libgdb.             (line    9)
+* libiberty library:                     Support Libraries.  (line   51)
+* line wrap in output:                   Coding.             (line  190)
+* lint:                                  Host Definition.    (line  199)
+* list output functions:                 User Interface.     (line  131)
+* LITTLE_BREAKPOINT:                     Target Architecture Definition.
+                                                             (line  601)
+* long long data type:                   Host Definition.    (line  139)
+* LONG_MAX:                              Host Definition.    (line  125)
+* LONGEST:                               Host Definition.    (line  133)
+* longjmp debugging:                     Algorithms.         (line  116)
+* lookup_symbol:                         Symbol Handling.    (line  128)
+* LSEEK_NOT_LINEAR:                      Host Definition.    (line  161)
+* make_cleanup:                          Coding.             (line   28)
+* making a new release of gdb:           Releasing GDB.      (line    6)
+* memory representation:                 Target Architecture Definition.
+                                                             (line  441)
+* MEMORY_INSERT_BREAKPOINT:              Target Architecture Definition.
+                                                             (line  631)
+* MEMORY_REMOVE_BREAKPOINT:              Target Architecture Definition.
+                                                             (line  631)
+* minimal symbol table:                  Symbol Handling.    (line   97)
+* minsymtabs:                            Symbol Handling.    (line   97)
+* mmap:                                  Host Definition.    (line  116)
+* multi-arch data:                       Coding.             (line  100)
+* NAME_OF_MALLOC:                        Target Architecture Definition.
+                                                             (line 1442)
+* NATDEPFILES:                           Native Debugging.   (line    8)
+* native conditionals:                   Native Debugging.   (line  128)
+* native core files:                     Native Debugging.   (line   63)
+* native debugging:                      Native Debugging.   (line    6)
+* nesting level in ui_out functions:     User Interface.     (line  143)
+* Netware Loadable Module format:        Symbol Handling.    (line  278)
+* NO_HIF_SUPPORT:                        Target Architecture Definition.
+                                                             (line 1012)
+* NO_STD_REGS:                           Host Definition.    (line   82)
+* NORETURN:                              Host Definition.    (line  171)
+* normal_stop:                           GDB Observers.      (line   76)
+* normal_stop observer:                  GDB Observers.      (line   48)
+* notification about inferior execution stop: GDB Observers. (line   48)
+* notifications about changes in internals: Algorithms.      (line  412)
+* object file formats:                   Symbol Handling.    (line  196)
+* observer pattern interface:            Algorithms.         (line  412)
+* observers implementation rationale:    GDB Observers.      (line    9)
+* obsolete code:                         Debugging GDB.      (line   94)
+* obstacks:                              Support Libraries.  (line   68)
+* ONE_PROCESS_WRITETEXT:                 Native Debugging.   (line  185)
+* op_print_tab:                          Language Support.   (line   91)
+* opcodes library:                       Support Libraries.  (line   39)
+* OS ABI variants:                       Target Architecture Definition.
+                                                             (line   16)
+* OS9K_VARIABLES_INSIDE_BLOCK:           Target Architecture Definition.
+                                                             (line 1431)
+* PARM_BOUNDARY:                         Target Architecture Definition.
+                                                             (line 1135)
+* parse_exp_1:                           Language Support.   (line   97)
+* partial symbol table:                  Symbol Handling.    (line  100)
+* PC_LOAD_SEGMENT:                       Target Architecture Definition.
+                                                             (line 1123)
+* PC_REGNUM:                             Target Architecture Definition.
+                                                             (line 1127)
+* PE-COFF format:                        Symbol Handling.    (line  252)
+* per-architecture module data:          Coding.             (line  100)
+* pointer representation:                Target Architecture Definition.
+                                                             (line  145)
+* POINTER_TO_ADDRESS:                    Target Architecture Definition.
+                                                             (line  244)
+* portability:                           Coding.             (line  547)
+* portable file name handling:           Coding.             (line  564)
+* porting to new machines:               Porting GDB.        (line    6)
+* prefixify_subexp:                      Language Support.   (line   58)
+* PRINT_FLOAT_INFO:                      Target Architecture Definition.
+                                                             (line  712)
+* print_registers_info:                  Target Architecture Definition.
+                                                             (line  716)
+* print_subexp:                          Language Support.   (line   91)
+* PRINT_VECTOR_INFO:                     Target Architecture Definition.
+                                                             (line  725)
+* PRINTF_HAS_LONG_DOUBLE:                Host Definition.    (line  151)
+* PRINTF_HAS_LONG_LONG:                  Host Definition.    (line  142)
+* PROC_NAME_FMT:                         Native Debugging.   (line  190)
+* PROCESS_LINENUMBER_HOOK:               Target Architecture Definition.
+                                                             (line 1146)
+* program counter:                       Algorithms.         (line   45)
+* PROLOGUE_FIRSTLINE_OVERLAP:            Target Architecture Definition.
+                                                             (line 1149)
+* prompt:                                Host Definition.    (line  107)
+* PS_REGNUM:                             Target Architecture Definition.
+                                                             (line 1152)
+* psymtabs:                              Symbol Handling.    (line   93)
+* PTRACE_ARG3_TYPE:                      Native Debugging.   (line  195)
+* push_dummy_call:                       Target Architecture Definition.
+                                                             (line 1160)
+* push_dummy_code:                       Target Architecture Definition.
+                                                             (line 1174)
+* raw register representation:           Target Architecture Definition.
+                                                             (line  342)
+* read_fp:                               Target Architecture Definition.
+                                                             (line 1366)
+* read_pc:                               Target Architecture Definition.
+                                                             (line 1366)
+* read_sp:                               Target Architecture Definition.
+                                                             (line 1366)
+* reading of symbols:                    Symbol Handling.    (line   12)
+* red zone:                              Target Architecture Definition.
+                                                             (line  807)
+* register data formats, converting:     Target Architecture Definition.
+                                                             (line  441)
+* register groups:                       Target Architecture Definition.
+                                                             (line 1036)
+* register representation:               Target Architecture Definition.
+                                                             (line  441)
+* REGISTER_CONVERT_TO_RAW:               Target Architecture Definition.
+                                                             (line  430)
+* REGISTER_CONVERT_TO_TYPE:              Target Architecture Definition.
+                                                             (line  503)
+* REGISTER_CONVERT_TO_VIRTUAL:           Target Architecture Definition.
+                                                             (line  415)
+* REGISTER_CONVERTIBLE:                  Target Architecture Definition.
+                                                             (line  390)
+* REGISTER_NAME:                         Target Architecture Definition.
+                                                             (line 1190)
+* register_reggroup_p:                   Target Architecture Definition.
+                                                             (line 1036)
+* REGISTER_TO_VALUE:                     Target Architecture Definition.
+                                                             (line  480)
+* register_type:                         Target Architecture Definition.
+                                                             (line 1067)
+* REGISTER_U_ADDR:                       Native Debugging.   (line  199)
+* REGISTER_VIRTUAL_TYPE:                 Target Architecture Definition.
+                                                             (line 1063)
+* regset_from_core_section:              Target Architecture Definition.
+                                                             (line 1082)
+* regular expressions library:           Support Libraries.  (line  109)
+* Release Branches:                      Versions and Branches.
+                                                             (line   76)
+* remote debugging support:              Host Definition.    (line   57)
+* REMOTE_BPT_VECTOR:                     Target Architecture Definition.
+                                                             (line 1439)
+* representations, raw and virtual registers: Target Architecture Definition.
+                                                             (line  342)
+* representations, register and memory:  Target Architecture Definition.
+                                                             (line  441)
+* requirements for GDB:                  Requirements.       (line    6)
+* running the test suite:                Testsuite.          (line   20)
+* SAVE_DUMMY_FRAME_TOS:                  Target Architecture Definition.
+                                                             (line 1201)
+* SCANF_HAS_LONG_DOUBLE:                 Host Definition.    (line  156)
+* SDB_REG_TO_REGNUM:                     Target Architecture Definition.
+                                                             (line 1208)
+* secondary symbol file:                 Symbol Handling.    (line   33)
+* SEEK_CUR:                              Host Definition.    (line  185)
+* SEEK_SET:                              Host Definition.    (line  186)
+* separate data and code address spaces: Target Architecture Definition.
+                                                             (line  145)
+* serial line support:                   Host Definition.    (line   57)
+* SHELL_COMMAND_CONCAT:                  Native Debugging.   (line  202)
+* SHELL_FILE:                            Native Debugging.   (line  206)
+* SIGWINCH_HANDLER:                      Host Definition.    (line   85)
+* SIGWINCH_HANDLER_BODY:                 Host Definition.    (line   89)
+* SKIP_PERMANENT_BREAKPOINT:             Target Architecture Definition.
+                                                             (line 1251)
+* SKIP_PROLOGUE:                         Target Architecture Definition.
+                                                             (line 1262)
+* SKIP_SOLIB_RESOLVER:                   Target Architecture Definition.
+                                                             (line  984)
+* SKIP_TRAMPOLINE_CODE:                  Target Architecture Definition.
+                                                             (line 1266)
+* SLASH_STRING:                          Coding.             (line  601)
+* software breakpoints:                  Algorithms.         (line   71)
+* software watchpoints:                  Algorithms.         (line  137)
+* SOFTWARE_SINGLE_STEP:                  Target Architecture Definition.
+                                                             (line 1090)
+* SOFTWARE_SINGLE_STEP_P:                Target Architecture Definition.
+                                                             (line 1086)
+* SOFUN_ADDRESS_MAYBE_MISSING:           Target Architecture Definition.
+                                                             (line 1096)
+* SOLIB_ADD:                             Native Debugging.   (line  210)
+* SOLIB_CREATE_INFERIOR_HOOK:            Native Debugging.   (line  216)
+* solib_unloaded:                        GDB Observers.      (line   90)
+* SOM debugging info:                    Symbol Handling.    (line  328)
+* SOM format:                            Symbol Handling.    (line  270)
+* source code formatting:                Coding.             (line  340)
+* SP_REGNUM:                             Target Architecture Definition.
+                                                             (line 1271)
+* spaces, separate data and code address: Target Architecture Definition.
+                                                             (line  145)
+* STAB_REG_TO_REGNUM:                    Target Architecture Definition.
+                                                             (line 1276)
+* stabs debugging info:                  Symbol Handling.    (line  290)
+* stabs_argument_has_addr:               Target Architecture Definition.
+                                                             (line 1139)
+* stack alignment:                       Host Definition.    (line   94)
+* START_INFERIOR_TRAPS_EXPECTED:         Native Debugging.   (line  220)
+* STEP_SKIPS_DELAY:                      Target Architecture Definition.
+                                                             (line 1290)
+* STOP_SIGNAL:                           Host Definition.    (line  190)
+* STOPPED_BY_WATCHPOINT:                 Algorithms.         (line  251)
+* STORE_RETURN_VALUE:                    Target Architecture Definition.
+                                                             (line 1297)
+* store_typed_address:                   Target Architecture Definition.
+                                                             (line  209)
+* struct:                                GDB Observers.      (line   62)
+* struct value, converting register contents to: Target Architecture Definition.
+                                                             (line  441)
+* submitting patches:                    Debugging GDB.      (line   30)
+* sym_fns structure:                     Symbol Handling.    (line   23)
+* symbol files:                          Symbol Handling.    (line   12)
+* symbol lookup:                         Symbol Handling.    (line  119)
+* symbol reading:                        Symbol Handling.    (line   12)
+* SYMBOL_RELOADING_DEFAULT:              Target Architecture Definition.
+                                                             (line 1305)
+* SYMBOLS_CAN_START_WITH_DOLLAR:         Target Architecture Definition.
+                                                             (line  935)
+* symtabs:                               Symbol Handling.    (line   90)
+* system dependencies:                   Coding.             (line  551)
+* table output functions:                User Interface.     (line  131)
+* target:                                Overall Structure.  (line   50)
+* target architecture definition:        Target Architecture Definition.
+                                                             (line    6)
+* target vector:                         Target Vector Definition.
+                                                             (line    6)
+* TARGET_CAN_USE_HARDWARE_WATCHPOINT:    Algorithms.         (line  172)
+* target_changed:                        GDB Observers.      (line   79)
+* TARGET_CHAR_BIT:                       Target Architecture Definition.
+                                                             (line 1309)
+* TARGET_CHAR_SIGNED:                    Target Architecture Definition.
+                                                             (line 1312)
+* TARGET_COMPLEX_BIT:                    Target Architecture Definition.
+                                                             (line 1322)
+* TARGET_DISABLE_HW_WATCHPOINTS:         Algorithms.         (line  192)
+* TARGET_DOUBLE_BIT:                     Target Architecture Definition.
+                                                             (line 1328)
+* TARGET_DOUBLE_COMPLEX_BIT:             Target Architecture Definition.
+                                                             (line 1332)
+* TARGET_ENABLE_HW_WATCHPOINTS:          Algorithms.         (line  198)
+* TARGET_FLOAT_BIT:                      Target Architecture Definition.
+                                                             (line 1338)
+* TARGET_HAS_HARDWARE_WATCHPOINTS:       Algorithms.         (line  169)
+* target_insert_hw_breakpoint:           Algorithms.         (line  221)
+* target_insert_watchpoint:              Algorithms.         (line  204)
+* TARGET_INT_BIT:                        Target Architecture Definition.
+                                                             (line 1341)
+* TARGET_LONG_BIT:                       Target Architecture Definition.
+                                                             (line 1344)
+* TARGET_LONG_DOUBLE_BIT:                Target Architecture Definition.
+                                                             (line 1348)
+* TARGET_LONG_LONG_BIT:                  Target Architecture Definition.
+                                                             (line 1352)
+* TARGET_PRINT_INSN:                     Target Architecture Definition.
+                                                             (line 1389)
+* TARGET_PTR_BIT:                        Target Architecture Definition.
+                                                             (line 1356)
+* TARGET_READ_FP:                        Target Architecture Definition.
+                                                             (line 1366)
+* TARGET_READ_PC:                        Target Architecture Definition.
+                                                             (line 1363)
+* TARGET_READ_SP:                        Target Architecture Definition.
+                                                             (line 1365)
+* TARGET_REGION_OK_FOR_HW_WATCHPOINT:    Algorithms.         (line  182)
+* TARGET_REGION_SIZE_OK_FOR_HW_WATCHPOINT: Algorithms.       (line  186)
+* target_remove_hw_breakpoint:           Algorithms.         (line  221)
+* target_remove_watchpoint:              Algorithms.         (line  204)
+* TARGET_SHORT_BIT:                      Target Architecture Definition.
+                                                             (line 1359)
+* target_stopped_data_address:           Algorithms.         (line  230)
+* TARGET_VIRTUAL_FRAME_POINTER:          Target Architecture Definition.
+                                                             (line 1378)
+* TARGET_WRITE_PC:                       Target Architecture Definition.
+                                                             (line 1364)
+* TCP remote support:                    Host Definition.    (line   66)
+* TDEPFILES:                             Target Architecture Definition.
+                                                             (line 1453)
+* terminal device:                       Host Definition.    (line  110)
+* test suite:                            Testsuite.          (line    6)
+* test suite organization:               Testsuite.          (line   76)
+* trimming language-dependent code:      Language Support.   (line  101)
+* tuple output functions:                User Interface.     (line  131)
+* type:                                  Target Architecture Definition.
+                                                             (line  408)
+* type codes:                            Symbol Handling.    (line  172)
+* types:                                 Coding.             (line  422)
+* U_REGS_OFFSET:                         Native Debugging.   (line  231)
+* ui_out functions:                      User Interface.     (line   47)
+* ui_out functions, usage examples:      User Interface.     (line  397)
+* ui_out_field_core_addr:                User Interface.     (line  287)
+* ui_out_field_fmt:                      User Interface.     (line  261)
+* ui_out_field_fmt_int:                  User Interface.     (line  280)
+* ui_out_field_int:                      User Interface.     (line  273)
+* ui_out_field_skip:                     User Interface.     (line  351)
+* ui_out_field_stream:                   User Interface.     (line  319)
+* ui_out_field_string:                   User Interface.     (line  291)
+* ui_out_flush:                          User Interface.     (line  391)
+* ui_out_list_begin:                     User Interface.     (line  234)
+* ui_out_list_end:                       User Interface.     (line  240)
+* ui_out_message:                        User Interface.     (line  375)
+* ui_out_spaces:                         User Interface.     (line  370)
+* ui_out_stream_delete:                  User Interface.     (line  314)
+* ui_out_table_begin:                    User Interface.     (line  165)
+* ui_out_table_body:                     User Interface.     (line  191)
+* ui_out_table_end:                      User Interface.     (line  194)
+* ui_out_table_header:                   User Interface.     (line  178)
+* ui_out_text:                           User Interface.     (line  357)
+* ui_out_tuple_begin:                    User Interface.     (line  210)
+* ui_out_tuple_end:                      User Interface.     (line  216)
+* ui_out_wrap_hint:                      User Interface.     (line  381)
+* ui_stream:                             User Interface.     (line  308)
+* UINT_MAX:                              Host Definition.    (line  126)
+* ULONG_MAX:                             Host Definition.    (line  127)
+* unwind_dummy_id:                       Target Architecture Definition.
+                                                             (line 1401)
+* unwind_pc:                             Target Architecture Definition.
+                                                             (line  840)
+* unwind_sp:                             Target Architecture Definition.
+                                                             (line  854)
+* USE_PROC_FS:                           Native Debugging.   (line  226)
+* USG:                                   Host Definition.    (line  194)
+* using ui_out functions:                User Interface.     (line  397)
+* value_as_address:                      Target Architecture Definition.
+                                                             (line  223)
+* value_from_pointer:                    Target Architecture Definition.
+                                                             (line  232)
+* VALUE_TO_REGISTER:                     Target Architecture Definition.
+                                                             (line  492)
+* VARIABLES_INSIDE_BLOCK:                Target Architecture Definition.
+                                                             (line 1423)
+* vendor branches:                       Versions and Branches.
+                                                             (line   91)
+* virtual register representation:       Target Architecture Definition.
+                                                             (line  342)
+* void:                                  GDB Observers.      (line   67)
+* volatile:                              Host Definition.    (line  202)
+* watchpoints:                           Algorithms.         (line  131)
+* watchpoints, on x86:                   Algorithms.         (line  258)
+* word-addressed machines:               Target Architecture Definition.
+                                                             (line  145)
+* wrap_here:                             Coding.             (line  190)
+* write_pc:                              Target Architecture Definition.
+                                                             (line 1366)
+* writing tests:                         Testsuite.          (line  128)
+* x86 debug registers:                   Algorithms.         (line  258)
+* XCOFF format:                          Symbol Handling.    (line  236)
+
+

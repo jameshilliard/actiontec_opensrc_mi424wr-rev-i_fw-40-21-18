@@ -1,0 +1,611 @@
+config MV_ETH_PORTS_NUM
+	int "Number of Marvell GbE ports"
+	depends on MV_ETH_NETA
+	default 1 
+
+config MV_ETH_BM
+	depends on MV_ETH_NETA
+        bool "Buffer Management support (BM)"
+	default y
+        ---help---
+
+config MV_ETH_SHORT_PKT_SIZE    
+	depends on MV_ETH_BM
+	int "Buffer size for short packets pool"
+	default 256
+	---help---
+	Size of buffers allocated for short packets pool
+
+config MV_ETH_SHORT_PKT_MULT
+        depends on MV_ETH_BM
+        int "Multiplier for number of buffers of short size pool"
+        default 5
+        ---help---
+        Number of buffers allocated for short size pool for each port calculated as:
+	MV_ETH_RXQ * MV_ETH_RXQ_DESC * MV_ETH_SHORT_PKT_MULT
+
+config MV_ETH_POOL_PREDEFINED
+	depends on MV_ETH_BM && (MV_ETH_PORTS_NUM >= 4)
+	bool "Use predefined MTU size values for long pools"
+	default y
+	---help---
+
+config MV_ETH_POOL_0_MTU
+        depends on MV_ETH_POOL_PREDEFINED
+        int "MTU value match for buffers in pool #0"
+        default 1500
+        ---help---
+	Giga port with MTU less or equal to MV_ETH_POOL_0_MTU can use pool0
+	as its long packets pool
+
+config MV_ETH_POOL_1_MTU
+        depends on MV_ETH_POOL_PREDEFINED
+        int "MTU value match for buffers in pool #1"
+        default 4096
+        ---help---
+        Giga port with MTU less or equal to MV_ETH_POOL_1_MTU can use pool1
+        as its long packets pool
+	
+config MV_ETH_POOL_2_MTU
+        depends on MV_ETH_POOL_PREDEFINED
+        int "MTU value match for buffers in pool #2"
+        default 9192
+        ---help---
+        Giga port with MTU less or equal to MV_ETH_POOL_2_MTU can use pool2
+        as its long packets pool
+
+config MV_ETH_MTU_PKT_MULT
+        int "Multiplier for number of buffers of MTU size pool"
+        default 3
+        ---help---
+        Number of buffers allocated for MTU size pool for each port calculated as:
+        MV_ETH_RXQ * MV_ETH_RXQ_DESC * MV_ETH_MTU_PKT_MULT
+
+config MV_ETH_LEGACY_PARSER
+	depends on !MV_ETH_PNC
+	bool "Use legacy parser for incoming traffic"
+	default y
+	---help---
+
+menuconfig MV_ETH_PNC
+        depends on MV_ETH_NETA
+        bool "PnC support "
+	default y
+        ---help---
+
+config MV_ETH_PNC_PARSER
+	depends on MV_ETH_PNC
+	bool "Use PnC as parser for incoming traffic"
+	default y
+	---help---
+
+config MV_ETH_PNC_MCAST_NUM
+        depends on MV_ETH_PNC_PARSER
+        int "Use PnC for Multicast MAC addresses filtering"
+        default 8
+        ---help---
+	Number of Multicast addresses can be matched and accepted 
+	for all ports
+
+config MV_ETH_PNC_VLAN_PRIO
+        depends on MV_ETH_PNC_PARSER
+        int "Use PnC for VLAN priority mapping"
+        default 1
+        ---help---
+	Number of VLAN priorities can be mapped to different RXQs.
+	Valid range from 1 to 8.
+
+config MV_ETH_PNC_SNAP
+        depends on MV_ETH_PNC_PARSER
+        bool "Use PnC for SNAP packets detection"
+        default n
+        ---help---
+
+config MV_ETH_PNC_ETYPE
+        depends on MV_ETH_PNC_PARSER
+        int "Use PnC for extra ETYPE detection"
+        default 0
+        ---help---
+        Number of extra ETYPEs can be detected in addition to 
+	ARP, IPv4, IPv6, PPPoE are detected by default.
+
+config MV_ETH_PNC_DSCP_PRIO
+        depends on MV_ETH_PNC_PARSER
+        int "Use PnC for DSCP priority mapping"
+        default 4
+        ---help---
+        Number of DSCP priorities can be mapped to different RXQs.
+        Valid range from 1 to 8.
+
+menuconfig MV_ETH_HWF
+	depends on MV_ETH_PNC
+        bool "Hardware Forwarding support (HWF)"
+        default y
+        ---help---
+
+config MV_ETH_HWF_TXQ_DROP
+	depends on MV_ETH_HWF
+	int "HWF Drop Threshold [%]"
+	default 60
+	---help---
+
+config MV_ETH_HWF_TXQ_DROP_RND
+        depends on MV_ETH_HWF
+        int "HWF Drop Random Generator bits"
+        default 0
+        ---help---
+
+config MV_ETH_PMT
+        depends on MV_ETH_NETA
+        bool "Packet Modification Table (PMT)"
+        default y
+        ---help---
+
+menu "Network Interface configuration"
+
+config  MV_ETH_0_MTU
+	int "Giga port #0 MTU value"
+	depends on (MV_ETH_PORTS_NUM != 0)
+ 	default 1500
+        ---help---
+	Default MTU value for Marvell GbE port #0
+
+config  MV_ETH_0_MACADDR
+        string "Giga port #0 MAC address"
+        depends on (MV_ETH_PORTS_NUM != 0)
+        default "00:00:00:00:00:80"
+        ---help---
+        Default MAC address for Marvell GbE port #0 
+
+config  MV_ETH_1_MTU
+        int "Giga port #1 MTU value"
+        depends on (MV_ETH_PORTS_NUM != 0) && (MV_ETH_PORTS_NUM != 1)
+        default 1500
+        ---help---
+	Default MTU value for Marvell GbE port #1
+
+config  MV_ETH_1_MACADDR
+        string "Giga port #1 MAC address"
+        depends on (MV_ETH_PORTS_NUM != 0) && (MV_ETH_PORTS_NUM != 1)
+        default "00:00:00:00:00:81"
+        ---help---
+        Default MAC address for Marvell GbE port #1
+
+config  MV_ETH_2_MTU
+        int "Giga port #2 MTU value"
+        depends on (MV_ETH_PORTS_NUM != 0) && (MV_ETH_PORTS_NUM != 1) && (MV_ETH_PORTS_NUM != 2)
+        default 1500
+        ---help---
+        Default MTU value for Marvell GbE port #2
+
+config  MV_ETH_2_MACADDR
+        string "Giga port #2 MAC address"
+        depends on (MV_ETH_PORTS_NUM != 0) && (MV_ETH_PORTS_NUM != 1) && (MV_ETH_PORTS_NUM != 2)
+        default "00:00:00:00:00:82"
+        ---help---
+        Default MAC address for Marvell GbE port #2
+
+config  MV_ETH_3_MTU
+        int "Giga port #3 MTU value"
+        depends on (MV_ETH_PORTS_NUM != 0) && (MV_ETH_PORTS_NUM != 1) && (MV_ETH_PORTS_NUM != 2) && (MV_ETH_PORTS_NUM != 3)
+        default 1500
+        ---help---
+        Default MTU value for Marvell GbE port #3
+
+config  MV_ETH_3_MACADDR
+        string "Giga port #3 MAC address"
+        depends on (MV_ETH_PORTS_NUM != 0) && (MV_ETH_PORTS_NUM != 1) && (MV_ETH_PORTS_NUM != 2) && (MV_ETH_PORTS_NUM != 3)
+        default "00:00:00:00:00:83"
+        ---help---
+        Default MAC address for Marvell GbE port #3
+
+endmenu
+
+menu "Rx/Tx Queue configuration"
+
+config  MV_ETH_RXQ
+        int "Number of RX queues"
+        default 1
+        ---help---
+          Multiple RX queue support.
+
+config  MV_ETH_TXQ
+        int "Number of TX queues"
+        default 1
+        ---help---
+          Multiple TX queue support.
+
+config MV_ETH_RXQ_DESC
+	int "Number of Rx descriptors"
+	depends on (MV_ETH_PORTS_NUM != 0)
+	default 128
+        ---help---
+	The number of Rx descriptors in each Rx queue.
+
+config MV_ETH_RXQ_DEF
+        int "Default RXQ to recieve packets"
+        default 0
+        ---help---
+
+config MV_ETH_TXQ_DESC
+	int "Number of Tx descriptors"
+	depends on (MV_ETH_PORTS_NUM != 0)
+	default 532
+        ---help---
+	The number of Tx descriptors in each Tx queue.
+
+config MV_ETH_TXQ_DEF
+        int "Default TXQ to send local generated packets"
+        default 0
+        ---help---
+
+endmenu
+
+menu "IP/TCP/UDP Offloading"
+
+config  MV_ETH_TX_CSUM_OFFLOAD
+        bool "L3/L4 TX checksum offload support for Marvell network interface"
+        default y
+        ---help---
+	Marvell network driver compiled with TCP/UDP over IPv4/IPv6 TX checksum offload support.
+
+config MV_ETH_TX_CSUM_OFFLOAD_DEF
+	depends on MV_ETH_TX_CSUM_OFFLOAD
+        bool "Default value for L3/L4 TX checksum offload: enable/disable"
+        default y
+        ---help---
+	Can be changed in run-time using ethtool
+
+config  MV_ETH_RX_CSUM_OFFLOAD
+        bool "L3/L4 RX checksum offload support for Marvell network interface"
+        default y
+        ---help---
+        Marvell network driver compiled with TCP/UDP over IPv4/IPv6 RX checksum offload support.
+
+config MV_ETH_RX_CSUM_OFFLOAD_DEF
+	depends on MV_ETH_RX_CSUM_OFFLOAD
+        bool "Default value for L3/L4 RX checksum offload: enable/disable"
+        default y
+        ---help---
+	Can be changed in run-time using ethtool
+
+config  MV_ETH_GRO
+        bool "GRO Support for Marvell network interface"
+	default y
+        ---help---
+        Marvell network driver compiled with GRO (Generic Receive Offload) support.
+		
+config  MV_ETH_GRO_DEF
+	depends on MV_ETH_GRO
+        bool "Default value for GRO feature: enable/disable"
+	default y
+        ---help---
+        Can be changed in run-time using ethtool
+		
+config  MV_ETH_TSO
+        bool "TSO Support for Marvell network interface"
+	default y
+        ---help---
+        Marvell network driver compiled with TSO (TCP Segmentation Offload) support.
+
+config  MV_ETH_TSO_DEF
+	depends on MV_ETH_TSO
+        bool "Default value for TSO feature: enable/disable"
+	default n
+        ---help---
+	Can be changed in run-time using ethtool
+
+endmenu
+
+menu "Control and Statistics"
+
+config  MV_ETH_PROC
+	bool "Support procfs"
+	default y
+	---help---
+	  Use mv_eth_tool to control Marvell network interface driver through procfs.
+
+config  MV_ETH_DEBUG_CODE
+	bool "Add run-time debug code"
+	default n
+	---help---
+	Enable run-time enable/disable enter debug code blocks
+
+config  MV_ETH_STAT_ERR
+        bool "Collect error statistics"
+        default y
+	---help---
+	Marvell network interface driver collect minimal number of statistics. 
+	Only for error conditions. Can be displayed using mv_eth_tool.
+
+config  MV_ETH_STAT_INF
+        bool "Collect event statistics"
+        default y
+        ---help---
+	Marvell network interface driver collect event statistics. 
+	Provide more information about driver functionality and almost doesn't 
+	effect performance. Can be displayed using mv_eth_tool.
+
+config  MV_ETH_STAT_DBG
+        bool "Collect debug statistics"
+        default n
+        ---help---
+	Marvell network interface driver collect a lot of statistics. 
+	Used for Debug mode. Decrease performance. Can be displayed using mv_eth_tool.
+
+config  MV_ETH_STAT_DIST
+        bool "Collect debug distribution statistics"
+        default n
+        ---help---
+        Marvell network interface driver collect a lot of statistics.
+        Used for Debug mode. Decrease performance. Can be displayed using mv_eth_tool.
+
+config  MV_LINUX_COUNTERS_DISABLE
+	bool "Disable collection of SNMP statistics and Netfilter Contract statistics"
+	default n
+	---help---
+	Disable collection of SNMP statistics and Netfilter Contract statistics to improve performance.
+
+config  MV_ETH_TOOL	
+	bool "Support ethtool controls"
+	default y
+	---help---
+	Support kernel's SIOCETHTOOL for ethtool utility	
+endmenu
+
+menu "Advanced Features"
+
+config  NET_SKB_HEADROOM
+        int "SKB headroom size"
+        default 64
+        ---help---
+          Customize SKB headroom size. Must be power of 2.
+
+if !MV_KERN_VER_2_6_22
+config NET_SKB_RECYCLE
+        bool "Skb recycle"
+        default n
+        ---help---
+          Work-in-progress and experimental.
+
+          This option enables skb's to be returned via a callback at kfree to
+          the allocator to make a fastpath for very skb consuming network
+          applications.
+endif
+
+config NET_SKB_RECYCLE_DEF
+        depends on NET_SKB_RECYCLE
+        int "Default value for SKB recycle:  0 - disable, 1 - enable"
+        default 0
+        ---help---
+
+config  MV_ETH_TX_DONE_TIMER_PERIOD
+        int "Periodical Tx Done timer period"
+        default 10
+        ---help---
+          Periodical timer period for Tx Done operation in [msec].
+
+config  MV_ETH_CLEANUP_TIMER_PERIOD
+        int "Periodical Cleanup timer period"
+        default 10
+        ---help---
+          Periodical timer period for cleanup operation in [msec].
+
+config  MV_ETH_TXDONE_ISR
+	bool "Use interrupt to process TX_DONE event"
+	default n
+	---help---
+	When chosen TX_DONE event will be process in interrupt mode
+	When unchosen TX_DONE event will be processed in polling mode
+
+config  MV_ETH_TXDONE_COAL_PKTS
+	int "Threshold for TX_DONE event trigger"
+	default 16
+	---help---
+	Number of packets will be sent before TX_DONE event will be triggered	
+	by interrupt or polling.
+
+config  MV_ETH_RX_COAL_PKTS
+        int "Threshold [number of packets] for RX interrupt"
+        default 64
+        ---help---
+        Number of packets will be received before RX interrupt will be generated by HW.
+
+config  MV_ETH_RX_COAL_USEC
+        int "Threshold [usec] for RX interrupt"
+        default 200
+        ---help---
+        Time delay in usec before RX interrupt will be generated by HW if number of 
+	received packets larger than 0 but smaller than MV_ETH_RX_COAL_PKTS
+
+config  MV_ETH_RX_DESC_PREFETCH
+	bool "Enable RX descriptor prefetch"
+	default n
+	---help---
+	Use pld instruction to prefetch one RX descriptor ahead
+
+config  MV_ETH_RX_PKT_PREFETCH
+        bool "Enable RX packet prefetch"
+        default n
+        ---help---
+        Use pld instruction to prefetch first two cache lines of received packet data
+
+config  MV_ETH_IGMP
+        bool "IGMP special processing support"
+        default n
+        ---help---
+
+config MV_ETH_RX_SPECIAL
+	depends on MV_ETH_PNC
+        bool "Enable special RX processing"
+        default n
+        ---help---
+        Enable special RX processing for packets with RI_RX_SEPCIAL PNC result info bit set
+
+config MV_ETH_TX_SPECIAL
+	bool "Enable special TX processing"
+ 	default n
+	---help---
+	Enable special TX processing for packets with signal header (SH)
+endmenu
+
+if !MV_KERN_VER_2_6_22
+
+menu "NFP support"
+
+config  MV_ETH_NFP
+        bool "Use Network Fast Processing (NFP)"
+	default y
+        ---help---
+        Choosing this option will enable Network Fast Processing.
+
+config MV_ETH_NFP_DEF
+        depends on MV_ETH_NFP
+        int "Default value for NFP:  0 - disable, 1 - enable"
+        default 0
+        ---help---
+
+config MV_ETH_NFP_FIB
+        bool "Support NFP routing"
+	default y
+        depends on MV_ETH_NFP
+        ---help---
+        Choosing this option will enable NFP routing support.
+
+config MV_ETH_NFP_NAT
+        bool "Support NFP NAT"
+        depends on MV_ETH_NFP_FIB && NF_CONNTRACK
+	default y
+        ---help---
+        Choosing this option will enable NFP NAT support.
+
+config  MV_ETH_NFP_PPP
+	bool "Support NFP PPPoE"
+	depends on MV_ETH_NFP_FIB && PPPOE
+	default n
+	 ---help---
+	Choosing this option will enable NFP PPPoE protocol.
+
+config MV_ETH_NFP_PNC
+	bool "Support NFP forwarding with PnC"
+	depends on MV_ETH_NFP && MV_ETH_PNC_PARSER
+	default y 
+	---help---
+	Choosing this option will add PNC(TCAM) assistance to NFP.
+
+config MV_ETH_NFP_PMT
+        bool "Use PMT for NFP forwarding with PNC"
+	depends on MV_ETH_PMT && MV_ETH_NFP_PNC
+        default n
+        ---help---
+
+config MV_ETH_PMT_FLOWS
+	int "Number of different flows can be set to PMT"
+	depends on MV_ETH_NFP_PMT
+	default 256
+	---help---
+	Depend on total number of PMT entries and 
+	number of PMT entires reserved for each flow.
+	MV_ETH_PMT_SIZE >= (MV_ETH_PMT_FLOWS * (MV_ETH_PMT_CMD_PER_FLOW + 1))
+
+config MV_ETH_PMT_CMD_PER_FLOW
+        int "Number of PMT entries reserved for each flow"
+        depends on MV_ETH_NFP_PMT
+        default 12
+        ---help---
+        Depend on total number of PMT entries and
+        number of flows to be supported.
+	MV_ETH_PMT_SIZE >= (MV_ETH_PMT_FLOWS * (MV_ETH_PMT_CMD_PER_FLOW + 1))
+
+config MV_ETH_NFP_HWF
+        bool "Use HWF for NFP forwarding with PNC and PMT"
+        depends on MV_ETH_HWF && MV_ETH_NFP_PNC && MV_ETH_NFP_PMT
+        default n
+        ---help---
+
+config MV_ETH_NFP_SWF
+	bool "Support NFP SW Forwarding (simulate HWF)"
+	depends on MV_ETH_NFP && MV_ETH_PNC
+	default n
+	---help---
+	Choosing this option will enable NFP SW Forwarding.
+
+config  MV_ETH_NFP_STATS
+        bool "Collect NFP statistics"
+	depends on MV_ETH_NFP
+        default n
+        ---help---
+        Collect NFP statistics. Can be displayed using mv_eth_tool.
+
+config  MV_ETH_NFP_DEBUG
+	bool "Add NFP debug code"
+	depends on MV_ETH_NFP	
+	default n
+        ---help---
+	Add NFP sanity check code	
+	
+config MV_ETH_NFP_SEC
+	bool "Support NFP IPSec"
+	depends on MV_ETH_NFP 
+	default n
+	---help---
+	Choosing this option will IPSec support in NFP.
+endmenu
+endif
+
+menu "PON support for Network driver"
+
+config MV_PON
+        bool "PON support"
+        depends on MV_ETH_NETA && MV_INCLUDE_PON
+        ---help---
+        Choose this option to support PON port in Marvell network driver
+
+config MV_PON_TXP_DEF
+        int "Default T-CONT to send local generated packets"
+        depends on MV_PON
+        default 0
+        ---help---
+
+config MV_PON_TXQ_DEF
+        int "Default TXQ to send local generated packets"
+        depends on MV_PON
+        default 0
+        ---help---
+
+endmenu
+
+menu "Switch support"
+
+config MV_ETH_SWITCH
+        bool "Switch support"
+	depends on MV_INCLUDE_SWITCH
+        ---help---
+	Choose this option to support Gigabit Ethernet Controller connected to 
+        on-board QuarterDeck switch family
+
+config  MV_ETH_SWITCH_NETDEV_NUM
+	int "Maximum number of subnets on switch ports"
+	depends on MV_ETH_SWITCH
+	default 4
+	---help---
+	Valid range range from 1 to BOARD_ETH_SWITCH_PORT_NUM
+
+config  MV_ETH_SWITCH_NETCONFIG
+	string "Switch network configuration"
+	depends on MV_ETH_SWITCH
+	default "3,(00:11:66:11:66:11,0)(00:22:77:22:77:22,1:2:3:4),mtu=1500"
+	---help---
+	 Set the network configuration when giga port connected to switch. 
+         For each interface, define the interface 
+	 name, MAC address and participating ports. 
+
+config  MV_ETH_SWITCH_LINK
+	bool "Link status change indications"
+	depends on MV_ETH_SWITCH
+	default y
+	---help---
+	  Support Phy link status change indications.
+endmenu
+
+

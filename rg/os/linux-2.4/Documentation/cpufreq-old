@@ -1,0 +1,332 @@
+     CPU frequency and voltage scaling code in the Linux(TM) kernel
+
+
+		         L i n u x    C P U F r e q
+
+
+
+
+		     Dominik Brodowski <devel@brodo.de>
+
+
+
+   Clock scaling allows you to change the clock speed of the CPUs on the
+    fly. This is a nice method to save battery power, because the lower
+            the clock speed, the less power the CPU consumes.
+
+
+
+Contents:
+---------
+1.  Supported architectures
+2.  User interface
+2.1   Sample script for command line interface
+3.  CPUFreq core and interfaces
+3.1   General information
+3.2   CPUFreq notifiers
+3.3   CPUFreq architecture drivers
+4.  Mailing list and Links
+
+
+
+1. Supported architectures
+==========================
+
+Some architectures detect the lowest and highest possible speed
+settings, while others rely on user information on this. For the
+latter, a boot parameter is required, for the former, you can specify
+one to set the limits between speed settings may occur. 
+The boot parameter has the following syntax:
+
+     cpufreq=minspeed-maxspeed
+
+with both minspeed and maxspeed being given in kHz. To set the lower
+limit to 59 MHz and the upper limit to 221 MHz, specify:
+
+      cpufreq=59000-221000
+
+Check the "Speed Limits Detection" information below on whether
+the driver detects the lowest and highest allowed speed setting
+automatically.
+
+
+ARM Integrator:
+    SA 1100, SA1110
+--------------------------------
+    Speed Limits Detection: On Integrators, the minimum speed is set
+    and the maximum speed has to be specified using the boot
+    parameter. On SA11x0s, the frequencies are fixed (59 - 287 MHz)
+
+
+AMD Elan:
+    SC400, SC410
+--------------------------------
+    Speed Limits Detection: Not implemented. You need to specify the
+    minimum and maximum frequency in the boot parameter (see above).
+
+
+VIA Cyrix Longhaul:
+    VIA Samuel/CyrixIII, VIA Cyrix Samuel/C3, 
+    VIA Cyrix Ezra, VIA Cyrix Ezra-T
+--------------------------------
+    Speed Limits Detection: working. No need for boot parameters.
+    NOTE: Support for certain processors is currently disabled,
+    waiting on updated docs from VIA.
+
+
+Intel SpeedStep:
+    certain mobile Intel Pentium III (Coppermine), and all mobile
+    Intel Pentium III-M (Tulatin) and mobile Intel Pentium 4 P4-Ms.
+--------------------------------
+    Speed Limits Detection: working. No need for boot parameters.
+    NOTE: 
+    1.) mobile Intel Pentium III (Coppermine):
+        The SpeedStep interface may only be used on SpeedStep
+        capable processors. Unforunately, due to lack of documentation,
+        such detection is not yet possible on mobile Intel PIII
+        (Coppermine) processors. In order to activate SpeedStep on such a
+        processor, you have to remove one line manually in
+        linux/drivers/arch/i386/speedstep.c
+
+
+P4 CPU Clock Modulation:
+    Intel Pentium 4 Xeon processors
+--------------------------------
+    Speed Limits Detection: Not implemented. You need to specify the
+    minimum and maximum frequency in the boot parameter (see above).
+
+
+
+2. User Interface
+=================
+
+CPUFreq uses a "sysctl" interface which is located in 
+	/proc/sys/cpu/0/	  on UP (uniprocessor) kernels, or 
+	/proc/sys/cpu/any/	  on SMP (symmetric multiprocessoring) kernels.
+
+
+In this directory, you will find three files of importance for
+CPUFreq: speed-max, speed-min, and speed: 
+
+speed		    shows the current CPU frequency in kHz, 
+speed-min	    the minimal supported CPU frequency, and
+speed-max	    the maximal supported CPU frequency. 
+
+Please note that you might have to specify these limits as a boot
+parameter depending on the architecture (see above).
+
+
+To change the CPU frequency, "echo" the desired CPU frequency (in kHz)
+to speed. For example, to set the CPU speed to the lowest/highest
+allowed frequency do:
+
+root@notebook:# cat /proc/sys/cpu/0/speed-min > /proc/sys/cpu/0/speed
+root@notebook:# cat /proc/sys/cpu/0/speed-max > /proc/sys/cpu/0/speed
+
+
+2.1   Sample script for command line interface
+**********************************************
+
+
+Michael Ossmann <mike@ossmann.com> has written a small command line
+interface for the infinitely lazy.
+
+#!/bin/bash
+#
+# /usr/local/bin/freq
+#   simple command line interface to cpufreq
+
+[ -n "$1" ] && case "$1" in
+  "min" )
+    # set frequency to minimum
+    cat /proc/sys/cpu/0/speed-min >/proc/sys/cpu/0/speed
+    ;;
+  "max" )
+    # set frequency to maximum
+    cat /proc/sys/cpu/0/speed-max >/proc/sys/cpu/0/speed
+    ;;
+  * )
+    echo "Usage: $0 [min|max]"
+    echo "  min: set frequency to minimum and display new frequency"
+    echo "  max: set frequency to maximum and display new frequency"
+    echo "  no options: display current frequency"
+    exit 1
+    ;;
+esac
+
+# display current frequency
+cat /proc/sys/cpu/0/speed
+exit 0
+
+
+
+3.  CPUFreq core and interfaces
+===============================
+
+3.1   General information
+*************************
+
+The CPUFreq core code is located in linux/kernel/cpufreq.c. This
+cpufreq code offers a standardized interface for the CPUFreq
+architecture drivers (those pieces of code that do the actual
+frequency transition), as well as to "notifiers". These are device
+drivers or other part of the kernel that need to be informed of
+frequency changes (like timing code) or even need to force certain
+speed limits (like LCD drivers on ARM architecture). Aditionally, the
+kernel "constant" loops_per_jiffy is updated on frequency changes
+here.
+
+
+3.2   CPUFreq notifiers
+***********************
+
+CPUFreq notifiers are kernel code that need to be called to either
+a) define certain minimum or maximum speed settings,
+b) be informed of frequency changes in advance of the transition, or
+c) be informed of frequency changes directly after the transition.
+
+A standard kernel notifier interface is offered for this. See
+linux/include/linux/notifier.h for details on notifiers.
+
+
+Data and value passed to CPUFreq notifiers
+------------------------------------------
+The second argument passed to any notifier is an unsigned int stating
+the phase of the transition: 
+CPUFREQ_MINMAX during the process of determing a valid new CPU
+	       frequency,
+CPUFREQ_PRECHANGE right before the transition, and 
+CPUFREQ_POSTCHANGE right after the transition.
+
+The third argument, a void *pointer, points to a struct
+cpufreq_freqs. This consists of four values: min, max, cur and new.
+
+min and max are the current speed limits. Please note: Never update
+these values directly, use cpufreq_updateminmax(struct cpufreq_freqs
+*freqs, unsigned int min, unsigned int max) instead. cur is the
+current/old speed, and new is the new speed, but might only be valid
+on CPUFREQ_PRECHANGE or CPUFREQ_POSTCHANGE.
+
+Each notifier gets called all three times on any transition:
+
+CPUFREQ_MINMAX
+Here the notifier is supposed to update the min and max values to the
+limits the protected device / kernel code needs. As stated above,
+always use cpufreq_updateminmax for this.
+
+CPUFREQ_PRECHANGE
+CPUFREQ_POSTCHANGE
+Here the notifier is supposed to update all internal (e.g. device
+driver) code which is dependend on the CPU frequency.
+
+
+3.3   CPUFreq architecture drivers
+**********************************
+
+CPUFreq architecture drivers are the pieces of kernel code that
+actually perform CPU frequency transitions. These need to be
+initialised seperately (seperate initcalls), and may be
+modularized. They interact with the CPUFreq core in the following way:
+
+
+cpufreq_register()
+------------------
+cpufreq_register registers an arch driver to the CPUFreq core. Please
+note that only one arch driver may be registered at any time, -EBUSY
+is returned when an arch driver is already registered. The argument to
+cpufreq_register, cpufreq_driver_t driver, is described later.
+
+
+cpufreq_unregister()
+--------------------
+cpufreq_unregister unregisters an arch driver, e.g. on module
+unloading. Please note that there is no check done that this is called
+from the driver which actually registered itself to the core, so
+please only call this function when you are sure the arch driver got
+registered correctly before.
+
+
+struct cpufreq_driver
+----------------
+On initialisation, the arch driver is supposed to pass the following
+entries in struct cpufreq_driver cpufreq_driver:
+
+cpufreq_verify_t validate: This is a pointer to a function with the
+following definition: 
+     unsigned int validating_function (unsigned int kHz). 
+It is called right before a transition occurs. The proposed new
+speed setting is passed as an argument in kHz; the validating code
+should verify this is a valid speed setting which is currently
+supported by the CPU. It shall return the closest valid CPU frequency
+in kHz.
+
+cpufreq_setspeed_t setspeed: This is a pointer to a function with the
+following definition: 
+     void setspeed_function (unsigned int kHz). 
+This function shall perform the transition to the new CPU frequency 
+given as argument in kHz. Note that this argument is exactly the same
+as the one returned by cpufreq_verify_t validate.
+
+
+unsigned int freq.cur: The current CPU core frequency. Note that this
+is a requirement while the next two entries are optional.
+
+
+unsigned int freq.min (optional): The minimal CPU core frequency this
+CPU supports. This value may be limited further by the
+cpufreq_verify_t validate function, and so this value should be the
+minimal core frequency allowed "theoretically" on this system in this
+configuration.
+
+
+unsigned int freq.max (optional): The maximum CPU core frequency this
+CPU supports. This value may be limited further by the
+cpufreq_verify_t validate function, and so this value should be the
+maximum core frequency allowed "theoretically" on this system in this
+configuration.
+
+
+Some Requirements to CPUFreq architecture drivers
+-------------------------------------------------
+* Only call cpufreq_register() when the ability to switch CPU
+  frequencies is _verified_ or can't be missing
+* cpufreq_unregister() may only be called if cpufreq_register() has
+  been successfully(!) called before
+* All CPUs have to be set to the same speed whenever setspeed() is
+  called
+* Be aware that there is currently no error management in the
+  setspeed() code in the CPUFreq core. So only call yourself a
+  cpufreq_driver if you are really a working cpufreq_driver!
+
+
+
+4.  Mailing list and Links
+**************************
+
+
+Mailing List
+------------
+There is a CPU frequency changing CVS commit and general list where
+you can report bugs, problems or submit patches. To post a message,
+send an email to cpufreq@www.linux.org.uk, to subscribe go to
+http://www.linux.org.uk/mailman/listinfo/cpufreq. Previous post to the
+mailing list are available to subscribers at
+http://www.linux.org.uk/mailman/private/cpufreq/.
+
+
+Links
+-----
+the FTP archives:
+* ftp://ftp.linux.org.uk/pub/linux/cpufreq/
+
+how to access the CVS repository:
+* http://www.arm.linux.org.uk/cvs/
+
+the CPUFreq Mailing list:
+* http://www.linux.org.uk/mailman/listinfo/cpufreq
+
+Clock and voltage scaling for the SA-1100:
+* http://www.lart.tudelft.nl/projects/scaling
+
+CPUFreq project homepage
+* http://www.brodo.de/cpufreq/

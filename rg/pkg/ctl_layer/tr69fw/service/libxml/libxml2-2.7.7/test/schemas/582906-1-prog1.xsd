@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: 582906-1-prog1.xsd,v 1.1.4.2 2011/12/26 07:34:33 wzuo Exp $ -->
+<xs:schema xmlns="http://example.com/xml/Prog1"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           targetNamespace="http://example.com/xml/Prog1">
+
+    <xs:include schemaLocation="582906-1-common.xsd"/>
+
+</xs:schema>

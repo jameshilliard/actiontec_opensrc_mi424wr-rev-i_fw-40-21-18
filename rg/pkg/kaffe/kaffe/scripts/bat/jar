@@ -1,0 +1,2 @@
+@echo off
+kaffe kaffe.tools.jar.Jar %1 %2 %3 %4 %5

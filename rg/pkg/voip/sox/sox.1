@@ -1,0 +1,1387 @@
+.de Sh
+.br
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp
+.if t .sp .5v
+.if n .sp
+..
+.TH SoX 1 "December 11, 2001"
+.SH NAME
+sox \- Sound eXchange : universal sound sample translator
+.SH SYNOPSIS
+.P
+\fBsox\fR \fIinfile1\fR [ \fIinfile2\fR ... ] \fIoutfile\fR
+.P
+\fBsox\fR [ \fIgeneral options\fR ] [ \fIformat options\fR ] \fIinfile1\fR
+.br
+    [ [ \fIformat options\fR ] \fIinfile2\fR ... ] [ \fIformat options\fR ] \fIoutfile\fR
+.br
+    [ \fIeffect\fR [ \fIeffect options\fR ] ... ]
+.P
+\fBsoxmix\fR \fIinfile1 infile2\fR [ \fIinfile3\fR ... ] outfile\fR
+.P
+\fBsoxmix\fR [ \fIgeneral options\fR ] [ \fIformat options\fR ] \fIinfile1\fR
+.br
+    [ \fIformat options\fR ] \fIinfile2\fR
+.br
+    [ [ \fIformat options\fR ] \fIinfile3\fR ... ]
+.br
+    [ \fIformat options\fR ] \fIoutfile\fR
+.br
+    [ \fIeffect\fR [ \fIeffect options\fR ] ... ]
+
+.P
+.B General options:
+.br
+    [ -h ] [ -p ] [ -q ] [ -S ] [ -V ]
+.P
+.B Format options:
+.br
+    [ -t \fIfiletype\fR ] [ -r \fIrate\fR ] [ -s/-u/-U/-A/-a/-i/-g/-f ]
+    [ -b/-w/-l/-d ] [ -v \fIvolume\fR ]
+    [ -c \fIchannels\fR ] [ -x ] [ -e ]
+.P
+.B Effects:
+.br
+    \fBavg\fR [ -l | -r | -f | -b | -1 | -2 | -3 | -4 | n,n,...,n ]
+.br
+    \fBband\fR [ -n ] \fIcenter\fR [ \fIwidth\fR ]
+.br
+    \fBbandpass\fR \fIfrequency bandwidth\fR
+.br
+    \fBbandreject\fR \fIfrequency bandwidth\fR
+.br
+    \fBchorus\fR \fIgain-in gain out delay decay speed depth\fR
+.br
+           -s | -t [ \fIdelay decay speed depth\fR -s | -t ]
+.br
+    \fBcompand\fR \fIattack1\fR,\fIdecay1\fR[,\fIattack2\fR,\fIdecay2\fR...]
+.br
+            \fIin-dB1\fR,\fIout-dB1\fR[,\fIin-dB2\fR,\fIout-dB2\fR...]
+.br
+            [ \fIgain\fR [ \fIinitial-volume\fR [ \fIdelay\fR ] ] ]
+.br
+    \fBcopy\fR
+.br
+    \fBdcshift\fR \fIshift\fR [ \fIlimitergain\fR ]
+.br
+    \fBdeemph\fR
+.br
+    \fBearwax\fR
+.br
+    \fBecho\fR \fIgain-in gain-out delay decay\fR [ \fIdelay decay ...\fR ]
+.br
+    \fBechos\fR \fIgain-in gain-out delay decay\fR [ \fIdelay decay ...\fR ]
+.br
+    \fBfade\fR [ \fItype\fR ] \fIfade-in-length\fR 
+         [ \fIstop-time\fR [ \fIfade-out-length\fR ] ]
+.br
+    \fBfilter\fR [ \fIlow\fR ]-[ \fIhigh\fR ] [ \fIwindow-len\fR [ \fIbeta\fR ]]
+.br
+    \fBflanger\fR \fIgain-in gain-out delay decay speed\fR < -s | -t >
+.br
+    \fBhighp\fR \fIfrequency\fR
+.br
+    \fBhighpass\fR \fIfrequency\fR
+.br
+    \fBlowp\fR \fIfrequency\fR
+.br
+    \fBlowpass\fR \fIfrequency\fR
+.br
+    \fBmask\fR
+.br
+    \fBmcompand\fR "\fIattack1\fR,\fIdecay1\fR[,\fIattack2\fR,\fIdecay2\fR...]
+.br
+             \fIin-dB1\fR,\fIout-dB1\fR[,\fIin-dB2\fR,\fIout-dB2\fR...]
+.br
+             [ \fIgain\fR [ \fIinitial-volume\fR [ \fIdelay\fR ] ] ]" xover_freq
+.br
+    \fBnoiseprof\fR [\fIprofile-file\fR]
+.br
+    \fBnoisered\fR \fIprofile-file\fR [threshold]
+.br
+    \fBpan\fR \fIdirection\fR
+.br
+    \fBphaser\fR \fIgain-in gain-out delay decay speed\fR < -s | -t >
+.br
+    \fBpick\fR [ \fI-1\fR | \fI-2\fR | \fI-3\fR | \fI-4\fR | \fI-l\fR | \fI-r\fR | \fI-f\fR | \fI-b\fR ]
+.br
+    \fBpitch\fR \fIshift\fR [ \fIwidth interpole fade\fR ]
+.br
+    \fBpolyphase\fR [ -w < \fInut\fR / \fIham\fR > ] 
+              [ \fI -width\fR < \fIlong\fR / \fIshort\fR / # > ] 
+              [ \fI-cutoff #\fR ]
+.br
+    \fBrate\fR
+.br
+    \fBrepeat\fR \fIcount\fR
+.br
+    \fBresample\fR [ -qs | -q | -ql ] [ \fIrolloff\fR [ \fIbeta\fR ] ]
+.br
+    \fBreverb\fR \fIgain-out reverb-time delay\fR [ \fIdelay\fR ... ]
+.br
+    \fBreverse\fR
+.br
+    \fBsilence\fR \fIabove_periods\fR [ \fIduration threshold\fR[ \fId\fR | \fI%\fR ]
+            [ \fIbelow_periods duration 
+              threshold\fR[ \fId\fR | \fI%\fR ]]
+.br
+    \fBspeed\fR [ -c ] \fIfactor\fR
+.br
+    \fBstat\fR [ -s \fIn\fR ] [ -rms ] [ -v ] [ -d ]
+.br
+    \fBstretch\fR [ \fIfactor\fR [ \fIwindow fade shift fading\fR ]
+.br
+    \fBswap\fR [ \fI1 2\fR | \fI1 2 3 4\fR ]
+.br
+    \fBsynth\fR [ \fIlength\fR ] \fItype mix\fR [ \fIfreq\fR [ \fI-freq2\fR ]
+          [ \fIoff\fR ] [ \fIph\fR ] [ \fIp1\fR ] [ \fIp2\fR ] [ \fIp3\fR ]
+.br
+    \fBtrim\fR \fIstart\fR [ \fIlength\fR ]
+.br
+    \fBvibro\fR \fIspeed\fR [ \fIdepth\fR ]
+.br
+    \fBvol\fR \fIgain\fR [ \fItype\fR [ \fIlimitergain\fR ] ] 
+.SH DESCRIPTION
+.I SoX
+is a command line program that can convert most popular audio files
+to most other popular audio file formats.  It can optionally change
+the audio sample data type and apply one or more
+sound effects to the file during this translation.  
+.P
+If more than one input file is specified then they are concatenated into the
+output file.  In this case, it has a restriction that all input files
+must be of the same data type and sample rates.
+.P
+.I soxmix
+is functionally the same as the command line program
+.I sox
+expect that it takes two or more files as input and mixes the audio together
+to produce a single file as output.  It has a restriction that all
+input files must be of the same data type and sample rates.
+.P
+There are two types of audio file formats that
+.I SoX
+can work with.  The first are self-describing file formats.  These
+contain a header that completely describe the characteristics of
+the audio data that follows.
+.P
+The second type are header-less data, or sometimes called raw data.  A
+user must pass enough information to
+.I SoX
+on the command line so that it knows what type of data it contains.
+.P
+Audio data can usually be totally described by four characteristics:
+.TP 10
+rate
+The sample rate is in samples per second.  For example, CD sample rates are at 44100.
+.TP 10 
+data size
+The precision the data is stored in.  Most popular are 8-bit bytes or 16-bit 
+words.
+.TP 10
+data encoding
+What encoding the data type uses.  Examples are u-law, ADPCM, or signed linear data.
+.TP 10
+channels
+How many channels are contained in the audio data.  Mono and Stereo are the two most common.
+.P
+Please refer to the
+.B soxexam(1)
+manual page for a long description with examples on how to use SoX with
+various types of file formats.
+.SH OPTIONS
+The option syntax is a little grotty, but in essence:
+.P
+.br
+	sox file.au file.wav
+.P
+.br
+translates a sound file in SUN Sparc .AU format 
+into a Microsoft .WAV file, while
+.P
+.br
+	sox -v 0.5 file.au -r 12000 file.wav mask
+.P
+.br
+does the same format translation but also 
+lowers the amplitude by 1/2, changes
+the sampling rate to 12000 hertz, and applies the \fBmask\fR sound effect
+to the audio data.
+.P
+The following will mix two sound files together to to produce a single sound
+file.
+.P
+.br
+        soxmix music.wav voice.wav mixed.wav
+.PP
+\fBFilenames:\fR
+.PP
+SoX can be used as a part of pipe operations by using the special
+filenames of "-".  If specified as an input name, it will read data
+from stdin.  If specified as an output name, it will send data
+to stdout.
+.PP
+\fBGeneral options:\fR
+.TP 10
+\fB-h\fR
+Print version number and usage information.
+.TP 10
+\fB-p\fR
+Run in preview mode and run fast.  This will somewhat speed up
+SoX when the output format has a different number of channels and
+a different rate than the input file.  Currently, this defaults to
+using the \fBrate\fR effect instead of the \fBresample\fR effect for sample
+rate changes.
+.TP 10
+\fB-q\fR
+Run in quite mode when SoX wouldn't otherwise do that.  Inverse of \fB-S\fR
+option.
+.TP
+\fB-S\fR
+Print status while processing audio data.  Tells how much of audio data has been
+processed in terms of audio running time instead of samples.
+.TP 10
+\fB-V\fR
+Print a description of processing phases.
+Useful for figuring out exactly how
+.I SoX
+.PP
+is mangling your sound samples.
+.PP
+\fBFormat options:\fR
+.PP
+Format options effect the input or output file that they immediately precede.
+.PP
+Self describing input files can obtain all the format information directly from the header and so don't generally need format options.  Headerless input files lack this information and so format options must be used to inform SoX of the file's data type, sample rate, and number of channels.
+.PP
+By default, SoX attempts to write audio data using the same data type, sample rate, and channel count as the input data.  If the user wants the output file to be of a different format then format options can be used to specify the differences.
+.PP
+If an output file format doesn't support the same data type, sample rate, or channel count as the input file format, then SoX will auto select the closest values it does support so that the user does not have to specify these format change options manually.
+.TP 10
+\fB-t \fIfiletype\fR
+gives the type of the sound sample file.  Useful when file extension is
+not standard or can not be determeind by looking at the header of the file.
+.TP 10
+\fB-r \fIrate\fR
+Gives the sample rate in Hertz of the file.  To cause the output file to have
+a different sample rate than the input file, include this option as a part
+of the output format options.
+.br
+If the input and output files have
+different rates then a sample rate change effect must be ran.  Since SoX has
+multiple rate changing effects, the user can specify which to use as an effect.  If no rate change effect is specified then a default one will be chosen.
+.TP 10
+\fB-v \fIvolume\fR
+Change amplitude (floating point); 
+less than 1.0 decreases, greater than 1.0 increases.  May use a negative
+number to invert the phase of the audio data.  It is interesting to note
+that we perceive volume
+logarithmically but this adjusts the amplitude linearly.
+.br
+As with other format options, the volume option effects the
+file its specified with.  This is useful whe processing mutiple
+input files as the volume adjustment can be specified for each
+input file or just once to adjust the output file.  This can be
+compared to an audio mixer were you can control the volume of
+each input as well as a master volume (output side).
+.br
+\fIsoxmix\fR defaults the value of the -v option for each input
+file to 1/input_file_count.  This means if your mixing two
+input files together then each input file's volume is adjusted
+by 0.5.  This is done to prevent clipping of audio data during
+the mixing operation. 
+Users will most likely not be happy with this large of a volume adjustment
+and can specify the -v option to override this default value.
+.br
+Note: For the non-mixing case, see the \fBstat\fR effect for information on 
+finding the maximum volume adjustment that can be done with this option 
+without causing audio data to be clipped.
+.TP 10
+\fB-s/-u/-U/-A/-a/-i/-g/-f\fR
+The sample data encoding is signed linear (2's complement),
+unsigned linear, u-law (logarithmic), A-law (logarithmic),
+ADPCM, IMA_ADPCM, GSM, or Floating-point.
+.br
+U-law (actually shorthand for mu-law) and A-law are the U.S. and
+international standards for logarithmic telephone sound compression.
+When uncompressed u-law has roughly the precision of 14-bit PCM audio
+and A-law has roughly the precision of 13-bit PCM audio.
+.br
+A-law and u-law data is sometimes encoded using a reversed bit-ordering
+(ie. MSB becomes LSB).  Internally, SoX understands how to work with
+this encoding but there is currently no command line option to
+specify it.  If you need this support then you can use the psuedo
+file types of ".la" and ".lu" to inform sox of the encoding.  See
+supported file types for more information.
+.br
+ADPCM is a form of sound compression that has a good
+compromise between good sound quality and fast encoding/decoding
+time.  It is used for telephone sound compression and places were
+full fidelity is not as important.  When uncompressed it has roughly
+the precision of 16-bit PCM audio.  Popular version of ADPCM include
+G.726, MS ADPCM, and IMA ADPCM.  The \fB-a\fR flag has different meanings
+in different file handlers.  In \fB.wav\fR files it represents MS ADPCM
+files, in all others it means G.726 ADPCM.
+IMA ADPCM is a specific form of ADPCM compression, slightly simpler
+and slightly lower fidelity than Microsoft's flavor of ADPCM.
+IMA ADPCM is also called DVI ADPCM.
+.br
+GSM is a standard used for telephone sound compression in
+European countries and its gaining popularity because of its
+quality.  It usually is CPU intensive to work with GSM audio data.
+.TP 10
+\fB-b/-w/-l/-d\fR
+The sample data size is in bytes, 16-bit words, 32-bit long words, 
+or 64-bit double long (long long) words.
+.TP 10
+\fB-x\fR
+The sample data is in XINU format; that is,
+it comes from a machine with the opposite word order 
+than yours and must
+be swapped according to the word-size given above.
+Only 16-bit and 32-bit integer data may be swapped.
+Machine-format floating-point data is not portable.
+.TP 10
+\fB-c \fIchannels\fR
+The number of sound channels in the data file.
+This may be 1, 2, or 4; for mono, stereo, or quad sound data.  To cause
+the output file to have a different number of channels than the input
+file, include this option with the output file options.
+If the input and output file have a different number of channels then the
+avg effect must be used.  If the avg effect is not specified on the 
+command line it will be invoked internally with default parameters.
+.TP 10
+\fB-e\fR
+When specified after the last input filename (so that it applies
+to the output file)
+it allows you to avoid giving an output filename and will not
+produce an output file.  It will apply any specified effects
+to the input file.  This is mainly useful with the \fBstat\fR effect
+but can be used.
+.SH FILE TYPES
+.I SoX
+attempts to determine the file type of input files automatically by looking 
+at the header of the audio file.  When it is unable to detect the file
+type or if its an output file
+then it uses the file extension of the file to determine what type of file 
+format handler to use.  This can be overridden by specifying the
+"-t" option on the command line.
+.P
+The input and output files may be read from standard in and out.  This
+is done by specifying '-' as the filename.
+.P
+File formats which have headers are checked, 
+if that header doesn't seem right,
+the program exits with an appropriate message.
+.P
+The following file formats are supported:
+.PP
+.TP 10
+.B .8svx
+Amiga 8SVX musical instrument description format.
+.TP 10
+.B .aiff
+AIFF files used on Apple IIc/IIgs and SGI.
+Note: the AIFF format supports only one SSND chunk.
+It does not support multiple sound chunks, 
+or the 8SVX musical instrument description format.
+AIFF files are multimedia archives and
+can have multiple audio and picture chunks.
+You may need a separate archiver to work with them.
+.TP 10
+.B .alsa
+ALSA /dev/snd/pcmCxDxp device driver
+.br
+This is a pseudo-file type and can be optionally compiled into SoX.  Run
+.B sox -h
+to see if you have support for this file type.  When this driver is used
+it allows you to open up the ALSA /dev/snd/pcmCxDxp file and configure it to
+use the same data format as passed in to \fBSoX\fR.
+It works for both playing and recording sound samples.  When playing sound
+files it attempts to set up the ALSA driver to use the same format as the
+input file.  It is suggested to always override the output values to use
+the highest quality samples your sound card can handle.  Example:
+.I sox infile -t alsa -w -s /dev/snd/pcmC0D0p
+.TP 10
+.B .au
+SUN Microsystems AU files.
+There are apparently many types of .au files;
+DEC has invented its own with a different magic number
+and word order.  
+The .au handler can read these files but will not write them.
+Some .au files have valid AU headers and some do not.
+The latter are probably original SUN u-law 8000 hz samples.
+These can be dealt with using the 
+.B .ul
+format (see below).
+.TP 10
+.B .avr
+Audio Visual Research
+.br
+The AVR format is produced by a number of commercial packages
+on the Mac.
+.TP 10
+.B .cdr
+CD-R
+.br
+CD-R files are used in mastering music on Compact Disks.
+The audio data on a CD-R disk is a raw audio file
+with a format of stereo 16-bit signed samples at a 44khz sample
+rate.  There is a special blocking/padding oddity at the end
+of the audio file and is why it needs its own handler.
+.TP 10
+.B .cvs
+Continuously Variable Slope Delta modulation
+.br
+Used to compress speech audio for applications such as voice mail.
+.TP 10
+.B .dat      
+Text Data files
+.br
+These files contain a textual representation of the
+sample data.  There is one line at the beginning
+that contains the sample rate.  Subsequent lines
+contain two numeric data items: the time since
+the beginning of the first sample and the sample value.
+Values are normalized so that the maximum and minimum
+are 1.00 and -1.00.  This file format can be used to
+create data files for external programs such as
+FFT analyzers or graph routines.  SoX can also convert
+a file in this format back into one of the other file
+formats.
+.TP 10
+.B .gsm
+GSM 06.10 Lossy Speech Compression
+.br
+A standard for compressing speech which is used in the
+Global Standard for Mobil telecommunications (GSM).  Its good
+for its purpose, shrinking audio data size, but it will introduce
+lots of noise when a given sound sample is encoded and decoded
+multiple times.  This format is used by some voice mail applications.
+It is rather CPU intensive.
+.br
+GSM in
+.B SoX
+is optional and requires access to an external GSM library.  To see
+if there is support for gsm run \fBsox -h\fR
+and look for it under the list of supported file formats.
+.TP 10
+.B .hcom
+Macintosh HCOM files.
+These are (apparently) Mac FSSD files with some variant
+of Huffman compression.
+The Macintosh has wacky file formats and this format
+handler apparently doesn't handle all the ones it should.
+Mac users will need your usual arsenal of file converters
+to deal with an HCOM file under Unix or DOS.
+.TP 10
+.B .maud
+An Amiga format
+.br
+An IFF-conform sound file type, registered by
+MS MacroSystem Computer GmbH, published along
+with the "Toccata" sound-card on the Amiga.
+Allows 8bit linear, 16bit linear, A-Law, u-law
+in mono and stereo.
+.TP 10
+.B .mp3
+MP3 Compressed Audio
+.br
+MP3 audio files come from the MPEG standards for audio and video compression.  They are a lossy compression format that achieves good compression rates with a minimum amount of quality loss.  Also see Ogg Vorbis for a similar format.
+MP3 support in
+.B SoX
+is optional and requires access to either or both the external 
+libmad and libmp3lame libraries.  To
+see if there is support for Mp3 run \fBsox -h\fR
+and look for it under the list of supported file formats as "mp3".
+
+.TP 10
+.B .nul
+Null file handler.  This is a fake file hander that act as if its reading
+a stream of 0's from a while or fake writing output to a file.  This
+is not a very useful file handler in most cases.  It might be useful in
+some scripts were you do not want to read or write from a real file
+but would like to specify a filename for consistency.
+.TP 10
+.B .ogg
+Ogg Vorbis Compressed Audio.
+.br
+Ogg Vorbis is a open, patent-free CODEC designed for compressing music
+and streaming audio.  It is similar to MP3, VQF, AAC, and other lossy
+formats.  
+.B SoX
+can decode all types of Ogg Vorbis files, but can only encode at 128 kbps.
+Decoding is somewhat CPU intensive and encoding is very CPU intensive.
+.br
+Ogg Vorbis in
+.B SoX
+is optional and requires access to external Ogg Vorbis libraries.  To
+see if there is support for Ogg Vorbis run \fBsox -h\fR
+and look for it under the list of supported file formats as "vorbis".
+.TP 10
+.B ossdsp
+OSS /dev/dsp device driver
+.br
+This is a pseudo-file type and can be optionally compiled into SoX.  Run
+.B sox -h
+to see if you have support for this file type.  When this driver is used
+it allows you to open up the OSS /dev/dsp file and configure it to
+use the same data format as passed in to \fBSoX\fR.
+It works for both playing and recording sound samples.  When playing sound
+files it attempts to set up the OSS driver to use the same format as the
+input file.  It is suggested to always override the output values to use
+the highest quality samples your sound card can handle.  Example:
+.I sox infile -t ossdsp -w -s /dev/dsp
+.TP 10
+.B .prc
+Psion record.app
+.br
+Used in some Psion devices for System alarms.  This format is newer then
+the .wve format that is used in some Psion devices.
+.TP 10
+.B .sf
+IRCAM Sound Files.
+.br
+Sound Files are used by academic music software 
+such as the CSound package, and the MixView sound sample editor.
+.TP 10
+.B .sph
+.br
+SPHERE (SPeech HEader Resources) is a file format defined by NIST
+(National Institute of Standards and Technology) and is used with
+speech audio.  SoX can read these files when they contain
+u-law and PCM data.  It will ignore any header information that
+says the data is compressed using \fIshorten\fR compression and
+will treat the data as either u-law or PCM.  This will allow SoX
+and the command line \fIshorten\fR program to be ran together using
+pipes to uncompress the data and then pass the result to SoX for processing.
+.TP 10
+.B .smp
+Turtle Beach SampleVision files.
+.br
+SMP files are for use with the PC-DOS package SampleVision by Turtle Beach
+Softworks. This package is for communication to several MIDI samplers. All
+sample rates are supported by the package, although not all are supported by
+the samplers themselves. Currently loop points are ignored.
+.TP 10
+.B .snd
+.br
+Under DOS this file format is the same as the \fB.sndt\fR format.  Under all
+other platforms it is the same as the \fB.au\fR format.
+.TP 10
+.B .sndt
+SoundTool files.
+.br
+This is an older DOS file format.
+.TP 10
+.B sunau
+Sun /dev/audio device driver
+.br
+This is a pseudo-file type and can be optionally compiled into SoX.  Run
+.B sox -h
+to see if you have support for this file type.  When this driver is used
+it allows you to open up a Sun /dev/audio file and configure it to
+use the same data type as passed in to
+.B SoX.
+It works for both playing and recording sound samples.  When playing sound
+files it attempts to set up the audio driver to use the same format as the
+input file.  It is suggested to always override the output values to use
+the highest quality samples your hardware can handle.  Example:
+.I sox infile -t sunau -w -s /dev/audio
+or
+.I sox infile -t sunau -U -c 1 /dev/audio
+for older sun equipment.
+.TP 10
+.B .txw
+Yamaha TX-16W sampler.
+.br
+A file format from a Yamaha sampling keyboard which wrote IBM-PC
+format 3.5" floppies.  Handles reading of files which do not have
+the sample rate field set to one of the expected by looking at some
+other bytes in the attack/loop length fields, and defaulting to
+33kHz if the sample rate is still unknown.
+.TP 10
+.B .vms
+More info to come.
+.br
+Used to compress speech audio for applications such as voice mail.
+.TP 10
+.B .voc
+Sound Blaster VOC files.
+.br
+VOC files are multi-part and contain silence parts, looping, and
+different sample rates for different chunks.
+On input, the silence parts are filled out, loops are rejected,
+and sample data with a new sample rate is rejected.
+Silence with a different sample rate is generated appropriately.
+On output, silence is not detected, nor are impossible sample rates.
+Note, this version now supports playing VOC files with multiple
+blocks and supports playing files containing u-law and A-law samples.
+.TP 10
+.B vorbis
+See
+.B .ogg
+format.
+.TP 10
+.B .vox
+A headerless file of Dialogic/OKI ADPCM audio data commonly comes with the
+extension .vox.  This ADPCM data has 12-bit precision packed into only 4-bits.
+.TP 10
+.B .wav
+Microsoft .WAV RIFF files.
+.br
+These appear to be very similar to IFF files,
+but not the same.  
+They are the native sound file format of Windows.
+(Obviously, Windows was of such incredible importance
+to the computer industry that it just had to have its own 
+sound file format.)
+.br
+Normally \fB.wav\fR files have all formatting information
+in their headers, and so do not need any format options
+specified for an input file. If any are, they will
+override the file header, and you will be warned to this effect.
+You had better know what you are doing! Output format
+options will cause a format conversion, and the \fB.wav\fR
+will written appropriately.
+.br
+SoX currently can read PCM, ULAW, ALAW, MS ADPCM, and IMA (or DVI) ADPCM.
+It can write all of these formats including the ADPCM encoding.
+Big endian versions of RIFF files, called RIFX, can also be read
+and written.  To write a RIFX file, use the 
+.I -x
+option with the output file options.
+.TP 10
+.B .wve
+Psion 8-bit A-law
+.br
+These are 8-bit A-law 8khz sound files used on the
+Psion palmtop portable computer.
+.TP 10
+.B .raw
+Raw files (no header).
+.br
+The sample rate, size (byte, word, etc), 
+and encoding (signed, unsigned, etc.)
+of the sample file must be given.
+The number of channels defaults to 1.
+.TP 10
+.B ".ub, .sb, .uw, .sw, .ul, .al, .lu, .la, .sl"
+These are several suffices which serve as
+a shorthand for raw files with a given size and encoding.
+Thus, \fBub, sb, uw, sw, ul, al, lu, la\fR and \fBsl\fR
+correspond to "unsigned byte", "signed byte",
+"unsigned word", "signed word", "u-law" (byte), "A-law" (byte),
+inverse bit order "u-law", inverse bit order "A-law", and "signed long".
+The sample rate defaults to 8000 hz if not explicitly set,
+and the number of channels defaults to 1.
+There are lots of Sparc samples floating around in u-law format
+with no header and fixed at a sample rate of 8000 hz.
+(Certain sound management software cheerfully ignores the headers.)
+Similarly, most Mac sound files are in unsigned byte format with
+a sample rate of 11025 or 22050 hz.
+.TP 10
+.B .auto
+This is a ``meta-type'' and is the default file type if the user does not specify one. This file type attempts to guess the real type by looking for magic words in the header. If the type can't be guessed, the program
+exits with an error message.  The input must be a plain file, not a
+pipe.  This type can't be used for output files.
+.SH EFFECTS
+Multiple effects may be applied to the audio data by specifying them
+one after another at the end of the command line.
+.TP 10
+avg [ \fI-l\fR | \fI-r\fR | \fI-f\fR | \fI-b\fR | \fI-1\fR | \fI-2\fR | \fI-3\fR | \fI-4\fR | \fIn,n,...,n\fR ]
+Reduce the number of channels by averaging the samples,
+or duplicate channels to increase the number of channels.
+This effect is automatically used when the number of input
+channels differ from the number of output channels.  When reducing
+the number of channels it is possible to manually specify the
+avg effect and use the \fI-l\fR, \fI-r\fR, \fI-f\fR, \fI-b\fR,
+\fI-1\fR, \fI-2\fR, \fI-3\fR, \fI-4\fR, options to select only
+the left, right, front, back channel(s) or specific channel 
+for the output instead of averaging the channels.
+The \fI-l\fR, and \fI-r\fR options will do averaging
+in quad-channel files so select the exact channel to prevent this.
+
+The avg effect can also be invoked with up to 16 double-precision
+numbers, seperated by commas, which specify the proportion (0.0 = 0% and 1.0 = 100%) 
+of each input channel that is to be mixed into each output channel.
+In two-channel mode, 4 numbers are given: l->l, l->r, r->l, and r->r,
+respectively.
+In four-channel mode, the first 4 numbers give the proportions for the
+left-front output channel, as follows: lf->lf, rf->lf, lb->lf, and
+rb->rf.
+The next 4 give the right-front output in the same order, then
+left-back and right-back.
+
+It is also possible to use the 16 numbers to expand or reduce the
+channel count; just specify 0 for unused channels.
+
+Finally, certain reduced combination of numbers can be specified
+for certain input/output channel combinations.
+
+
+In Ch  Out Ch Num Mappings
+.br
+_____  ______ ___ _____________________________
+.b4
+  2      1     2   l->l, r->l
+.br
+  2      2     1   adjust balance
+.br
+  4      1     4   lf->l, rf->l, lb->l, rb-l
+.br
+  4      2     2   lf->l&rf->r, lb->l&rb->r
+.br
+  4      4     1   adjust balance
+.br
+  4      4     2   front balance, back balance
+.br
+
+.TP 10
+band \fB[ \fI-n \fB] \fIcenter \fB[ \fIwidth\fB ]
+Apply a band-pass filter.
+The frequency response drops logarithmically
+around the
+.I center
+frequency.
+The
+.I width
+gives the slope of the drop.
+The frequencies at 
+.I "center + width"
+and
+.I "center - width"
+will be half of their original amplitudes.
+.B Band
+defaults to a mode oriented to pitched signals,
+i.e. voice, singing, or instrumental music.
+The 
+.I -n
+(for noise) option uses the alternate mode
+for un-pitched signals.
+.B Warning:
+.I -n
+introduces a power-gain of about 11dB in the filter, so beware
+of output clipping.
+.B Band
+introduces noise in the shape of the filter,
+i.e. peaking at the 
+.I center
+frequency and settling around it.
+See \fBfilter\fR for a bandpass effect with steeper shoulders.
+.TP 10
+bandpass \fIfrequency bandwidth\fB
+Butterworth bandpass filter. Description coming soon!
+.TP 10
+bandreject \fIfrequency bandwidth\fB
+Butterworth bandreject filter.  Description coming soon!
+.TP
+chorus \fIgain-in gain-out delay decay speed depth 
+.TP 10
+       -s \fR| \fI-t [ \fIdelay decay speed depth -s \fR| \fI-t ... \fR]
+Add a chorus to a sound sample.  Each quadtuple
+delay/decay/speed/depth gives the delay in milliseconds
+and the decay (relative to gain-in) with a modulation
+speed in Hz using depth in milliseconds.
+The modulation is either sinusoidal (-s) or triangular
+(-t).  Gain-out is the volume of the output.
+.TP
+compand \fIattack1,decay1\fR[,\fIattack2,decay2\fR...]
+.TP 
+        \fIin-dB1,out-dB1\fR[,\fIin-dB2,out-dB2\fR...]
+.TP 10
+        [\fIgain\fR [\fIinitial-volume\fR [\fIdelay\fR ] ] ]
+Compand (compress or expand) the dynamic range of a sample.  The
+attack and decay time specify the integration time over which the
+absolute value of the input signal is integrated to determine its
+volume; attacks refer to increases in volume and decays refer to
+decreases.  Where more than one pair of attack/decay parameters are
+specified, each channel is treated separately and the number of pairs
+must agree with the number of input channels.  The second parameter is
+a list of points on the compander's transfer function specified in dB
+relative to the maximum possible signal amplitude.  The input values
+must be in a strictly increasing order but the transfer function does
+not have to be monotonically rising.  The special value \fI-inf\fR may
+be used to indicate that the input volume should be associated output
+volume.  The points \fI-inf,-inf\fR and \fI0,0\fR are assumed; the
+latter may be overridden, but the former may not.
+
+The third
+(optional) parameter is a post-processing gain in dB which is applied
+after the compression has taken place; the fourth (optional) parameter
+is an initial volume to be assumed for each channel when the effect
+starts.  This permits the user to supply a nominal level initially, so
+that, for example, a very large gain is not applied to initial signal
+levels before the companding action has begun to operate: it is quite
+probable that in such an event, the output would be severely clipped
+while the compander gain properly adjusts itself.
+
+The fifth (optional) parameter is a delay in seconds.
+The input signal is analyzed immediately to control the compander, but
+it is delayed before being fed to the volume adjuster.
+Specifying a delay approximately equal to the attack/decay times
+allows the compander to effectively operate in a "predictive" rather than a
+reactive mode.
+.TP 10
+copy
+Copy the input file to the output file.
+This is the default effect if both files have the same 
+sampling rate.
+.TP 10
+dcshift \fIshift\fR [ \fIlimitergain\fR ]
+DC Shift the audio data, with basic linear amplitude formula.
+This is most useful if your audio data tends to not be centered around
+a value of 0.  Shifting it back will allow you to get the most volume
+adjustments without clipping audio data.
+.br
+The first option is the \fIdcshift\fR value.  It is a floating point number that
+indicates the amount to shift.
+.br
+An option limtergain value can be specified as well.  It should have a value much less then 1.0 and is used only on peaks to prevent clipping.
+.TP 10
+deemph
+Apply a treble attenuation shelving filter to samples in
+audio cd format.  The frequency response of pre-emphasized
+recordings is rectified.  The filtering is defined in the
+standard document ISO 908.
+.TP 10
+earwax
+Makes sound easier to listen to on headphones.
+Adds audio-cues to samples in audio cd format so that
+when listened to on headphones the stereo image is
+moved from inside
+your head (standard for headphones) to outside and in front of the
+listener (standard for speakers). See 
+.br
+www.geocities.com/beinges
+for a full explanation.
+.TP 10
+echo \fIgain-in gain-out delay decay \fR[ \fIdelay decay ... \fR]
+Add echoing to a sound sample.
+Each delay/decay part gives the delay in milliseconds 
+and the decay (relative to gain-in) of that echo.
+Gain-out is the volume of the output.
+.TP 10
+echos \fIgain-in gain-out delay decay \fR[ \fIdelay decay ... \fR]
+Add a sequence of echos to a sound sample.
+Each delay/decay part gives the delay in milliseconds 
+and the decay (relative to gain-in) of that echo.
+Gain-out is the volume of the output.
+.TP
+fade [ \fItype\fR ] \fIfade-in-length\fR
+.TP 10
+     [ \fIstop-time\fR [ \fIfade-out-length\fR ] ]
+Add a fade effect to the beginning, end, or both of the audio data.  
+
+For fade-ins, this starts from the first sample and ramps the volume of the audio from 0 to full volume over \fIfade-in-length\fR seconds.  Specify 0 seconds if no fade-in is wanted.
+
+For fade-outs, the audio data will be truncated at the stop-time and
+the volume will be ramped from full volume down to 0 starting at
+\fIfade-out-length\fR seconds before the \fIstop-time\fR.  If fade-out-length
+is not specified, it defaults to the same value as fade-in-length.
+No fade-out is performed if the stop-time is not specified.
+.br
+All times can be specified in either periods of time or sample counts.
+To specify time periods use the format hh:mm:ss.frac format.  To specify
+using sample counts, specify the number of samples and append the letter 's'
+to the sample count (for example 8000s).
+.br
+An optional \fItype\fR can be specified to change the type of envelope.  Choices are q for quarter of a sinewave, h for half a sinewave, t for linear slope, l for logarithmic, and p for inverted parabola.  The default is a linear slope.
+.TP 10
+filter [ \fIlow\fR ]-[ \fIhigh\fR ] [ \fIwindow-len\fR [ \fIbeta\fR ] ]
+Apply a Sinc-windowed lowpass, highpass, or bandpass filter of given
+window length to the signal.
+\fIlow\fR refers to the frequency of the lower 6dB corner of the filter.
+\fIhigh\fR refers to the frequency of the upper 6dB corner of the filter.
+
+A lowpass filter is obtained by leaving \fIlow\fR unspecified, or 0.
+A highpass filter is obtained by leaving \fIhigh\fR unspecified, or 0,
+or greater than or equal to the Nyquist frequency.
+
+The \fIwindow-len\fR, if unspecified, defaults to 128.
+Longer windows give a sharper cutoff, smaller windows a more gradual cutoff.
+
+The \fIbeta\fR, if unspecified, defaults to 16.  This selects a Kaiser window.
+You can select a Nuttall window by specifying anything <= 2.0 here.
+For more discussion of beta, look under the \fBresample\fR effect.
+
+.TP 10
+flanger \fIgain-in gain-out delay decay speed\fR < -s | -t >
+Add a flanger to a sound sample.  Each triple
+delay/decay/speed gives the delay in milliseconds
+and the decay (relative to gain-in) with a modulation
+speed in Hz.
+The modulation is either sinodial (-s) or triangular
+(-t).  Gain-out is the volume of the output.
+.TP 10
+highp \fIfrequency\fR
+Apply a single pole recursive high-pass filter.
+The frequency response drops logarithmically with 
+I frequency 
+in the middle of the drop.
+The slope of the filter is quite gentle.
+See \fBfilter\fR for a highpass effect with sharper cutoff.
+.TP 10
+highpass \fIfrequency\fB
+Butterworth highpass filter.  Description coming soon!
+.TP 10
+lowp \fIfrequency\fR
+Apply a single pole recursive low-pass filter.
+The frequency response drops logarithmically with 
+.I frequency 
+in the middle of the drop.
+The slope of the filter is quite gentle.
+See \fBfilter\fR for a lowpass effect with sharper cutoff.
+.TP 10
+lowpass \fIfrequency\fB
+Butterworth lowpass filter.  Description coming soon!
+.TP 10
+mask
+Add "masking noise" to signal.
+This effect deliberately adds white noise to a sound 
+in order to mask quantization effects,
+created by the process of playing a sound digitally.
+It tends to mask buzzing voices, for example.
+It adds 1/2 bit of noise to the sound file at the
+output bit depth.
+.TP
+mcompand "\fIattack1,decay1\fR[,\fIattack2,decay2\fR...]
+.TP 
+         \fIin-dB1,out-dB1\fR[,\fIin-dB2,out-dB2\fR...]
+.TP 10
+         [\fIgain\fR [\fIinitial-volume\fR [\fIdelay\fR ] ] ]" \fIxover_freq\fR
+
+Multi-band compander is similar to the single band compander but
+the audio file is first divided up into bands and then the compander
+is ran on each band.  See the \fBcompand\fR effect for definition of its options.  Compand options are specified between double quotes and the crossover frequency for that band is specefied seperately with \fIxover_fre\fR.  This can be repeated multiple times to create multiple bands.
+.TP
+noiseprof [\fIprofile-file\fR]
+.TP 10
+noisered \fIprofile-file\fR [\fIthreshold\fR]
+Noise reduction filter with profiling. This filter is moderately effective at
+removing consistent background noise such as hiss or hum. To use it, first run
+the \fBnoiseprof\fR effect on a section of silence
+(that is, a section which contains
+nothing but noise). The \fBnoiseprof\fR effect will print a noise profile
+to \fIprofile-file\fR, or to stdout if no \fIprofile-file\fR is specified.
+If there is sound output on stdout then the profile will instead be directed to
+stderr.
+
+To actually remove the noise, run SoX again with the \fInoisered\fR filter. The
+filter needs one argument, \fIprofile-file\fR, which contains the noise profile
+from noiseprof. \fIthershold\fR specifies how much noise should be removed, and
+may be between 0 and 1 with a default of 0.5. Higher values will remove more
+noise but present a greater possibility of distorting the desired audio signal.
+Experiment with different threshold values to find the optimal one for your
+sample.
+.TP 10
+pan \fIdirection\fB
+Pan the sound of an audio file from one channel to another.  This is done by
+changing the volume of the input channels so that it fades out on one
+channel and fades-in on another.  If the number of input channels is
+different then the number of output channels then this effect tries to
+intelligently handle this.  For instance, if the input contains 1 channel
+and the output contains 2 channels, then it will create the missing channel
+itself.  The 
+.I direction
+is a value from -1.0 to 1.0.  -1.0 represents
+far left and 1.0 represents far right.  Numbers in between will start the
+pan effect without totally muting the opposite channel.
+.TP 10
+phaser \fIgain-in gain-out delay decay speed\fR < -s | -t >
+Add a phaser to a sound sample.  Each triple
+delay/decay/speed gives the delay in milliseconds
+and the decay (relative to gain-in) with a modulation
+speed in Hz.
+The modulation is either sinodial (-s) or triangular
+(-t).  The decay should be less than 0.5 to avoid
+feedback.  Gain-out is the volume of the output.
+.TP 10
+pick [ \fI-1\fR | \fI-2\fR | \fI-3\fR | \fI-4\fR | \fI-l\fR | \fI-r\fR | \fI-f\fR | \fI-b\fR ]
+Pick a subset of channels to be copied into the output file.  This effect is just an alias of the "avg" effect but is left here for historical reasons.
+.TP 10
+pitch \fIshift [ width interpole fade ]\fB
+Change the pitch of file without affecting its duration by cross-fading
+shifted samples.
+.I shift
+is given in cents. Use a positive value to shift to treble, negative value to shift to bass.
+Default shift is 0.
+.I width
+of window is in ms. Default width is 20ms. Try 30ms to lower pitch,
+and 10ms to raise pitch.
+.I interpole
+option, can be "cubic" or "linear". Default is "cubic".  The
+.I fade
+option, can be "cos", "hamming", "linear" or "trapezoid".
+Default is "cos".
+.TP
+polyphase [ \fI-w \fR< \fInut\fR / \fIham\fR > ] 
+.TP
+          [ \fI -width \fR< \fI long \fR / \fIshort \fR / \fI# \fR> ] 
+.TP 10
+          [ \fI-cutoff # \fR ]
+Translate input sampling rate to output sampling rate via polyphase
+interpolation, a DSP algorithm.  This method is slow and uses lots
+of RAM, but gives much better results than 
+.B rate.
+
+.br
+-w < nut / ham > : select either a Nuttal (~90 dB stopband) or Hamming
+(~43 dB stopband) window.  Default is
+.I nut.
+
+.br
+-width long / short / # : specify the (approximate) width of the filter.
+.I long
+is 1024 samples;
+.I short
+is 128 samples.  Alternatively, an exact number can be used.  Default is
+.I long.
+The
+.I short
+option is
+.B not
+recommended, as it produces poor quality results.
+
+.br
+-cutoff # : specify the filter cutoff frequency in terms of fraction of
+frequency bandwidth, also know as the Nyquist frequency.  Please see 
+the \fIresample\fR effect for
+further information on Nyquist frequency.  If upsampling, then this is the 
+fraction of the original signal
+that should go through.  If downsampling, this is the fraction of the
+signal left after downsampling.  Default is 0.95.  Remember that
+this is a float.
+
+.TP 10
+rate
+Translate input sampling rate to output sampling rate
+via linear interpolation to the Least Common Multiple
+of the two sampling rates.
+This is the default effect 
+if the two files have different sampling rates and the preview options
+was specified.
+This is fast but noisy:
+the spectrum of the original sound will be shifted upwards
+and duplicated faintly when up-translating by a multiple.
+
+Lerp-ing is acceptable for cheap 8-bit sound hardware,
+but for CD-quality sound you should instead use either
+.B resample
+or
+.B polyphase.
+If you are wondering which rate changing effects to use, you will want to read a
+detailed analysis of all of them at http://leute.server.de/wilde/resample.html
+.TP 10
+repeat \fIcount\fR
+Repeats the audio data \fIcount\fR times.  Requires disk space to store the data to be repeated.
+.TP 10
+resample [ \fI-qs\fB | \fI-q\fB | \fI-ql\fB ] [ \fIrolloff\fB [ \fIbeta\fB ] ]\fR
+Translate input sampling rate to output sampling rate
+via simulated analog filtration.
+This method is slower than 
+.B rate,
+but gives much better results.
+
+By default, linear interpolation is used,
+with a window width about 45 samples at the lower of the two rate.
+This gives an accuracy of about 16 bits, but insufficient stopband rejection
+in the case that you want to have rolloff greater than about 0.80 of
+the Nyquist frequency.
+
+The \fI-q*\fR options will change the default values for rolloff and beta
+as well as use quadratic interpolation of filter
+coefficients, resulting in about 24 bits precision.
+The \fI-qs\fR, \fI-q\fR, or \fI-ql\fR options specify increased accuracy
+at the cost of lower execution speed.  It is optional to specify
+rolloff and beta parameters when using the \fI-q*\fR options.
+
+Following is a table of the reasonable defaults which are built-in to SoX:
+
+.br 
+   \fBOption  Window rolloff beta interpolation\fR
+.br
+   \fB------  ------ ------- ---- -------------\fR
+.br
+   (none)    45    0.80    16     linear
+.br
+     -qs     45    0.80    16    quadratic
+.br
+     -q      75    0.875   16    quadratic
+.br
+     -ql    149    0.94    16    quadratic
+.br 
+   \fB------  ------ ------- ---- -------------\fR
+
+\fI-qs\fR, \fI-q\fR, or \fI-ql\fR use window lengths of 45, 75, or 149
+samples, respectively, at the lower sample-rate of the two files.
+This means progressively sharper stop-band rejection, at proportionally
+slower execution times.
+
+\fIrolloff\fR refers to the cut-off frequency of the
+low pass filter and is given in terms of the
+Nyquist frequency for the lower sample rate.  rolloff therefore should
+be something between 0.0 and 1.0, in practice 0.8-0.95.  The defaults are
+indicated above.
+
+The \fINyquist frequency\fR is equal to (sample rate / 2).  Logically,
+this is because the A/D converter needs at least 2 samples to detect 1
+cycle at the Nyquist frequency.  Frequencies higher then the Nyquist
+will actually appear as lower frequencies to the A/D converter and
+is called aliasing.  Normally, A/D converts run the signal through
+a highpass filter first to avoid these problems.
+
+Similar problems will happen in software when reducing the sample rate of 
+an audio file (frequencies above the new Nyquist frequency can be aliased
+to lower frequencies).  Therefore, a good resample effect
+will remove all frequency information above the new Nyquist frequency.
+
+The \fIrolloff\fR refers to how close to the Nyquist frequency this cutoff
+is, with closer being better.  When increasing the sample rate of an 
+audio file you would not expect to have any frequencies exist that are 
+past the original Nyquist frequency.  Because of resampling properties, it 
+is common to have aliasing data created that is above the old 
+Nyquist frequency.  In that case the \fIrolloff\fR refers to how close 
+to the original Nyquist frequency to use a highpass filter to remove
+this false data, with closer also being better.
+
+The \fIbeta\fR parameter
+determines the type of filter window used.  Any value greater than 2.0 is
+the beta for a Kaiser window.  Beta <= 2.0 selects a Nuttall window.
+If unspecified, the default is a Kaiser window with beta 16.
+
+In the case of Kaiser window (beta > 2.0), lower betas produce a somewhat
+faster transition from passband to stopband, at the cost of noticeable artifacts.
+A beta of 16 is the default, beta less than 10 is not recommended.  If you want
+a sharper cutoff, don't use low beta's, use a longer sample window.
+A Nuttall window is selected by specifying any 'beta' <= 2, and the
+Nuttall window has somewhat steeper cutoff than the default Kaiser window.
+You will probably not need to use the beta parameter at all, unless you are
+just curious about comparing the effects of Nuttall vs. Kaiser windows.
+
+This is the default effect if the two files have different sampling rates.
+Default parameters are, as indicated above, Kaiser window of length 45,
+rolloff 0.80, beta 16, linear interpolation.
+
+\fBNOTE:\fR \fI-qs\fR is only slightly slower, but more accurate for
+16-bit or higher precision.
+
+\fBNOTE:\fR In many cases of up-sampling, no interpolation is needed,
+as exact filter coefficients can be computed in a reasonable amount of space.
+To be precise, this is done when
+
+.br
+           input_rate < output_rate
+.br
+                      &&
+.br
+  output_rate/gcd(input_rate,output_rate) <= 511
+.br
+.TP 10
+reverb \fIgain-out reverbe-time delay \fR[ \fIdelay ... \fR]
+Add reverberation to a sound sample.  Each delay is given 
+in milliseconds and its feedback is depending on the
+reverb-time in milliseconds.  Each delay should be in 
+the range of half to quarter of reverb-time to get
+a realistic reverberation.  Gain-out is the volume of the
+output.
+.TP 10
+reverse 
+Reverse the sound sample completely.
+Included for finding Satanic subliminals.
+.TP
+\fBsilence\fR \fIabove_periods\fR [ \fIduration threshold\fR[ \fId\fR | \fI%\fR ]
+.TP
+        [ \fIbelow_periods duration 
+.TP 10
+          threshold\fR[ \fId\fR | \fI%\fR ]]
+Removes silence from the beginning or end of a sound file.  Silence is anything below a specified threshold.
+.br
+When trimming silence from the beginning of a sound file, you specify a duration of audio that is above a given silence threshold before audio data is processed.  You can also specify the count of periods of none-silence you want to detect before processing audio data.  Specify a period of 0 if you do not want to trim data from the front of the sound file.
+.br
+When optionally trimming silence from the end of a sound file, you specify the duration of audio that must be below a given threshold before stopping to process audio data.  A count of periods that occur below the threshold may also be specified.  If this options are not specified then data is not trimmed from the end of the audio file.  If \fIbelow_periods\fR is negative, it is treated as a positive value and is also used to indicate the effect should restart processing as specified by the \fIabove_periods\fR, making it suitable for removing periods of silence in the middle of a sound file.
+.br
+Duration counts may be in the format of time, hh:mm:ss.frac, or in the exact count of samples.
+.br
+Threshold may be suffixed with d, or % to indicated the value is in decibels or a percentage of max value of the sample value.  A value of '0%' will look for total silence.
+.TP 10
+speed [ -c ] \fIfactor\fB
+Speed up or down the sound, as a magnetic tape with a speed control. 
+It affects both pitch and time. A factor of 1.0 means no change, 
+and is the default. 
+2.0 doubles speed, thus time length is cut by a half and pitch 
+is one octave higher. 
+0.5 halves speed thus time length doubles and pitch is one octave lower. 
+If the optional -c parameter is used then the factor is specified in "cents".
+.TP 10
+stat [ \fI-s n\fB ] [\fI-rms\fB ] [ \fI-v\fB ] [ \fI-d\fB ]
+Do a statistical check on the input file,
+and print results on the standard error file.  Audio data is passed
+unmodified from input to output file unless used along with the
+.B -e
+option.
+
+The "Volume Adjustment:" field in the statistics
+gives you the argument to the
+.B -v
+.I number
+which will make the sample as loud as possible without clipping. 
+
+The option
+.B -v
+will print out the "Volume Adjustment:" field's value only and
+return.  This could be of use in scripts to auto convert the
+volume.  
+
+The
+.B -s n
+option is used to scale the input data by a given factor.  The default value
+of n is the max value of a signed long variable (0x7fffffff).  Internal effects
+always work with signed long PCM data and so the value should relate to this
+fact.
+
+The
+.B -rms
+option will convert all output average values to \fIroot mean square\fR
+format.
+
+There is also an optional parameter
+.B -d
+that will print out a hex dump of the
+sound file from the internal buffer that is in 32-bit signed PCM data.
+This is mainly only of use in tracking down endian problems that
+creep in to SoX on cross-platform versions.
+
+.TP 10
+stretch \fIfactor [window fade shift fading]\fB
+Time stretch file by a given factor. Change duration without affecting the pitch. 
+.I factor
+of stretching: >1.0 lengthen, <1.0 shorten duration.
+.I window
+size is in ms. Default is 20ms. The
+.I fade
+option, can be "lin".
+.I shift
+ratio, in [0.0 1.0]. Default depends on stretch factor. 1.0
+to shorten, 0.8 to lengthen.  The
+.I fading
+ratio, in [0.0 0.5]. The amount of a fade's default depends on factor
+and shift.
+.TP 10
+swap [ \fI1 2\fB | \fI1 2 3 4\fB ]
+Swap channels in multi-channel sound files.  Optionally, you may
+specify the channel order you would like the output in.  This defaults
+to output channel 2 and then 1 for stereo and 2, 1, 4, 3 for quad-channels.  
+An interesting
+feature is that you may duplicate a given channel by overwriting another.
+This is done by repeating an output channel on the command line.  For example,
+swap 2 2 will overwrite channel 1 with channel 2's data; creating a stereo
+file with both channels containing the same audio data.
+.TP
+synth [ \fIlength\fR ] \fItype mix\fR [ \fIfreq\fR [ \fI-freq2\fR ]
+.TP 10
+      [ \fIoff\fR ] [ \fIph\fR ] [ \fIp1\fR ] [ \fIp2\fR ] [ \fIp3\fR ]
+The synth effect will generate various types of audio data.  Although
+this effect is used to generate audio data, an input file must be specified.
+The length of the input audio file determines the length of the output
+audio file.
+.br
+<length> length in sec or hh:mm:ss.frac, 0=inputlength, default=0
+.br
+<type> is sine, square, triangle, sawtooth, trapetz, exp,
+whitenoise, pinknoise, brownnoise, default=sine
+.br
+<mix> is create, mix, amod, default=create
+.br
+<freq> frequency at beginning in Hz, not used  for noise..
+.br
+<freq2> frequency at end in Hz, not used for noise..
+<freq/2> can be given as %%n, where 'n' is the number of
+half notes in respect to A (440Hz)
+.br
+<off> Bias (DC-offset)  of signal in percent, default=0
+.br
+<ph> phase shift 0..100 shift phase 0..2*Pi, not used for noise..
+.br
+<p1> square: Ton/Toff, triangle+trapetz: rising slope time (0..100)
+.br
+<p2> trapetz: ON time (0..100)
+.br
+<p3> trapetz: falling slope position (0..100)
+.TP 10
+trim \fIstart\fR [ \fIlength\fR ]
+Trim can trim off unwanted audio data from the beginning and end of the
+audio file.  Audio samples are not sent to the output stream until
+the \fIstart\fR location is reached.
+.br
+The optional \fIlength\fR parameter tells the number of samples to output
+after the \fIstart\fR sample and is used to trim off the back side of the
+audio data.  Using a value of 0 for the \fIstart\fR parameter will allow
+trimming off the back side only.
+.br
+Both options can be specified using either an amount of time and an exact count of samples.  The format for specifying lengths in time is hh:mm:ss.frac.  A start value of 1:30.5 will not start until 1 minute, thirty and 1/2 seconds into the audio data.  The format for specifying sample counts is the number of samples with the letter 's' appended to it.  A value of 8000s will wait until 8000 samples are read before starting to process audio data.
+.TP 10
+vibro \fIspeed \fB [ \fIdepth\fB ]
+Add the world-famous Fender Vibro-Champ sound
+effect to a sound sample by using
+a sine wave as the volume knob.
+.B Speed 
+gives the Hertz value of the wave.
+This must be under 30.
+.B Depth
+gives the amount the volume is cut into
+by the sine wave,
+ranging 0.0 to 1.0 and defaulting to 0.5.
+.TP 10
+vol \fIgain\fR [ \fItype\fB [ \fIlimitergain\fR ] ]
+The vol effect is much like the command line option -v.  It allows you to
+adjust the volume of an input file and allows you to specify the adjustment
+in relation to amplitude, power, or dB.  If \fItype\fR is not specified then
+it defaults to \fIamplitude\fR.
+.br 
+When type is 
+.I amplitude
+then a linear change of the amplitude is performed based on the gain.  Therefore,
+a value of 1.0 will keep the volume the same, 0.0 to < 1.0 will cause the
+volume to decrease and values of > 1.0 will cause the volume to increase.
+Beware of clipping audio data when the gain is greater then 1.0.  A negative
+value performs the same adjustment while also changing the phase.
+.br
+When type is 
+.I power
+then a value of 1.0 also means no change in volume.
+.br
+When type is 
+.I dB
+the amplitude is changed logarithmically.
+0.0 is constant while +6 doubles the amplitude.
+.br
+An optional \fIlimitergain\fR value can be specified and should be a
+value much less
+then 1.0 (ie 0.05 or 0.02) and is used only on peaks to prevent clipping.
+Not specifying this parameter will cause no limiter to be used.  In verbose
+mode, this effect will display the percentage of audio data that needed to be
+limited.
+.SH BUGS
+The syntax is horrific.  Thats the breaks when trying to handle all things from the command line.
+.P
+Please report any bugs found in this version of SoX to Chris Bagwell (cbagwell@users.sourceforge.net)
+.SH FILES
+.SH SEE ALSO
+.BR play (1),
+.BR rec (1),
+.BR soxexam(1)
+.SH NOTICES
+The version of SoX that accompanies this manual page is support by 
+Chris Bagwell (cbagwell@users.sourceforge.net).  Please refer any questions 
+regarding it to this address.  You may obtain the latest version at the 
+the web site http://sox.sourceforge.net/
+.SH AUTHOR
+Chris Bagwell (cbagwell@users.sourceforge.net).  
+.P
+Updates by Anonymous

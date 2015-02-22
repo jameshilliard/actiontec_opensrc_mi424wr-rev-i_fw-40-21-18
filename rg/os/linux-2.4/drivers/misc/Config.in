@@ -1,0 +1,17 @@
+#
+# MCP drivers
+#
+mainmenu_option next_comment
+comment 'Multimedia Capabilities Port drivers'
+
+bool 'Multimedia drivers' CONFIG_MCP
+
+# Interface drivers
+dep_bool 'Support SA1100 MCP interface' CONFIG_MCP_SA1100 $CONFIG_MCP $CONFIG_ARCH_SA1100
+
+# Chip drivers
+dep_tristate 'Support for UCB1200 / UCB1300' CONFIG_MCP_UCB1200 $CONFIG_MCP
+dep_tristate '  Audio / Telephony interface support' CONFIG_MCP_UCB1200_AUDIO $CONFIG_MCP_UCB1200 $CONFIG_SOUND
+dep_tristate '  Touchscreen interface support' CONFIG_MCP_UCB1200_TS $CONFIG_MCP_UCB1200
+
+endmenu

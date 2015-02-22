@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+  <specVersion>
+    <major>1</major>
+    <minor>0</minor>
+  </specVersion>
+  <device>
+    <deviceType>urn:schemas-wifialliance-org:device:WFADevice:1</deviceType>
+    <friendlyName>WPS Access Point</friendlyName>
+    <manufacturer>Sony</manufacturer>
+    <manufacturerURL>https://www.wifisc.sony.biz</manufacturerURL>
+    <modelDescription>Wi-Fi Protected Setup Access Point</modelDescription>
+    <modelName>WPS_HOSTAPD_AP</modelName>
+    <modelNumber>01234567</modelNumber>
+    <modelURL>https://www.wifisc.sony.biz</modelURL>
+    <serialNumber>01234567</serialNumber>
+    <UDN>uuid:000102030405060708090a0b0c0d0e0f</UDN>
+    <UPC>01234567</UPC>
+    <serviceList>
+      <service>
+        <serviceType>urn:schemas-wifialliance-org:service:WFAWLANConfig:1</serviceType>
+        <serviceId>urn:wifialliance-org:serviceId:WFAWLANConfig1</serviceId>
+        <SCPDURL>/wps_scpd.xml</SCPDURL>
+        <controlURL>/upnp/control/wps_device</controlURL>
+        <eventSubURL>/upnp/event/wps_device</eventSubURL>
+      </service>
+    </serviceList>
+</device>
+</root>

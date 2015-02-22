@@ -1,0 +1,9 @@
+RGSRC=../../../../../..
+include $(RGSRC)/envir.mak
+
+MOD_O_TARGET=libdes.o
+
+O_OBJS=cbc_enc.o ecb_enc.o des_enc.o fcrypt_b.o fcrypt.o set_key.o
+
+include $(RGMK)
+

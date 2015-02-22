@@ -1,0 +1,190 @@
+<ui version="4.0" >
+ <class>Status</class>
+ <widget class="QWidget" name="Status" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>509</width>
+    <height>321</height>
+   </rect>
+  </property>
+  <property name="font" >
+   <font>
+    <pointsize>10</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle" >
+   <string/>
+  </property>
+  <widget class="QWidget" name="gridLayout" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>491</width>
+     <height>183</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" >
+    <property name="leftMargin" >
+     <number>0</number>
+    </property>
+    <property name="topMargin" >
+     <number>0</number>
+    </property>
+    <property name="rightMargin" >
+     <number>0</number>
+    </property>
+    <property name="bottomMargin" >
+     <number>0</number>
+    </property>
+    <property name="horizontalSpacing" >
+     <number>6</number>
+    </property>
+    <property name="verticalSpacing" >
+     <number>6</number>
+    </property>
+    <item row="2" column="0" >
+     <widget class="QLabel" name="label_3" >
+      <property name="text" >
+       <string>Authentication</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1" >
+     <widget class="QLabel" name="lblBssid" >
+      <property name="cursor" >
+       <cursorShape>ArrowCursor</cursorShape>
+      </property>
+      <property name="focusPolicy" >
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="text" >
+       <string>00:00:00:00:00:00</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1" >
+     <widget class="QLabel" name="lblConfState" >
+      <property name="text" >
+       <string>TextLabel</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0" >
+     <widget class="QLabel" name="label" >
+      <property name="text" >
+       <string>BSSID</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1" >
+     <widget class="QLabel" name="lblEncr" >
+      <property name="text" >
+       <string>TextLabel</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1" >
+     <widget class="QLabel" name="lblAuth" >
+      <property name="text" >
+       <string>TextLabel</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" >
+     <widget class="QLabel" name="label_2" >
+      <property name="text" >
+       <string>SSID</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0" >
+     <widget class="QLabel" name="label_6" >
+      <property name="sizePolicy" >
+       <sizepolicy vsizetype="Preferred" hsizetype="Maximum" >
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text" >
+       <string>Configuration State</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0" >
+     <widget class="QLabel" name="label_4" >
+      <property name="text" >
+       <string>Encryption</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0" >
+     <widget class="QLabel" name="label_5" >
+      <property name="text" >
+       <string>Network Key</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1" >
+     <widget class="QLineEdit" name="leNetKey" >
+      <property name="focusPolicy" >
+       <enum>Qt::ClickFocus</enum>
+      </property>
+      <property name="autoFillBackground" >
+       <bool>true</bool>
+      </property>
+      <property name="text" >
+       <string>LineEdit</string>
+      </property>
+      <property name="frame" >
+       <bool>true</bool>
+      </property>
+      <property name="cursorPosition" >
+       <number>0</number>
+      </property>
+      <property name="readOnly" >
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1" >
+     <widget class="QLabel" name="lblSsid" >
+      <property name="mouseTracking" >
+       <bool>false</bool>
+      </property>
+      <property name="contextMenuPolicy" >
+       <enum>Qt::DefaultContextMenu</enum>
+      </property>
+      <property name="text" >
+       <string>TextLabel</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0" >
+     <widget class="QLabel" name="label_7" >
+      <property name="text" >
+       <string>IP Address</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="1" >
+     <widget class="QLabel" name="lblIpAddress" >
+      <property name="cursor" >
+       <cursorShape>ArrowCursor</cursorShape>
+      </property>
+      <property name="focusPolicy" >
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="text" >
+       <string>192.168.1.1</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

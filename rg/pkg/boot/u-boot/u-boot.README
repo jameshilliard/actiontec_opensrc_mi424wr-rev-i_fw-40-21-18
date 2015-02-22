@@ -1,0 +1,15 @@
+How to recreate u-boot.bin
+==========================
+
+u-boot is a free-software (GPL) boot-loader.
+
+Source to compile u-boot.bin can be fetched from
+http://sourceforge.net/projects/u-boot.
+Connect to u-boot cvs repository and check out the source code of
+28-Nov-2005 (later versions may also be good, but were not tested).
+After fetching sources, you need to apply the u-boot.patch file 
+(in this directory).
+
+Note that patch changes may have already been merged into later versions 
+of u-boot. 
+

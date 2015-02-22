@@ -1,0 +1,416 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+<TITLE>Introduction to FreeS/WAN</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=iso-8859-1">
+<STYLE TYPE="text/css"><!--
+BODY { font-family: serif }
+H1 { font-family: sans-serif }
+H2 { font-family: sans-serif }
+H3 { font-family: sans-serif }
+H4 { font-family: sans-serif }
+H5 { font-family: sans-serif }
+H6 { font-family: sans-serif }
+SUB { font-size: smaller }
+SUP { font-size: smaller }
+PRE { font-family: monospace }
+--></STYLE>
+</HEAD>
+<BODY>
+<A HREF="toc.html">Contents</A>
+<A HREF="compat.html">Previous</A>
+<A HREF="performance.html">Next</A>
+<HR>
+<H1><A name="interop">Interoperating with FreeS/WAN</A></H1>
+<FONT COLOR="#FF0000"> * PLEASE NOTE * This document is in process. If a
+ section you are looking for is not yet complete, you can use<A HREF="http://www.freeswan.org/freeswan_trees/freeswan-1.98b/doc/interop.html">
+ our old interop document</A>.</FONT>
+<H2><A NAME="10_1">Interop at a Glance</A></H2>
+<TABLE BORDER="1">
+<TR><TD>&nbsp;</TD><TD colspan="4">FreeS/WAN VPN</TD><TD>Road Warrior</TD><TD>
+OE</TD></TR>
+<TR><TD>&nbsp;</TD><TD>PSK</TD><TD>RSA Secret</TD><TD>X.509
+<BR><SMALL>(requires patch)</SMALL></TD><TD>Manual
+<BR>Keying</TD><TD>&nbsp;</TD><TD>&nbsp;</TD></TR>
+<TR><TD colspan="7">More Compatible</TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#isakmpd">isakmpd (OpenBSD)</A></TD><TD><FONT color="#00cc00">
+Yes</FONT></TD><TD>&nbsp;</TD><TD><FONT color="#00cc00">Yes</FONT></TD><TD><FONT
+color="#00cc00">Yes</FONT></TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">
+No&nbsp;&nbsp;&nbsp;&nbsp;</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#kame">Kame (FreeBSD, NetBSD)</A></TD><TD><FONT color="#00cc00">
+Yes</FONT></TD><TD>&nbsp;</TD><TD><FONT color="#00cc00">Yes</FONT></TD><TD><FONT
+color="#00cc00">Yes</FONT></TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">No</FONT>
+</TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#mcafee">McAfee VPN
+<BR><SMALL>was PGPNet</SMALL></A></TD><TD><FONT color="#00cc00">Yes</FONT>
+</TD><TD><FONT color="#00cc00">Yes</FONT></TD><TD><FONT color="#00cc00">
+Yes</FONT></TD><TD>&nbsp;</TD><TD><FONT color="#00cc00">Yes</FONT></TD><TD><FONT
+color="#cc0000">No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#microsoft">Microsoft
+<BR> Windows 2000/XP</A></TD><TD><FONT color="#00cc00">Yes</FONT></TD><TD>
+&nbsp;</TD><TD><FONT color="#00cc00">Yes</FONT></TD><TD>&nbsp;</TD><TD><FONT color="#cccc00">
+<SMALL>with FreeS/WAN
+<BR>as Warrior</SMALL></FONT></TD><TD><FONT color="#cc0000">No</FONT></TD>
+</TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#safenet">Safenet SoftPK
+<BR>/SoftRemote</A></TD><TD><FONT color="#00cc00">Yes</FONT></TD><TD>&nbsp;</TD><TD>
+<FONT color="#00cc00">Yes</FONT></TD><TD>&nbsp;</TD><TD><FONT color="#00cc00">
+Yes</FONT></TD><TD><FONT color="#cc0000">No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#sentinel">SSH Sentinel</A></TD><TD><FONT color="#00cc00">
+Yes</FONT></TD><TD>&nbsp;</TD><TD><FONT color="#00cc00">Yes</FONT></TD><TD>&nbsp;</TD><TD>
+<FONT color="#00cc00">Yes</FONT></TD><TD><FONT color="#cc0000">No</FONT></TD>
+</TR>
+<TR><TD colspan="7">Other</TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#ashleylaurent">AshleyLaurent
+<BR> VPCom</A></TD><TD><FONT color="#00cc00">Yes</FONT></TD><TD>&nbsp;</TD><TD>
+&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#borderware">Borderware</A></TD><TD><FONT color="#00cc00">
+Yes</FONT></TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">
+No</FONT></TD><TD><FONT color="#cc0000">No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#checkpoint">Checkpoint FW-1</A></TD><TD><FONT color="#00cc00">
+Yes</FONT></TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">
+No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#checkpoint">Checkpoint VPN1</A></TD><TD><FONT color="#00cc00">
+Yes</FONT><FONT color="#cccc00">/Partial</FONT></TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>
+&nbsp;</TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#Cisco">Cisco with 3DES</A></TD><TD><FONT color="#00cc00">
+Yes</FONT></TD><TD><FONT color="#cccc00">Maybe</FONT></TD><TD>&nbsp;</TD><TD>
+&nbsp;</TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#fsecure">F-Secure</A></TD><TD><FONT color="#00cc00">
+Yes</FONT></TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">
+No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#gauntlet">Gauntlet GVPN</A></TD><TD><FONT color="#00cc00">
+Yes</FONT></TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">
+No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#as400">IBM AS/400</A></TD><TD><FONT color="#00cc00">
+Yes</FONT></TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">
+No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#lucent">Lucent</A></TD><TD><FONT color="#00cc00">Yes</FONT>
+</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">
+No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#netscreen">Netscreen 5xp</A></TD><TD><FONT color="#00cc00">
+Yes</FONT></TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">
+No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#nortel">Nortel Conitivity</A></TD><TD><FONT color="#cccc00">
+Partial</FONT></TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">
+No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#radguard">RadGuard</A></TD><TD><FONT color="#00cc00">
+Yes</FONT></TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">
+No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#raptorNT">Raptor (NT)</A></TD><TD><FONT color="#00cc00">
+Yes</FONT></TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD><FONT color="#00cc00">Yes</FONT></TD><TD>
+&nbsp;</TD><TD><FONT color="#cc0000">No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#raptorSo">Raptor (Solaris)</A></TD><TD><FONT color="#00cc00">
+Yes</FONT></TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">
+No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#redcreek">Redcreek Ravlin</A></TD><TD><FONT color="#00cc00">
+Yes</FONT><FONT color="#cccc00">/Partial</FONT></TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>
+&nbsp;</TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#shiva">Shiva
+<BR>LANRover</A></TD><TD><FONT color="#00cc00">Yes</FONT></TD><TD>&nbsp;</TD><TD>
+&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#solaris">Sun Solaris</A></TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>
+<FONT color="#00cc00">Yes</FONT></TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">
+No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#sonicwall">SonicWall</A></TD><TD><FONT color="#00cc00">
+Yes</FONT></TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">
+No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#timestep">Timestep</A></TD><TD><FONT color="#00cc00">
+Yes</FONT></TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">
+No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#watchguard">Watchguard
+<BR> Firebox</A></TD><TD><FONT color="#00cc00">Yes</FONT></TD><TD>&nbsp;</TD><TD>
+&nbsp;</TD><TD><FONT color="#00cc00">Yes</FONT></TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">
+No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+<TR><TD><A HREF="#xedia">Xedia Access Point
+<BR>/QVPN</A></TD><TD><FONT color="#00cc00">Yes</FONT></TD><TD>&nbsp;</TD><TD>
+&nbsp;</TD><TD>&nbsp;</TD><TD>&nbsp;</TD><TD><FONT color="#cc0000">No</FONT></TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE
+
+
+<TR>
+<TD><A HREF="#sample">sample</A></TD>
+<TD>&nbsp;</TD>
+<TD>&nbsp;</TD>
+<TD>&nbsp;</TD>
+<TD>&nbsp;</TD>
+<TD>&nbsp;</TD>
+<TD><FONT color="#cc0000">No</FONT></TD>
+</TR>
+
+-->
+<TR><TD>&nbsp;</TD><TD>PSK</TD><TD>RSA Secret</TD><TD>X.509
+<BR><SMALL>(requires patch)</SMALL></TD><TD>Manual
+<BR>Keying</TD><TD>&nbsp;</TD><TD>&nbsp;</TD></TR>
+<TR><TD>&nbsp;</TD><TD colspan="4">FreeS/WAN VPN</TD><TD>Road Warrior</TD><TD>
+OE</TD></TR>
+
+<!-- PSK  RSA  X.509  Manual  RW  OE -->
+</TABLE>
+<P>Our information comes primarily from<A HREF="mail.html"> mailing list</A>
+ reports and tutorials.</P>
+<P>The FreeS/WAN project needs you! We rely on the user community to
+ keep up to date. Mail users@lists.freeswan.org with your interop
+ success stories.</P>
+<H3><A NAME="10_1_1">Key</A></H3>
+<TABLE BORDER="1">
+<TR><TD><FONT color="#00cc00">Yes</FONT></TD><TD>People report that this
+ works for them.</TD></TR>
+<TR><TD>[Blank]</TD><TD>We don't know.</TD></TR>
+<TR><TD><FONT color="#cc0000">No</FONT></TD><TD>We have reason to
+ believe it was, at some point, not possible to get this to work.</TD></TR>
+<TR><TD><FONT color="#cccc00">Partial</FONT></TD><TD>Partial success.
+ For example, a connection can be created from one end only.</TD></TR>
+<TR><TD><FONT color="#00cc00">Yes</FONT><FONT color="#cccc00">/Partial</FONT>
+</TD><TD>Mixed reports.</TD></TR>
+<TR><TD><FONT color="#cccc00">Maybe</FONT></TD><TD>We think the answer
+ is &quot;yes&quot;, but need confirmation.</TD></TR>
+</TABLE>
+<H2><A name="interoprules">Basic Interop Rules</A></H2>
+ You want to choose X, Y, Z.
+<H2><A NAME="10_3">Longer Stories</A></H2>
+<H3><A NAME="10_3_1">For<EM> More Compatible</EM> Implementations</A></H3>
+<H4><A NAME="isakmpd">isakmpd (OpenBSD)</A></H4>
+<P><A HREF="http://www.openbsd.org/faq/faq13.html">OpenBSD FAQ: Using
+ IPsec</A>
+<BR><A HREF="http://www.rommel.stw.uni-erlangen.de/~hshoexer/ipsec-howto/HOWTO.html">
+ Hans-Joerg Hoexer's interop Linux-OpenBSD (PSK)</A>
+<BR><A HREF="http://www.segfault.net/ipsec/"> Skyper's configuration
+ (PSK)</A></P>
+<H4><A NAME="kame">Kame for FreeBSD, NetBSD</A></H4>
+<P><A HREF="http://www.kame.net">Kame homepage, with FAQ</A>
+<BR><A HREF="http://www.netbsd.org/Documentation/network/ipsec">
+ NetBSD's IPSec FAQ</A></P>
+<P><A HREF="http://www.sandelman.ottawa.on.ca/linux-ipsec/html/2000/09/msg00511.html">
+ Itojun's Kame-FreeS/WAN interop tips (PSK)</A>
+<BR><A HREF="http://www.hsc.fr/ressources/ipsec/ipsec2000"> Ghislaine
+ Labouret's French page with links to matching FreeS/WAN and Kame
+ configs (RSA)</A>
+<BR> &nbsp;&nbsp;&nbsp;&nbsp;<A HREF="http://www.sandelman.ottawa.on.ca/linux-ipsec/html/2000/12/msg00560.html">
+Ghislaine's post explaining some peculiarities</A>
+<BR><A HREF="http://web.morgul.net/~frodo/docs/kame+freeswan_interop.html">
+ Frodo's Kame-FreeS/WAN interop (X.509)</A>
+<BR><A HREF="http://www.wavesec.org"> Using Kame as a WAVEsec client</A></P>
+<H4><A NAME="mcafee">PGPNet/McAfee</A></H4>
+<P></P>
+<UL>
+<LI>Now called McAfee VPN Client.</LI>
+<LI>PGPNet also came in a freeware version which did not support subnets</LI>
+<LI>To support dhcp-over-ipsec, you need the X.509 patch, which is
+ included in<A HREF="http://www.freeswan.ca"> Super FreeS/WAN</A>.</LI>
+</UL>
+<A HREF="http://www.rommel.stw.uni-erlangen.de/~hshoexer/ipsec-howto/HOWTO.html#Interop2">
+ Hans-Joerg Hoexer's Guide for Linux-PGPNet (PSK)</A>
+<BR><A HREF="http://www.sandelman.ottawa.on.ca/linux-ipsec/html/2000/04/msg00339.html">
+ Kai Martius' instructions using RSA Key-Extractor Tool (RSA)</A>
+<BR> &nbsp;&nbsp;&nbsp;&nbsp;<A HREF="http://www.zengl.net/freeswan/english.html">Christian
+ Zeng's page (RSA)</A> based on Kai's work. English or German.
+<BR><A HREF="http://tirnanog.ls.fi.upm.es/CriptoLab/Biblioteca/InfTech/InfTech_CriptoLab.htm">
+ Oscar Delgado's PDF (X.509, no configs)</A>
+<BR><A HREF="http://www-ec.njit.edu/~rxt1077/Howto.txt"> Ryan's HOWTO
+ for FreeS/WAN-PGPNet (X.509)</A>. Through a Linksys Router with IPsec
+ Passthru enabled.
+<BR><A HREF="http://jixen.tripod.com/#RW-PGP-to-Fwan"> Jean-Francois
+ Nadeau's Practical Configuration (Road Warrior with PSK)</A>
+<BR><A HREF="http://www.evolvedatacom.nl/freeswan.html#toc"> Wouter
+ Prins' HOWTO (Road Warrior with X.509)</A>
+<BR>
+<P><A HREF="http://www.sandelman.ottawa.on.ca/linux-ipsec/html/2000/01/msg00271.html">
+ Rekeying problem with FreeS/WAN and older PGPNets</A>
+<BR></P>
+<P><A HREF="http://www.strongsec.com/freeswan/dhcprelay/index.htm"> DHCP
+ over IPSEC HOWTO for FreeS/WAN (requires X.509 and dhcprelay patches)</A>
+</P>
+<H4><A NAME="microsoft">Microsoft Windows 2000/XP</A></H4>
+<UL>
+<LI>Comes with Win2k, and with XP Support Tools. May require<A HREF="http://www.microsoft.com/windows2000/downloads/recommended/encryption/default.asp">
+ High Encryption Pack</A>.</LI>
+<LI>FreeS/WAN has recently changed its Commit Bit handling, solving an
+ old interop problem.</LI>
+</UL>
+<P><A HREF="http://jixen.tripod.com/#Win2000-Fwan"> Jean-Francois
+ Nadeau's Net-net Configuration (PSK)</A>
+<BR><A HREF="http://security.nta.no/freeswan-w2k.html"> Telenor's
+ Node-node Config (Transport-mode PSK)</A>
+<BR><A HREF="http://vpn.ebootis.de"> Marcus Mueller's HOWTO using his
+ VPN config tool (X.509).</A> Tool also works with PSK.
+<BR><A HREF="http://www.natecarlson.com/include/showpage.php?cat=linux&page=ipsec-x509">
+ Nate Carlson's HOWTO using same tool (Road Warrior with X.509)</A>.
+ Unusually, FreeS/WAN is the Road Warrior here.
+<BR><A HREF="http://tirnanog.ls.fi.upm.es/CriptoLab/Biblioteca/InfTech/InfTech_CriptoLab.htm">
+ Oscar Delgado's PDF (X.509, no configs)</A>
+<BR></P>
+
+<!-- Note to self: Include L2TP references? -->
+<P><A HREF="http://support.microsoft.com/support/kb/articles/Q257/2/25.ASP">
+ Microsoft's Win2k IPsec debugging tips</A>
+<BR><A HREF="http://www.wired.com/news/technology/0,1282,36336,00.html">
+ MS VPN may fall back to 1DES</A></P>
+<H4><A NAME="safenet">Safenet SoftPK/SoftRemote</A></H4>
+<UL>
+<LI>People recommend SafeNet as a low cost Windows client.</LI>
+<LI>SoftRemote seems to be the newer name for SoftPK.</LI>
+</UL>
+<P><A HREF="http://lists.freeswan.org/pipermail/users/2001-November/005061.html">
+ Whit Blauvelt's SoftRemote tips</A></P>
+<P><A HREF="http://jixen.tripod.com/#Rw-IRE-to-Fwan"> Jean-Francois
+ Nadeau's Practical Configuration (Road Warrior with PSK)</A>
+<BR><A HREF="http://www.terradoncommunications.com/security/whitepapers/safe_net-to-free_swan.pdf">
+ Terradon Communications' PDF (Road Warrior with PSK)</A>
+<BR><A HREF="http://www.redbaronconsulting.com/freeswan/fswansafenet.pdf">
+ Red Baron Consulting's PDF (Road Warrior with X.509)</A>
+<!-- Note to self: archive Tim's letter from the old interop doc and 
+link to this. -->
+</P>
+<H4><A NAME="sentinel">SSH Sentinel</A></H4>
+<UL>
+<LI>New, popular and well tested.</LI>
+</UL>
+<P><A HREF="http://www.ssh.com/support/sentinel/documents.cfm"> SSH's
+ Sentinel-FreeSWAN interop PDF (X.509)</A>
+<BR><A HREF="http://www.sandelman.ottawa.on.ca/linux-ipsec/html/2001/12/msg00370.html">
+ Potential problem unless using Legacy Proposal option</A>
+<BR></P>
+<H3><A NAME="10_3_2">For<EM> Other Implementations</EM></A></H3>
+<H4><A NAME="ashleylaurent">AshleyLaurent VPCom</A></H4>
+<P><A HREF="http://www.ashleylaurent.com/newsletter/01-28-00.htm">
+ Successful interop report, no details</A></P>
+<H4><A NAME="borderware">Borderware</A></H4>
+<UL>
+<LI>I suspect the Borderware client is a rebranded Safenet. If that's
+ true, our<A HREF="#safenet"> Safenet section</A> will help.</LI>
+</UL>
+<P><A HREF="http://lists.freeswan.org/pipermail/users/2002-March/008288.html">
+ Philip Reetz' configs (PSK)</A>
+<BR><A HREF="http://www.sandelman.ottawa.on.ca/linux-ipsec/html/2001/09/msg00217.html">
+ Borderware server does not support FreeS/WAN road warriors</A>
+<BR><A HREF="http://lists.freeswan.org/pipermail/users/2002-February/007733.html">
+ Older Borderware may not support Diffie Hellman groups 2, 5</A>
+<BR></P>
+<H4><A NAME="checkpoint">Checkpoint VPN-1 or FW-1</A></H4>
+<P>Text goes here.</P>
+<H4><A NAME="cisco">Cisco</A></H4>
+<P>Text goes here.</P>
+<H4><A NAME="fsecure">F-Secure</A></H4>
+<P>Text goes here.</P>
+<H4><A NAME="gauntlet">Gauntlet GVPN</A></H4>
+<P>Text goes here.</P>
+<H4><A NAME="as400">IBM AS/400</A></H4>
+<P><A HREF="http://lists.freeswan.org/pipermail/users/2002-September/014264.html">
+ Richard Welty's tips and tricks</A></P>
+<H4><A NAME="lucent">Lucent</A></H4>
+<P>Text goes here.</P>
+<H4><A NAME="netscreen">Netscreen</A></H4>
+<P><A HREF="http://lists.freeswan.org/pipermail/users/2002-August/013409.html">
+ Errol Neal's settings</A></P>
+<H4><A NAME="nortel">Nortel Conitivity</A></H4>
+<P>Text goes here.</P>
+<H4><A NAME="radguard">Radguard</A></H4>
+<P>Text goes here.</P>
+<H4><A NAME="raptorNT">Raptor (NT)</A></H4>
+<P>Text goes here.</P>
+<H4><A NAME="raptorSo">Raptor (Solaris)</A></H4>
+<P>Text goes here.</P>
+<H4><A NAME="redcreek">Redcreek Ravlin</A></H4>
+<P>Text goes here.</P>
+<H4><A NAME="shiva">Shiva LANRover</A></H4>
+<P>Text goes here.</P>
+<H4><A NAME="solaris">Sun Solaris</A></H4>
+<P>Text goes here.</P>
+<H4><A NAME="sonicwall">SonicWall</A></H4>
+<P>Text goes here.</P>
+<H4><A NAME="timestep">Timestep</A></H4>
+<P>Text goes here.</P>
+<H4><A NAME="watchguard">Watchguard Firebox</A></H4>
+<LI>
+<UL>Automatic keying works with WatchGuard 5.0+ only.</UL>
+</LI>
+<P><A HREF="http://lists.freeswan.org/pipermail/users/2002-July/012595.html">
+ WatchGuard's HOWTO (PSK)</A>
+<BR><A HREF="http://lists.freeswan.org/pipermail/users/2002-August/013342.html">
+ Ronald C. Riviera's Settings (PSK)</A>
+<BR>
+<!-- note to self: Post Max Enders' Mail to list and link to it -->
+</P>
+<P><A HREF="http://lists.freeswan.org/pipermail/users/2002-April/009404.html">
+ Old known issue with auto keying</A>
+<BR><A HREF="http://www.sandelman.ottawa.on.ca/linux-ipsec/html/2001/02/msg00124.html">
+ Tips on key generation and format (Manual)</A>
+<BR></P>
+<H4><A NAME="xedia">Xedia Access Point/QVPN</A></H4>
+<P><A HREF="http://www.sandelman.ottawa.on.ca/linux-ipsec/html/2001/12/msg00520.html">
+ Hybrid IPsec/L2TP connection settings (X.509)</A>
+<BR><A HREF="http://www.sandelman.ottawa.on.ca/ipsec/1999/08/msg00140.html">
+ Xedia's LAN-LAN links don't use multiple tunnels</A>
+<BR> &nbsp;&nbsp;&nbsp;&nbsp;<A HREF="http://www.sandelman.ottawa.on.ca/ipsec/1999/08/msg00140.html">
+ That explanation, continued</A></P>
+
+<!-- SAMPLE ENTRY
+
+<H4><A NAME="timestep">Timestep</A></H4>
+
+<P>Text goes here.
+</P>
+
+-->
+<HR>
+<A HREF="toc.html">Contents</A>
+<A HREF="compat.html">Previous</A>
+<A HREF="performance.html">Next</A>
+</BODY>
+</HTML>

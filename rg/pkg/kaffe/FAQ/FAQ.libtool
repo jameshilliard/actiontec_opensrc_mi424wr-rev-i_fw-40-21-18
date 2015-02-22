@@ -1,0 +1,68 @@
+Kaffe has adopted GNU libtool to ease the creation of shared
+libraries, where available, and static libraries, where shared
+libraries are unavailable or undesirable.  Whether a library is shared
+or static is totally transparent to the application that uses libtool
+and to the user.
+
+Any libtool library can be made static by adding -static to its link
+command.  You can do that manually by removing the .la file in the
+corresponding directory and running `make AM_CFLAGS=-static' within
+that directory, then running make in the top-level directory.
+
+In order to provide dynamic linking, or simulate it, Kaffe uses
+libltdl, a library that is part of libtool.  It currently supports the
+following dlopening mechanisms: dlopen, shl_load, GNU DLD, BeOS'
+load_add_on and MS-Windows' LoadLibrary.
+
+Additionally, it supports dlopening simulation for platforms that lack
+shared libraries (or have shared libraries disabled) through the
+dlpreopen mechanism, in which a symbol table is created when the
+program is linked and it -dlopens a set of libraries.  If any of these
+libraries is static, libtool will link the library into the program
+and add its symbols to the dlpreopening symbol table.  It's that
+simple.
+
+In order to implement this dlpreopening mechanism, libltdl needs some
+help from the main application.  Therefore, a call to
+lt_dlpreopen_default() was added to kaffe/kaffe/main.c.  In order to
+support dlopening simulation, any other application that links with
+libkaffevm should also be linked using libtool, and it should be
+created with the flag -export-dynamic, so that the symbol table is
+created.
+
+By default, on platforms that lack dlopening mechanisms, Kaffe will be
+linked with its own libraries only.  You may extend this list of
+libraries by setting the JAVA_LIBS flag to a list of libtool (.la) or
+regular (.a/.so/.sl/.lib) libraries.
+
+If the same symbol is defined in more than one library, it is possible
+that linking (either static or dynamic) fails.  If it does not fail,
+which symbol libltdl will select for a given name depends on the
+sequence of dlopening of the libraries, and the mechanism libltdl uses
+to dlopen them.
+
+
+By default, libtool compiles each file that may become part of a
+library twice.  It does so because a file must be compiled with PIC
+(position independent code) in order to become part of a shared
+library, but this sometimes imposes some overhead, and libtool
+believes that a static library shouldn't impose this overhead.
+Therefore, libtool uses an object file with PIC to build a shared
+library, and one without PIC for static libraries.
+
+Kaffe changes this libtool default so as to avoid double compilation,
+so you'll get only PIC object files if shared libraries are supported
+and not disabled, and only non-PIC ones otherwise.  You may force
+non-PIC objects to be created with --enable-static; you may force
+libtool not to create shared libraries by configuring
+--disable-shared.  In fact, --disable-shared is almost equivalent to
+--with-staticlib --with-staticvm; the only difference is that
+--with-staticlib does not affect libltdl, whereas --disable-shared
+does.
+
+Libtool's hompage is here:
+
+    http://www.gnu.org/software/libtool/libtool.html
+
+--
+oliva

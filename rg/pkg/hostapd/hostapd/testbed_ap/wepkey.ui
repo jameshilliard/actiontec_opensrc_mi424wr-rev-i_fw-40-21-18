@@ -1,0 +1,124 @@
+<ui version="4.0" >
+ <class>WepKey</class>
+ <widget class="QWidget" name="WepKey" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>532</width>
+    <height>271</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string/>
+  </property>
+  <widget class="QWidget" name="gridLayout" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>60</y>
+     <width>511</width>
+     <height>161</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" >
+    <property name="margin" >
+     <number>0</number>
+    </property>
+    <property name="spacing" >
+     <number>6</number>
+    </property>
+    <item row="0" column="0" >
+     <widget class="QRadioButton" name="rbWepKey1" >
+      <property name="text" >
+       <string>WEP key 1</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" >
+     <widget class="QRadioButton" name="rbWepKey2" >
+      <property name="text" >
+       <string>WEP key 2</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0" >
+     <widget class="QRadioButton" name="rbWepKey3" >
+      <property name="text" >
+       <string>WEP Key 3</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0" >
+     <widget class="QRadioButton" name="rbWepKey4" >
+      <property name="text" >
+       <string>WEP key 4</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1" >
+     <widget class="QLineEdit" name="leWepKey1" />
+    </item>
+    <item row="0" column="2" >
+     <widget class="QPushButton" name="pbGenWepKey1" >
+      <property name="text" >
+       <string>GEN</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1" >
+     <widget class="QLineEdit" name="leWepKey2" />
+    </item>
+    <item row="2" column="1" >
+     <widget class="QLineEdit" name="leWepKey3" />
+    </item>
+    <item row="3" column="1" >
+     <widget class="QLineEdit" name="leWepKey4" />
+    </item>
+    <item row="1" column="2" >
+     <widget class="QPushButton" name="pbGenWepKey2" >
+      <property name="text" >
+       <string>GEN</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="2" >
+     <widget class="QPushButton" name="pbGenWepKey3" >
+      <property name="text" >
+       <string>GEN</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="2" >
+     <widget class="QPushButton" name="pbGenWepKey4" >
+      <property name="text" >
+       <string>GEN</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QLabel" name="label" >
+   <property name="geometry" >
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>521</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font" >
+    <font>
+     <pointsize>14</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text" >
+    <string>Set WEP key(s)</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

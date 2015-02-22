@@ -1,0 +1,88 @@
+MacOS X-10.1 (aka Darwin-1.4) now seems to be bug free enough to
+allow ^automated compilation. If you have compilation problems on Darwin-1.3
+or earlier, please read README.macosX-old-versions
+
+WARNING: Even Darwin-1.4 does crash when you try to create a file > 4 GB.
+
+	Repeat by: sdd -inull bs=1m of=somefile
+
+Once the file reached 4 GB in size, no I/O happens at all. You need to power
+cycle the machine :-(
+
+I hope that in a better future, Apple will either listen to bug-reports or do
+systematic testing of core OS features....
+
+/*--------------------------------------------------------------------------*/
+The followiing text is for users of 'libscg' (SCSI Transport):
+
+October 10, 2001
+
+MacOS 10.1 preliminary driver now in the tree in libscg/scsi-mac-iokit.c.
+
+It supports:
+	* Firewire, USB, and ATAPI MMC-3 compliant burners
+
+It does not (yet) support:
+	* Older (non-MMC-3) burners
+	* CD-ROM drives/DVD-ROM drives (i.e. non-burners)
+	* SCSI parallel bus attached burners
+
+Note that this is a limitation of MacOS X and not of the driver. Apple
+has indicated it plans to fix these limitations in upcoming versions of
+the operating system.
+
+Device Naming
+-------------
+
+You need to pass a device name on the command line to the cdrecord utility
+
+CD burners: (probably) IOCompactDiscServices
+DVD burners: (probably) IODVDServices
+
+# ./cdrecord dev=IOCompactDiscServices -toc
+
+or if you have multiple drives, you can append a number to differentiate
+
+# ./cdrecord dev=IOCompactDiscServices/2 -toc
+
+That should talk to the second CD-R on the system (NOT TESTED).
+
+Sharing nicely with the Finder
+------------------------------
+
+The MacOS 10.1 Finder will offer to burn any blank media you put into
+the burner.  However, you don't want to use the Finder, you want to
+use cdrecord! So, how do you get around this problem?
+
+When you insert the media, the Finder asks "Do you want to prepare this
+disc?". Click on the "Ignore" button.
+
+The Finder will then say "No volumes found. Click Continue to continue
+without ejecting".  Click on the "Continue" button.
+
+
+Common Errors
+-------------
+
+No matching device ... found:
+Make sure you typed the device names correctly. See above. Use ioreg
+-l to find if there is an IOCompactDiscServices or IODVDServices in
+the device tree.
+
+Unable to get exclusive access: 
+Another programs (usually the Finder) has exclusive access to the drive.
+See "Sharing Nicely with the Finder"
+
+Unable to get plugin interface: The SCSI Architecture Family of
+drivers (supports Firewire, ATAPI, and USB) has a special module that
+allows user code like libscg to send SCSI commands to a device. This
+module is only attached, though, if the kernel device driver thinks
+the device is sufficiently interesting (e.g. the kernel thinks it's a
+burner).
+
+You can see if the module is loaded by looking for
+SCSITaskUserClientIniter in the output of ioreg -l.
+
+Bugs
+----
+Send bugs to: csapuntz@stanford.edu

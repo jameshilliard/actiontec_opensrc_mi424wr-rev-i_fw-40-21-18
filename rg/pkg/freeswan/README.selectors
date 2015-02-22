@@ -1,0 +1,272 @@
+                             -*- Text -*-
+
+        ADDING PORT & PROTOCOL SELECTORS to FreeS/WAN ROUTING
+
+VERSION
+  1.1
+
+INTRODUCTION
+  The IPsec standard (RFC 2401, http://www.ietf.org/rfc/rfc2401.txt)
+  describes a security policy database (SPD) in which various parts of
+  an IP packet can be used to select which security association is
+  used, in particular section 4.4.2 on selectors.  The possible
+  selectors include source address, destination address, transport
+  protocol, source and destination ports.  Of these FreeS/WAN directly
+  supports source and destination addresses as part of its eroute
+  mechanism.  This allows one to secure all traffic between between
+  two hosts/subnets, but it does not allow one to :-
+
+  * selectively secure some traffic but not others e.g. secure SMTP
+    traffic but leave ping traffic unsecured.
+
+  * secure different traffic with different security properties
+    e.g. secure SMTP traffic with one combination of algorithms
+    (3DES+SHA) and secure POP3 traffic with a different combination
+    (3DES+MD5)
+
+  One way to achieve the above with FreeS/WAN is to use advanced
+  routing and firewall rules to tag packets with particular
+  port/portocol values and direct them to FreeS/WAN for IPsec
+  processing or to bypass FreeS/WAN as is appropriate.  There are pros
+  and cons to this approach and for some it is a perfectly good
+  solution.
+
+  An alternative approach is to include the ports and protocol
+  directly in the FreeS/WAN eroute mechanism so that the protocol and
+  ports are taken into account when matching an eroute.  This makes
+  the SPD selection in FreeS/WAN work in a way that more closely
+  matches other IPsec implementations such as OpenBSD and KAME.  This
+  is the approach that has been taken here.
+
+CAVEATS
+  * Only outbound traffic selection is done.  Hence this is not a
+    complete implementation of traffic selectors as described in RFC
+    2401 (http://www.ietf.org/rfc/rfc2401.txt).  There traffic
+    selectors can be used to accept/reject inbound traffic.  This has
+    not been implemented in these patches since as default FreeS/WAN
+    does not consult the eroutes to determine if a packet should be
+    accepted.
+
+  * I have only been tested the changes against OpenBSD 3.1 IPsec.
+    Specifically only transport mode and tunnel mode between two hosts
+    has been tested with manual and automatic keying using a
+    pre-shared secret.  I've had a report that
+    SuperFreeS/WAN+selectors <-> SuperFreeS/WAN+selectors in transport
+    mode also works.  No other interoperability testing has been done.
+    If you find that something else does work (or definitely doesn't)
+    then by all means let me know and I'll update the documentation.
+
+  * The changes are known to work with IPv4.  It is unknown whether
+    they break any of the IPv6 support that is in FreeS/WAN.
+
+  * It is unknown whether these changes break FreeS/WAN opportunistic
+    encryption.
+
+  * It is unknown whether these changes break NAT-T support.
+
+DOCUMENTATION
+  The manual pages for ipsec_eroute(8) and ipsec_eroute(5) have been
+  updated to describe the new options to the ipsec eroute command and
+  the changes to the format of the /proc/net/ipsec_eroute file.
+
+MANUAL KEYING EXAMPLES
+  The following shows how a eroutes for a manually keyed connection
+  can be added.  The first eroute secures SMTP traffic (TCP, port 25)
+  between the subnets 192.168.10.0/24 and 192.168.20.0/24 using
+  a previously defined security association with SPI of 130 :-
+
+    $ ipsec eroute --add --eraf inet --src 192.168.10.0/24 \
+              --dst 192.168.20.0/24 --transport-proto tcp --dst-port smtp \
+              --af inet --edst 24.80.253.172 --spi 130 --proto tun
+
+  The second eroute secures POP3 traffic (TCP, port 110)
+  between the same subnets using a previously defined security
+  association with SPI of 140 :-
+
+    $ ipsec eroute --add --eraf inet --src 192.168.10.0/24 \
+              --dst 192.168.20.0/24 --transport-proto tcp --dst-port pop3 \
+              --af inet --edst 24.80.253.172 --spi 140 --proto tun
+
+  The third eroute ensures that SSH traffic (TCP, port 22) is passed
+  between the subnets without being encrypted by IPsec.  This avoids
+  the double encryption that would occur if IPsec was applied since
+  all SSH traffic is already encrypted using SSL :-
+
+    $ ipsec eroute --add --eraf inet --src 192.168.10.0/24 \
+                 --dst 192.168.20.0/24 --transport-proto tcp --dst-port ssh \
+                 --said %pass
+
+  The final eroute ensures that ICMP messages (such as ping) between
+  the subnets are passed through without being encrypted :-
+
+    $ ipsec eroute --add --eraf inet --src 192.168.10.0/24 \
+                   --dst 192.168.20.0/24 --transport-proto icmp --said %pass
+
+  Taken together they result in the following :-
+
+    $ ipsec eroute
+    0          192.168.10.0/24:0   -> 192.168.20.0/24:0   => %pass:1
+    0          192.168.10.0/24:0   -> 192.168.20.0/24:22  => %pass:6
+    0          192.168.10.0/24:0   -> 192.168.20.0/24:25  => tun0x130@24.80.253.172:6
+    0          192.168.10.0/24:0   -> 192.168.20.0/24:110 => tun0x140@24.80.253.172:6
+
+  If this is coupled with the following route :-
+
+    $ route add 192.168.20.0/24 dev ipsec0
+
+  Then all traffic for 192.168.20.0/24 will be sent to the IPsec device.
+  This means that :-
+
+    * all SMTP traffic will be encrypted with security association 130.
+    * all POP3 traffic will be encrypted with security association 140.
+    * all ICMP and SSH traffic will pass through unencrypted.
+    * and all other outbound traffic for 192.168.20.0/24 will be dropped.
+
+AUTOMATIC KEYING EXAMPLES
+  The following shows how pluto can be used to create an automatically
+  keyed connection :-
+
+    $ ipsec whack --name "east-west" \
+	   --host 192.168.2.5 --clientprotoport tcp/25 --to \
+	   --host 192.168.2.254 --clientprotoport tcp/0 \
+	   --psk --pfs --encrypt
+    $ ipsec whack --route --name "east-west"
+
+  Here a transport mode connection is created between 192.168.2.5 and
+  192.2.254 with all traffic to/from the SMTP port on 192.168.2.5
+  being encrypted.  Prior to the connection being established the
+  eroutes will be :-
+
+    $ ipsec eroute
+    0          192.168.2.5/32:25  -> 192.168.2.254/32:0 => %trap:6
+
+  Once the connection is established then the trap is replaced :-
+
+    $ ipsec eroute
+    2          192.168.2.5/32:25  -> 192.168.2.254/32:0 => esp0x313e2e7e@192.168.2.254:6
+
+  Note that traffic other than that from port 25 to 192.168.2.254 will
+  be blocked.  If you'd still like to be able to ping the other
+  machine without having to encrypt the ping then you can add a rule
+  of the form :-
+
+    $ ipsec eroute --add --eraf inet --src 192.168.2.5/32 \
+                   --dst 192.168.2.254/32 --transport-proto icmp --said %pass
+
+  to allow ICMP messages through in the clear.  Alternately if you
+  would like all traffic other than port 25 to be passed in the clear
+  then just add a generic pass rule of the form :-
+
+    $ ipsec eroute --add --eraf inet --src 192.168.2.5/32 \
+                   --dst 192.168.2.254/32 --said %pass
+
+  Since it is quite common to want some kind of pass rules I suggest
+  using a script to create your IPsec connections rather than using
+  ipsec.conf.  Just use ipsec whack to define and route the
+  connections and ipsec eroute to add pass routes as described above.
+
+  If you want to create a tunnel mode connection, then just add the
+  --client option where appropriate.  For example taking the previous
+  example and extending it to the case where 192.168.2.254 protects
+  the subnet 10.0.13.0/24 then the whack rule would look like :-
+
+    $ ipsec whack --name "east-west-subnet" \
+	   --host 192.168.2.5 --clientprotoport tcp/25 --to \
+	   --host 192.168.2.254 --clientprotoport tcp/0 --client 10.0.13.0/24 \
+	   --psk --pfs --encrypt --tunnel
+    $ ipsec whack --route --name "east-west-subnet"
+
+  Again add any %pass routes as necessary to allow any other traffic
+  to flow in the clear.
+
+REPORTING BUGS
+  * If you have any problems installing or using the patch then email
+    me at <stephen_bevan@yahoo.com> and I'll see what I can do to
+    help.  If you've sent me some email and I haven't replied, please
+    be patient since I only work on this in my spare time.  If you
+    need help urgently then offering money usually helps move you to
+    the front of the queue :-)
+
+  * If you have problems applying the patch then please cut&paste a
+    copy of the commands you typed and all the output that was
+    generated, that is send something like the example given in the
+    INSTALLATION section.  Also include the output of :-
+
+      $ uname -a
+
+    and the name and version of FreeS/WAN you are using if this is not
+    already obvious from a directory name in the output that you
+    include.
+
+  * It is suggested that before applying the patch you ensure that you
+    can create a connection to a peer.  If you cannot do achive this
+    before applying the patch then it is unlikely you won't be able to
+    afterwards.  Once you have applied the patch try and create
+    exactly the same connection again (i.e. don't attempt to use any
+    explicit traffic selectors).  Only move on to trying explicit
+    traffic selectors if you can establish the connection.  If you
+    cannot establish the connection or you can but one with explicit
+    traffic selectors fails then ..
+
+  * If you have problems with the traffic selection not behaving in
+    the way you expected then first make sure you've read the CAVEATS
+    section.  If that does not cover it then please explain what you
+    expected to happen as well as what does happen ("it doesn't work"
+    doesn't give me a lot to go on :-) and include the output of :-
+
+      $ ipsec_barf
+
+    a copy of any commands you typed and the generated output
+    (e.g. any ipsec_whack commands to setup or tear down connections).
+
+    If the problem involves traffic being dropped or not routed
+    correctly then please include the output of a tcpdump running on
+    your ipsec interface and the interface that it is attached to.
+    For example on my machine this would be :-
+
+      $ tcpdump -ni eth0
+      $ tcpdump -ni ipsec0
+
+    If you are using a gatway, then a tcpdump on the other interface
+    would be helpful too, again on my machine this would be :-
+
+      $ tcpdump -ni eth1
+
+AUTHOR
+  Stephen J. Bevan  <stephen_bevan@yahoo.com>  2002-11-08
+
+  I started the project on 2002-10-16 and to date I've spent
+  approximately 36 hours working on it since then.  That covers all
+  the time in front of a computer designing, coding, compiling,
+  writing documentation, upgrading from one version of SuperFreeS/WAN
+  to another (3 upgrades so far), dealing with email about the
+  patches, ... etc.
+
+LICENSE
+  All the code I wrote consists of patches to files that are licensed
+  under the GPL and so my code is also licensed under the GPL.
+
+COPYRIGHT
+  Although the patches are licensed under the GPL, I retain the
+  copyright to my patches :-
+
+    Copyright (C) 2002  Stephen J. Bevan  <stephen_bevan@yahoo.com>
+
+ACKNOWLEDGMENTS
+  Although the code in this patch is a complete re-implementation
+  based on my memories of some work done while at eTunnels, I'd like
+  to acknowledge the work that Jun Lu did while we were at eTunnels.
+  I designed the traffic selector changes but it was Jun who made the
+  changes to FreeS/WAN 1.5, compiled them, fixed some bits I'd
+  overlooked and showed that the design did work for manually keyed
+  connections.  If Jun had not done this, I probably would not have
+  decided to re-implement the design or go on to fix up pluto so that
+  it could negotiate automatically keyed connections using traffic
+  selectors (which took me longer than adding the kernel and manual
+  keying support.)
+
+  I'd also like to acknowledge the work done by the authors of the
+  X.509 patch in extending pluto to take the protocol and ports into
+  account.  Their work meant there was a lot less for me to have to
+  fix in pluto (and is the reason I made my changes to SuperFreeS/WAN
+  rather than FreeS/WAN).

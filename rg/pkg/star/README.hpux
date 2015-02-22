@@ -1,0 +1,74 @@
+		I M P O R T A N T
+
+On HP-UX-11.x the maximal data size (allocated data) of a 32 bit program is
+64 MB.
+
+One solution is to build a 64 bit binary, for those the default process memory
+limit is 1 GB - but I have no idea what arguments are needed to make the HP-UX
+compiler create 64 bit binaries.
+
+The other way is to alter some kernel parameters which require a reboot.
+The default kernel parameter seem to look like:
+
+Kernel param.               Value
+maxdsiz                  67108864
+maxdsiz_64bit          1073741824
+maxfiles                      200
+maxfiles_lim                 2048
+maxssiz                   8388608
+maxssiz_64bit             8388608
+maxswapchunks                3250
+maxtsiz                  67108864
+maxtsiz_64bit          1073741824
+
+The important one is maxdsiz, 64 MB is the default and it is rather low.
+There is some information page at http://www.uwsg.iu.edu/hp/hpux-tune.html#maxdsiz 
+and they recommend to increase it to 1.9 GB. Sounds extreme.
+
+At http://forums.itrc.hp.com/cm/QuestionAnswer/1,,0x08afe7613948d5118fef0090279cd0f9,00.html 
+they recommend 500 MB.
+
+maxssiz shouldn't be a problem either since it has to do with swap and such as 
+storing arrays and recursion etc.
+
+If you like to know how to create 64 bit binaries on Solaris, please
+read README.compile. I hope this helps. If you found the right way for HP-UX,
+please send me a mail.
+
+
+
+The Schily makefile system usually should be able to find the best C-compiler
+on HP-UX automatically. If it does not work, here is a way force to use a different
+compiler.
+
+
+You may compile with the HP ANSI C-Compiler using:
+
+	make CCOM=cc
+
+To compile with the free K&R C-compiler call:
+
+	gmake CCOM=cc 'COPTS= ' 
+or
+	smake CCOM=cc 'COPTS= ' 
+/*--------------------------------------------------------------------------*/
+
+HP-UX SCSI hints:
+
+Note that there are no device nodes for userland SCSI on HP-UX,
+you have to call the included shell script MKNOD.hpux first.
+
+If you own a HP-9000-800 series machine, you need to install
+the file MKNOD.hpux-800 in the /etc init shell script directory 
+in order to call it after each boot.
+
+This script will create the files in /dev/scsi/... and /dev/rscsi/...
+The permissions will be set to read/write for root only.
+
+
+HP does not handle CD-ROMs as well as it should. On the HP have a look at
+the man pages for
+    pfs
+    pfsd
+    pfs_mount
+and anymore that they refer too.

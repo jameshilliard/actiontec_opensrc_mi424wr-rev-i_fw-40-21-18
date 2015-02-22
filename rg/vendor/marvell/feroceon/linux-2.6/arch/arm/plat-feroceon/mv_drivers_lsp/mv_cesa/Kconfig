@@ -1,0 +1,51 @@
+menu "Cesa options"
+	depends on MV_INCLUDE_CESA
+
+config  MV_CESA
+	bool "Support for Marvell Cryptographic Engine and Security Acceleration"
+	default y
+
+config  MV_CESA_TOOL
+	tristate "Support for Marvell CESA Tool"
+	depends on MV_CESA
+	---help---
+
+config MV_CESA_CHANNELS
+	int "Total CESA HW channels supported"
+        depends on MV_CESA
+	range 1 2
+        default 1
+         ---help---
+	Select the number of CESA channels to be used for crypto operations acceleration.
+
+config MV_CESA_CHAIN_MODE
+	bool "Support CESA chain-mode"
+        depends on MV_CESA
+        default n
+         ---help---
+        Choosing this option will enable crypto engine(CESA) chain mode support.
+	Warning: currently this feature is supported only by NFP-IPSec.
+
+choice 
+        prompt "CESA Mode"
+        depends on MV_CESA
+        default MV_CESA_OCF
+
+config	MV_CESA_OCF
+	bool "Support for Marvell CESA OCF driver"
+	depends on OCF_OCF
+	---help---
+	  Choosing this option will enable you to use the Marvell Cryptographic Engine and
+	  Security Accelerator, under the OCF package.
+
+config  MV_CESA_TEST
+	bool "Support for Marvell CESA test driver"
+	depends on MV_CESA_TOOL 
+	---help---
+	  Choosing this option will enable you to use the Marvell Cryptographic Engine and
+	  Security Accelerator, with the mv_cesa_tool in test mode.
+endchoice
+
+endmenu
+
+

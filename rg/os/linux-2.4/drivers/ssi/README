@@ -1,0 +1,86 @@
+		Synchronous Serial Interface bus driver
+		---------------------------------------
+
+   EEEEE X   X PPPP  EEEEE RRRR  IIIII M   M EEEEE N   N TTTTT  AAA  L
+   E      X X  P   P E     R   R   I   MM MM E     NN  N   T   A   A L
+   EEEE    X   PPPP  EEEE  RRRR    I   M M M EEEE  N N N   T   AAAAA L
+   E      X X  P     E     R R     I   M   M E     N  NN   T   A   A L
+   EEEEE X   X P     EEEEE R  R  IIIII M   M EEEEE N   N   T   A   A LLLLL
+
+This directory holds the SSI bus drivers.  Basically, a SSI bus consists
+of the following signals:
+
+	stxd	Transmit data
+	srxd	Receive data
+	sclk	Clock
+	sfrm	Frame
+		Chip selects (1 - n)
+
+There may be more than one device on a SSI bus, and each device can
+have different timing requirements.  There are several frame formats:
+
+1. Texas Instruments Synchronous Serial Frame format
+
+   sclk ____~_~_~_~_~_~_~_~____
+   sfrm ____~~_________________
+   stxd ------bn..........b0---
+   srxd ------bn..........b0---
+
+   - data latched in on the falling edge of the clock
+   - data shifted out on the rising edge of the clock
+
+2. Motorola SPI frame format
+
+   sclk ______~_~_~_~_~_~_~____
+   sfrm ~~~~________________~~~
+   stxd -----bn..........b0----
+   srxd ----.bn..........b0----
+
+   - data latched in on the rising edge of the clock
+   - data shifted out on the falling edge of the clock, or falling edge
+     of sfrm
+
+3. National Microwire format
+
+   sclk ______~_~_~_~_~_~_~_~_~_~_~_~_~_____
+   sfrm ~~~~_____________________________~~~
+   stxd -----bn......b0---------------------
+   srxd -----------------bn..........b0.----
+
+   - data latched in on the rising edge of the clock
+   - data shifted out on the falling edge of the clock
+   - half duplex, one clock between transmission and reception
+
+Types of devices
+----------------
+
+The following types of devices can be found on a SSP bus:
+
+	Sound chips
+	Keyboard devices
+	Touch screen devices
+
+Keyboard
+--------
+
+TX:
+0. Format: cfglen = 8, framelen = 8, clkpol = 1, clk < 250kHz
+1. select device
+2. keyboard responds asserting key_atn
+3. wait 0.1ms to 5ms
+4. transmit data byte
+5. wait >= 150us
+6. repeat step 4 until all data sent
+7. deselect device
+8. keyboard responds de-asserting key_atn
+9. wait >= 120us
+
+RX:
+0. Format: cfglen = 8, framelen = 8, clkpol = 1, clk < 250kHz
+1. keyboard asserts key_atn
+2. select device after 0.1ms < 5ms
+3. read data byte
+4. wait 150us
+5. if key_atn still asserted, goto 3
+6. deselect device
+7. wait >= 120us

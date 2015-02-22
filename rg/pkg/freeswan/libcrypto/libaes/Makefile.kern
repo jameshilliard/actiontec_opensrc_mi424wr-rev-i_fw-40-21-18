@@ -1,0 +1,9 @@
+RGSRC=../../../../../../../
+include $(RGSRC)/envir.mak
+
+MOD_O_TARGET=libaes.o
+CFLAGS_$(MOD_O_TARGET)+=-I../../libcrypto/include
+O_OBJS_$(MOD_O_TARGET)=aes_cbc.o aes.o
+
+include $(RGMK)
+

@@ -1,0 +1,149 @@
+
+Documentation about cross language debugging support for Kaffe's JIT
+By the University of Utah Flux Group <http://www.cs.utah.edu/flux>,
+Last Updated March 6, 2004
+
+Introduction
+------------
+
+Cross language debugging support allows developers to see Java and C
+debugging information in GDB simultaneously.  For example, doing a
+backtrace in GDB will show the real Java line numbers and source files
+instead of question marks.  This feature offsets Kaffe's lack of a
+real Java-level debugging interface, can help diagnose problems that
+may be in the Java code or the VM itself, and is especially helpful
+when working with the jitter.  The current implementation supports the
+following:
+
+  - Line numbers and file names in back traces.
+
+  - Object types for loaded classes.
+
+  - Parameter and local variables for classes that were compiled with
+    debugging information (the "-g" option).
+
+  - Static members for loaded classes (e.g. "print
+    java.lang.System.out").
+
+  - Shortcuts to Kaffe internal data, for example, "print
+    java.lang.Object.class" will print the Hjava_lang_Class structure
+    for "java.lang.Object".
+
+Unfortunately, there are still several limitations in the
+implementation and the approach in general:
+
+  - Local variables will not always work because the jitter often
+    fails to use the locations in the stack reserved for each
+    variable.
+
+  - Classes loaded into the non-boot class loader will have their
+    class loader's pointer appended to their name.
+
+  - The debugging information is generated at runtime, so the output
+    must be sent through an assembler and loaded into GDB.  We provide
+    the macro 'xdb' in developers/gdbinit to ease this burden.
+
+  - The java symbol names are mangled and only seem to be deciphered by
+    gdb 4.18, and even then it doesn't always work.
+
+  - You have to manually add the source directories since I can't
+    figure out where to get them from the class structure.
+
+  - JNI stubs, and other bits of code don't have debugging information
+    attached, so no useful information can be reported.  Although,
+    this shouldn't be very hard to add.
+
+  - There may be some problems with backtracing not working properly,
+    i don't know why though...
+
+
+Configure
+---------
+
+The xdebugging code can be enabled by using the --enable-xdebugging
+flag when running configure.  Note that this will also force the
+system classes to be compiled with debugging turned on so the size of
+the rt.jar file will be somewhat larger.
+
+
+Installation
+------------
+
+In addition to the standard installation procedures, you will want to
+copy the 'developers/gdbinit' file to '~/.gdbinit' or atleast copy the
+'xdb' macro into your existing file.
+
+
+Usage
+-----
+
+The xdebugging output is not generated unless the `-Xxdebug' or
+`-Xxdebug_file' flags are specified on the command line.  The
+`-Xxdebug' flag uses the default file name `xdb.as', while the other
+flag takes the file name as an argument.  The generated file will
+contain all of the necessary "stabs" debugging information generated
+during the course of a run.  Finally, you can load the file into gdb
+using 'xdb' or manually by running the output through an assembler and
+loading it into gdb with 'add-symbol-file'
+
+Example:
+
+  > setenv KAFFE_DEBUG gdb
+  > setenv KAFFE_DEBUG_TEMPFILE /tmp/kaffe.gdb
+  > java -Xxdebug HelloWorld
+
+  Copyright 1998 Free Software Foundation, Inc.
+  GDB is free software, covered by the GNU General Public License, and you are
+  welcome to change it and/or distribute copies of it under certain conditions.
+  Type "show copying" to see the conditions.
+  There is absolutely no warranty for GDB.  Type "show warranty" for details.
+  This GDB was configured as "i386-redhat-linux".
+  (gdb) run
+
+  <something goes horribly horribly wrong>
+
+  (gdb) xdb
+  Current language:  auto; currently java
+  (gdb) bt
+  #0 0x8008329 in HelloWorld.main() at HelloWorld.java:12 
+  ...
+
+
+Implementation
+--------------
+
+Added Files:
+
+  FAQ/FAQ.xdebugging: This file.
+
+  kaffe/xprof/debugFile.*: Does the majority of the work in generating
+    the assembler file with the debugging symbols.
+
+  kaffe/xprof/mangle.*: Mangles the java method names into a GNU style
+    format.
+
+Modified Files:
+
+  kaffe/kaffe/main.c: Added `-Xxdebug' and `-Xxdebug_file' command
+    line args.
+
+  kaffe/kaffevm/jit3/machine.c: Added code to generate debugging
+    information for JIT'ed methods that had java debugging
+    information.
+
+  kaffe/kaffevm/classMethod.c: Added code to generate type information
+    when necessary.
+
+Control Flow:
+
+  When the jitter finishes processing a method and installs it, it
+  will convert the java line debugging information from byte code
+  references to native code references.  The xdebugging code simply
+  takes these converted references and uses debugFile functions to
+  generate the assembler directives.
+
+Future:
+
+  Add more debugging information, types and variable locations. (DONE)
+
+  Automate the process of getting the information into gdb. (DONE)

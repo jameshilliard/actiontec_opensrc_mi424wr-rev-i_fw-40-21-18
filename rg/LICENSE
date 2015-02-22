@@ -1,0 +1,126 @@
+LICENSE AGREEMENT
+
+IMPORTANT - READ CAREFULLY: THIS JUNGO LICENSE AGREEMENT ("AGREEMENT") IS A
+LEGAL AGREEMENT BETWEEN YOU AND JUNGO LTD. ("JUNGO"), FOR THE OPENRG / OPENSMB
+SOFTWARE PRODUCT ACCOMPANYING THIS LICENSE (THE "SOFTWARE"). BY INSTALLING,
+COPYING OR OTHERWISE USING THE SOFTWARE, YOU AGREE TO BE LEGALLY BOUND BY THE
+TERMS AND CONDITIONS OF THIS AGREEMENT. IF YOU DO NOT AGREE TO THE TERMS AND
+CONDITIONS OF THIS AGREEMENT, DO NOT INSTALL, COPY, OR OTHERWISE USE THE
+SOFTWARE. 
+
+1.Commercial License. If, prior to the date of this Agreement, you and Jungo
+  have executed a written License and Distribution Agreement for the use of the
+  Software, then your use of the Software is governed strictly by the terms and
+  conditions of such License and Distribution Agreement. If there is any
+  conflict between the terms hereof and the terms of the said License and
+  Distribution Agreement, the terms of the latter shall prevail.
+2.Internal Development License. If, prior to the date of this Agreement, you
+  and Jungo have executed a written Memorandum of Understanding for your use of
+  the Software, and you have paid Jungo all license fees for the Software, as
+  specified in the Memorandum of Understanding, then Jungo hereby grants you a
+  personal, non-exclusive, non-transferable and non-sublicensable license,
+  during the Development License Term (as defined below), to use the Software,
+  solely for the limited purpose of internal development, porting and
+  integration of the Software on your premises (the "Internal Development
+  License"). This Internal Development License allows you to make copies of the
+  Software, each copy containing all copyright notices and other proprietary
+  legends appearing on the original copy of the Software. The Internal
+  Development License is granted to you for the term of the Memorandum of
+  Understanding ("Development License Term"), and thereafter shall
+  automatically expire.
+3.Evaluation License. If you do not have effective License and Distribution
+  Agreement or a Memorandum of Understanding executed between you and Jungo
+  with respect to your use of the Software, then Jungo hereby grants you a
+  personal, non-exclusive, non-transferable and non-sublicensable license,
+  during the Evaluation License Term (as defined below), to use the Software,
+  solely for the limited purpose of testing, demonstrating and evaluating the
+  Software internally and on your premises (the "Evaluation License"). Without
+  derogating from the generality of the aforesaid, you may not: (i) use the
+  Software for development purposes, (ii) make any commercial use of the
+  Software, (iii) grant any third party any right to use the Software, or (iv)
+  provide any services based on the Software, all whether or not for any
+  consideration. This Evaluation License allows you to download, install and
+  make one copy of the Software, which copy shall contain all copyright notices
+  and other proprietary legends appearing on the original copy of the Software.
+  The Evaluation License is granted to you for a limited term of 30-days,
+  starting on the date you first download the Software (the "Evaluation License
+  Term"), and thereafter shall automatically expire. IF, AFTER THE EXPIRATION
+  OF THE EVALUATION LICENSE TERM, YOU WISH TO OBTAIN A LICENSE TO USE THE
+  SOFTWARE FOR INTERNAL DEVELOPMENT OR FOR COMMERCIAL PURPOSES PLEASE CONTACT
+  JUNGO LTD.
+4.Restrictions on Use. Except as expressly permitted under the License granted
+  to you, under Section 1, 2 or 3 above, as applicable, you may not, and may
+  not permit or aid others to: 
+4.1.translate, reverse engineer, decompile, disassemble, reproduce, duplicate,
+  copy, or otherwise disseminate all or any part of the Software, or extract
+  source code from the object code of the Software; 
+4.2.make any commercial use of the Software, including without limitation,
+  assign, distribute, sublicense, transfer, pledge, lease, rent, or share your
+  rights under this Agreement, all whether or not for any consideration;  
+4.3.use the Software for demonstration or evaluation by any third parties or
+  provide any services based on the Software, whether or not for any
+  consideration; 
+4.4.incorporate or link any open source software with any open source software
+  part of the Software, or otherwise take any action which may cause the
+  Software or any portion thereof to be subjected to the terms of the Free
+  Software Foundation's General Public License (GPL) or Lesser General Public
+  License (LGPL), or of any other open source code license; 
+4.5.allow any third party any use of the Software; or
+4.6.grant access to or disclose to any third party the Software or any portion
+  thereof.
+5.Third Party and Open Source License. Any third party software included in the
+  Software shall be governed by the terms of this Agreement; provided, however,
+  that any Open Source software included in the Software shall be governed
+  solely by the terms of the accompanying open source software license
+  agreement.  For purposes of this Agreement, the term "Open Source" means the
+  Free Software Foundation's General Public License (GPL) or Lesser General
+  Public License (LGPL). If any open source software is provided hereunder in
+  object code, and its accompanying license requires that it be provided in
+  source code as well, you may receive such source code by sending Jungo, via
+  registered mail, a certified check for US$15.00 to cover our production and
+  shipping costs. Please send the check to the following address, and a CD with
+  the appropriate source code will be mailed to you: Jungo Ltd., 1 Hamachshev
+  St., Poleg Industrial Center, Netanya 42504, Israel.
+6.Effects of Termination. Upon expiration or other termination of this
+  Agreement or the License granted to you hereunder, you will immediately
+  remove all copies of the Software from your computer(s).
+7.Proprietary Rights. All right, title, and interest in and to the Software,
+  including associated intellectual property rights, are and shall remain with
+  Jungo and its licensors, and may be protected by copyright, trademark, patent
+  and trade secret law and international treaties. This Agreement does not
+  convey to you an interest in or to the Software, but only a limited and
+  revocable right of use, in accordance with the terms of this Agreement.  You
+  may not remove any proprietary notices and/or any legends from the Software.  
+8.Confidentiality. The Software contains confidential and proprietary
+  information of Jungo. Accordingly, you agree that you will not, nor allow any
+  third party to, disseminate, transfer, grant access to, or otherwise disclose
+  to any third party the Software or any part thereof or any other confidential
+  or proprietary information of Jungo provided in connection therewith. You
+  will maintain all copies of the Software and all related documentation in
+  confidence.
+9.Exclusion of Warranty. THE SOFTWARE IS PROVIDED IN THE FORM OF A
+  NON-COMMERCIAL TESTING-LEVEL EVALUATION VERSION AND AS SUCH, IS PROVIDED "AS
+  IS", AND JUNGO HEREBY DISCLAIMS ANY WARRANTIES, WHETHER EXPRESS OR IMPLIED,
+  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.  YOU ASSUME ALL
+  LIABILITY, FINANCIAL OR OTHERWISE, ASSOCIATED WITH YOUR USE OF THE SOFTWARE.
+10.Limitation on Liability. IN NO EVENT SHALL JUNGO BE LIABLE FOR ANY DIRECT,
+   INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, PUNITIVE, OR CONSEQUENTIAL DAMAGES
+   (INCLUDING, BUT NOT LIMITED TO LOSS OF USE, DATA, OR PROFITS, OR BUSINESS
+   INTERRUPTION) HOWEVER CAUSED AND UNDER ANY THEORY OF LAW, WHETHER IN
+   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+   ARISING OR RELATED IN ANY WAY TO THE USE OF THE SOFTWARE, EVEN IF ADVISED OF
+   THE POSSIBILITY OF SUCH DAMAGES.
+11.Governing Law and Jurisdiction. This Agreement shall be construed and
+   governed in accordance with the laws of the State of CA, USA, regardless of
+   its conflict of laws rules, and the competent courts of the State of CA
+   shall have sole and exclusive jurisdiction over any dispute under this
+   Agreement or otherwise related to the Software.  
+12.Miscellaneous. Should any term of this Agreement be declared void or
+   unenforceable by any court of competent jurisdiction, such declaration shall
+   have no effect on the remaining terms hereof. The failure of either party to
+   enforce any rights granted hereunder or to take action against the other
+   party in the event of any breach hereunder shall not be deemed a waiver by
+   that party as to subsequent enforcement of rights or subsequent actions in
+   the event of future breaches. 
+

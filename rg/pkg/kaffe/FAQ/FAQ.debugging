@@ -1,0 +1,176 @@
+Debugging Kaffe
+---------------
+
+This document provides some pointers for debugging the Kaffe VM. (Not
+necessarily for debugging Java apps running on Kaffe, though you can
+abuse these techniques to that end.)
+
+building Kaffe for debugging
+============================
+
+There are a few things to consider when building Kaffe to make your 
+debugging experience enjoyable.  There are debugging macros within 
+Kaffe that will print out predefined messages, you control which 
+messages you are interested in by using -vmdebug (see below).  If
+you are planning on using GDB (either alone or with some GUI) you
+will want to disable GCC optimizations.  The optimizations that 
+GCC perform may change the execution order of some instructions 
+and make your debugging session very frustrating!  You will not 
+know which like will execute next and your executing line will 
+jump around.  The easiest way disable GCC optimizations when 
+building Kaffe is to edit the config.frag for your system 
+(config/<CPU>/<OS>/config.frag).  Add the -O0 flag to CFLAGS, 
+this tells GCC to use zero (0) optimizations. 
+        CFLAGS="$CFLAGS -O0"
+
+The other thing that you will want to do is to use
+static linking when building Kaffe.  There are issue with some 
+dynamic loaders and GDB may not be able to find your source files
+when you step into a function that is defined in another directory
+or library.  When configuring Kaffe you can pass the static flags
+     ./configure --with-staticlib --with-staticbin --with-staticvm
+
+       
+-vmdebug
+========
+
+Configure Kaffe with the '--enable-debug' option. This turns on a
+bunch of debugging infrastructure in Kaffe. Most of the
+infrastructure is for tracing, but there are some sanity checks that
+can be turned on (e.g., 'GCDIAG'), and other flags and settings (e.g.,
+'NOGC').
+
+Run kaffe with '-vmdebug list' to get a list of supported VM debugging
+options. Pass the options you're interested in as a comma-separated
+list of names. For example, you can use it like so:
+        kaffe -vmdebug INIT,VMTHREAD,GCSYSALLOC foo
+
+This will print some stats about initialization, VM-level threading
+events, and system-level memory allocations. Note that some of the
+options are very, very verbose (e.g., 'GCALLOC' or 'ALL'.)
+
+If you want to add more run-time tracing code, look at
+kaffe/kaffevm/debug.h. Grep for the DBG() macros to see how they're
+used.
+
+gdb
+===
+
+Kaffe is started by a script that determines the BOOTCLASSPATH, 
+CLASSPATH and LD_LIBRARY_PATH that is needed for Kaffe to run.
+Since the Kaffe executable is not started directly by you, trying
+'dbg kaffe' will not work.  You will need to tell the startup script
+which debugger you want to use.  This is as easy as setting the 
+environment variable KAFFE_DEBUG to your debugger of choice.
+Currently Kaffe can be debugged use: gdb, ddd, emacs and cgdb.
+        KAFFE_DEBUG=gdb
+Once you are done debugging or nolonger want Kaffe to start up 
+within a debugger you can simply unset KAFFE_DEBUG.        
+
+There are some gdb macros in developers/gdbinit that are useful for
+looking at Kaffe's GC, thread, and object structures (in particular,
+look for 'pobject', 'livethreadsbt'). Some of the macros are out of
+sync wrt to the actual structures, so you may have to update
+them. Comments in the file should explain how to use them.
+
+Also, look at FAQ.xdebugging for a mechanism for including Java
+symbols in backtraces in GDB. If you're going to debug Kaffe on a
+regular basis, you should always include the xdebugging support.
+
+
+Internal Tests
+==============
+
+Internal tests are kept in the test/internal directory and are used to
+do very basic checking of the VM.  If you are doing a port, you will
+want to start here since the tests are less demanding than the full
+regression tests.  In general, the tests are written in C, link
+directly to the VM libraries, check results internally, and exit when
+they first encounter a problem.
+
+Currently, there is only one test, jitBasic, which does basic testing
+of the jitter.  For example, the tests range from simple checking of
+functions returning constants to creating objects and accessing their
+fields.  These tests are ideal for those doing a port of the jitter,
+and were in fact used to assist the development of the PowerPC port.
+Note that the test relies on Java classes, Jikes is required to do the
+compilation, we do not currently distribute precompiled versions.
+
+jitBasic environment variables:
+
+	TEST_CLASSES - The classes to test against.
+
+To run it manually, you need to do something like the following 
+in sh/bash:
+
+  . ../../BUILD_ENVIRONMENT
+  export BOOTCLASSPATH=${BOOTCLASSPATH}:.
+  export TEST_CLASSES="ConstMethods.class"
+  ./jitBasic
+
+It "should" complain if it has any problems and it should print out 
+a bunch of debugging info as it jits the methods.  If its completely 
+silent, something is probably wrong.
+
+Regression Tests
+================
+
+Regression tests are kept in test/regression/.  Regression tests are
+just simple stand-alone .java programs. They have special comments at
+the end that influence how the tester treats their output.  Generally,
+the "correct" output is included in the comment, and the test script
+simply compares the output generated.  
+
+To add a new test, just add it to the list of tests in Makefile.am,
+regenerate the Makefile.in, re-configure, and run 'make check'.  (Ugh,
+the need to re-generate Makefile.in is awkward and lame.)
+
+To run a single test (or a subset of tests) set the TEST variable,
+like so:
+	cd test/regression
+	make check TESTS="ThreadInterrupt.java IndexTest.java"
+
+Note, you can test new tests without doing the whole Makefile.am thing
+by just including the test in the test/regression directory and then
+setting the TESTS environment variable to that test.  For example:
+
+	$ vi test/regression/OneOffHackTest.java
+	$ make check TESTS="OneOffHackTest.java"
+
+
+Special Comments in Regression Tests
+====================================
+
+Regression tests have special comments that tell the test driver
+script what to do with them. The special comments and their
+effects are:
+
+// Sources: SOURCES
+compile also these sources with current test case.
+
+// javac flags: FLAGS
+add some javac flags.  For exemple -nowarn remove warning lines
+and therefore don't let's think that javac fail.
+
+// Skip Run
+Compile only
+
+// java args: CLASSNAME [OPTIONS]
+Replace current classname by this classname and options.
+
+All lines enclose inside line
+/* Expected Output:
+and
+*/
+are compared to test-case's output.
+
+// Sort Output
+Sort output before compare it to Expected Output.
+
+Other Stuff
+===========
+
+Debugging Performance: Look at FAQ.timing and FAQ.xprofiling for
+details on getting performance information out of the VM.
+
+

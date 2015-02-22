@@ -1,0 +1,300 @@
+<!DOCTYPE Project SYSTEM "http://www.slickedit.com/dtd/vse/10.0/vpj.dtd">
+<Project
+    Version="10.0"
+    VendorName="SlickEdit"
+    WorkingDir=".">
+    <Config
+        Name="Debug"
+        Type="cpp"
+        DebugCallbackName="gdb"
+        OutputFile="%bdhaproxy"
+        CompilerConfigName="Latest Version">
+        <Menu>
+            <Target
+                Name="Compile"
+                MenuCaption="&amp;Compile"
+                CaptureOutputWith="ProcessBuffer"
+                OutputExts="*.o"
+                SaveOption="SaveCurrent"
+                RunFromDir="%rw">
+                <Exec CmdLine='cc -c -g %i %defd -o "%bd%n.o" "%f"'/>
+            </Target>
+            <Target
+                Name="Link"
+                MenuCaption="&amp;Link">
+                <Exec CmdLine='cc -g -o "%o" %f %libs'/>
+            </Target>
+            <Target
+                Name="Build"
+                MenuCaption="&amp;Build"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%(VSLICKBIN1)vsbuild" build "%w" "%r"'/>
+            </Target>
+            <Target
+                Name="Rebuild"
+                MenuCaption="&amp;Rebuild"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%(VSLICKBIN1)vsbuild" rebuild "%w" "%r"'/>
+            </Target>
+            <Target
+                Name="Debug"
+                MenuCaption="&amp;Debug"
+                SaveOption="SaveNone"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                RunFromDir="%rw">
+                <Exec CmdLine='vsdebugio -prog "%o"'/>
+            </Target>
+            <Target
+                Name="Execute"
+                MenuCaption="E&amp;xecute"
+                SaveOption="SaveNone"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%o"'/>
+            </Target>
+        </Menu>
+    </Config>
+    <Config
+        Name="Release"
+        Type="cpp"
+        DebugCallbackName="gdb"
+        OutputFile="%bdhaproxy"
+        CompilerConfigName="Latest Version">
+        <Menu>
+            <Target
+                Name="Compile"
+                MenuCaption="&amp;Compile"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveCurrent"
+                OutputExts="*.o"
+                RunFromDir="%rw">
+                <Exec CmdLine='cc -c -O %i %defd -o "%bd%n.o" "%f"'/>
+            </Target>
+            <Target
+                Name="Link"
+                MenuCaption="&amp;Link">
+                <Exec CmdLine='cc -O -o "%o" %f %libs'/>
+            </Target>
+            <Target
+                Name="Build"
+                MenuCaption="&amp;Build"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%(VSLICKBIN1)vsbuild" build "%w" "%r"'/>
+            </Target>
+            <Target
+                Name="Rebuild"
+                MenuCaption="&amp;Rebuild"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%(VSLICKBIN1)vsbuild" rebuild "%w" "%r"'/>
+            </Target>
+            <Target
+                Name="Debug"
+                MenuCaption="&amp;Debug"
+                SaveOption="SaveNone"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                RunFromDir="%rw">
+                <Exec CmdLine='vsdebugio -prog "%o"'/>
+            </Target>
+            <Target
+                Name="Execute"
+                MenuCaption="E&amp;xecute"
+                SaveOption="SaveNone"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%o"'/>
+            </Target>
+        </Menu>
+    </Config>
+    <Rules Name="Compile">
+        <Rule
+            InputExts="*.s"
+            OutputExts="*.o"
+            LinkObject="1">
+            <Exec CmdLine='as -o "%bd%n.o" "%f"'/>
+        </Rule>
+    </Rules>
+    <Files>
+        <Folder
+            Name="Source Files"
+            Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d">
+            <F N="src/acl.c"/>
+            <F N="src/appsession.c"/>
+            <F N="src/auth.c"/>
+            <F N="src/backend.c"/>
+            <F N="src/base64.c"/>
+            <F N="src/buffers.c"/>
+            <F N="src/cfgparse.c"/>
+            <F N="src/checks.c"/>
+            <F N="src/client.c"/>
+            <F N="src/cttproxy.c"/>
+            <F N="src/dumpstats.c"/>
+            <F N="ebtree/eb32tree.c"/>
+            <F N="ebtree/eb64tree.c"/>
+            <F N="ebtree/ebimtree.c"/>
+            <F N="ebtree/ebistree.c"/>
+            <F N="ebtree/ebmbtree.c"/>
+            <F N="ebtree/ebpttree.c"/>
+            <F N="ebtree/ebsttree.c"/>
+            <F N="ebtree/ebtree.c"/>
+            <F N="src/ev_epoll.c"/>
+            <F N="src/ev_kqueue.c"/>
+            <F N="src/ev_poll.c"/>
+            <F N="src/ev_select.c"/>
+            <F N="src/ev_sepoll.c"/>
+            <F N="src/fd.c"/>
+            <F N="src/freq_ctr.c"/>
+            <F N="src/haproxy.c"/>
+            <F N="src/hdr_idx.c"/>
+            <F N="src/lb_chash.c"/>
+            <F N="src/lb_fwlc.c"/>
+            <F N="src/lb_fwrr.c"/>
+            <F N="src/lb_map.c"/>
+            <F N="src/log.c"/>
+            <F N="src/memory.c"/>
+            <F N="src/pattern.c"/>
+            <F N="src/pipe.c"/>
+            <F N="src/proto_http.c"/>
+            <F N="src/proto_tcp.c"/>
+            <F N="src/proto_uxst.c"/>
+            <F N="src/protocols.c"/>
+            <F N="src/proxy.c"/>
+            <F N="src/queue.c"/>
+            <F N="src/rbtree.c"/>
+            <F N="src/regex.c"/>
+            <F N="src/server.c"/>
+            <F N="src/session.c"/>
+            <F N="src/sessionhash.c"/>
+            <F N="src/signal.c"/>
+            <F N="src/standard.c"/>
+            <F N="src/stick_table.c"/>
+            <F N="src/stream_interface.c"/>
+            <F N="src/stream_sock.c"/>
+            <F N="src/task.c"/>
+            <F N="src/time.c"/>
+            <F N="src/uri_auth.c"/>
+        </Folder>
+        <Folder
+            Name="Header Files"
+            Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.inc;*.sh;*.cpy;*.if">
+            <F N="include/proto/acl.h"/>
+            <F N="include/types/acl.h"/>
+            <F N="include/common/appsession.h"/>
+            <F N="include/proto/auth.h"/>
+            <F N="include/types/auth.h"/>
+            <F N="include/proto/backend.h"/>
+            <F N="include/types/backend.h"/>
+            <F N="include/common/base64.h"/>
+            <F N="include/proto/buffers.h"/>
+            <F N="include/types/buffers.h"/>
+            <F N="include/types/capture.h"/>
+            <F N="include/common/cfgparse.h"/>
+            <F N="include/proto/checks.h"/>
+            <F N="include/types/checks.h"/>
+            <F N="include/proto/client.h"/>
+            <F N="include/common/compat.h"/>
+            <F N="ebtree/compiler.h"/>
+            <F N="include/common/compiler.h"/>
+            <F N="include/common/config.h"/>
+            <F N="include/types/counters.h"/>
+            <F N="include/proto/cttproxy.h"/>
+            <F N="include/common/debug.h"/>
+            <F N="include/common/defaults.h"/>
+            <F N="include/proto/dumpstats.h"/>
+            <F N="ebtree/eb32tree.h"/>
+            <F N="ebtree/eb64tree.h"/>
+            <F N="ebtree/ebimtree.h"/>
+            <F N="ebtree/ebistree.h"/>
+            <F N="ebtree/ebmbtree.h"/>
+            <F N="ebtree/ebpttree.h"/>
+            <F N="ebtree/ebsttree.h"/>
+            <F N="ebtree/ebtree.h"/>
+            <F N="include/common/epoll.h"/>
+            <F N="include/common/errors.h"/>
+            <F N="include/proto/fd.h"/>
+            <F N="include/types/fd.h"/>
+            <F N="include/proto/freq_ctr.h"/>
+            <F N="include/types/freq_ctr.h"/>
+            <F N="include/types/global.h"/>
+            <F N="include/proto/hdr_idx.h"/>
+            <F N="include/types/hdr_idx.h"/>
+            <F N="include/proto/httperr.h"/>
+            <F N="include/types/httperr.h"/>
+            <F N="include/import/ip_tproxy.h"/>
+            <F N="include/proto/lb_chash.h"/>
+            <F N="include/types/lb_chash.h"/>
+            <F N="include/proto/lb_fwlc.h"/>
+            <F N="include/types/lb_fwlc.h"/>
+            <F N="include/proto/lb_fwrr.h"/>
+            <F N="include/types/lb_fwrr.h"/>
+            <F N="include/proto/lb_map.h"/>
+            <F N="include/types/lb_map.h"/>
+            <F N="include/proto/log.h"/>
+            <F N="include/types/log.h"/>
+            <F N="include/common/memory.h"/>
+            <F N="include/common/mini-clist.h"/>
+            <F N="include/proto/pattern.h"/>
+            <F N="include/types/pattern.h"/>
+            <F N="include/proto/pipe.h"/>
+            <F N="include/types/pipe.h"/>
+            <F N="include/proto/port_range.h"/>
+            <F N="include/types/port_range.h"/>
+            <F N="include/proto/proto_http.h"/>
+            <F N="include/types/proto_http.h"/>
+            <F N="include/proto/proto_tcp.h"/>
+            <F N="include/types/proto_tcp.h"/>
+            <F N="include/proto/proto_uxst.h"/>
+            <F N="include/proto/protocols.h"/>
+            <F N="include/types/protocols.h"/>
+            <F N="include/proto/proxy.h"/>
+            <F N="include/types/proxy.h"/>
+            <F N="include/proto/queue.h"/>
+            <F N="include/types/queue.h"/>
+            <F N="include/common/rbtree.h"/>
+            <F N="include/common/regex.h"/>
+            <F N="include/proto/server.h"/>
+            <F N="include/types/server.h"/>
+            <F N="include/proto/session.h"/>
+            <F N="include/types/session.h"/>
+            <F N="include/common/sessionhash.h"/>
+            <F N="include/proto/signal.h"/>
+            <F N="include/types/signal.h"/>
+            <F N="include/common/standard.h"/>
+            <F N="include/proto/stick_table.h"/>
+            <F N="include/types/stick_table.h"/>
+            <F N="include/proto/stream_interface.h"/>
+            <F N="include/types/stream_interface.h"/>
+            <F N="include/proto/stream_sock.h"/>
+            <F N="include/proto/task.h"/>
+            <F N="include/types/task.h"/>
+            <F N="include/common/template.h"/>
+            <F N="include/proto/template.h"/>
+            <F N="include/types/template.h"/>
+            <F N="include/common/ticks.h"/>
+            <F N="include/common/time.h"/>
+            <F N="include/common/tools.h"/>
+            <F N="include/common/uri_auth.h"/>
+            <F N="include/common/version.h"/>
+        </Folder>
+        <Folder
+            Name="Resource Files"
+            Filters="*.ico;*.cur;*.dlg"/>
+        <Folder
+            Name="Bitmaps"
+            Filters="*.bmp"/>
+        <Folder
+            Name="Other Files"
+            Filters=""/>
+    </Files>
+</Project>

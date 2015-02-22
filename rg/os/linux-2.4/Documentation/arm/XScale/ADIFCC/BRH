@@ -1,0 +1,105 @@
+
+
+Board Overview
+---------------------------------------------------------------------
+
+This is an early release of the Linux port to the ADI BRH platform
+
+The BRH is an evaluation platform for ADI Engineering's 80200BECC
+(Big-Endian Companion Chip) chipset for the Intel 80200 XScale CPU.
+The 80200BECC is a follow on product to the 80200FCC and provides a
+functioning PCI unit, high performance memory controller, DMA units,
+and two timers.
+
+Port Status
+---------------------------------------------------------------------
+
+Supported:
+
+ - Little and Big Endian operation
+ - Dual Ethernets 
+ - Both serial ports
+ - Flash access to MTD
+ - On board PCI slot
+ - XScale PMU 
+ - XScale cache locking
+
+Unsupported:
+
+ - On Board DMA
+
+Building the Kernel
+---------------------------------------------------------------------
+
+  make distclean
+  make brh_config oldconfig dep
+  make zImage
+
+When done, the new zImage will be in arch/arm/boot/zImage
+
+Loading Linux
+---------------------------------------------------------------------
+
+Configure your com program to 57600, N81
+
+I'm assuming that you are using RedBoot as your bootloader, and not 
+anything else. Once redboot is started:
+
+   RedBoot> load -r -b 0xc1008000 -m y
+
+Now start a y-modem transfer of the zImage file in your com program.
+
+Once completed:
+
+   RedBoot> go 0xc1008000
+   Uncompressing Linux.......booting kernel
+   Linux version 2.4.18-rmk6 (dsaxena@xanadu.az.mvista.com) (gcc version 2. 95.3 20010315 (release/MontaVista)) #8 Thu May 23 10:24:49 MST 2002             
+    CPU: Intel XScale-80200 revision 1                                
+    Machine: ADI BRH                                                    
+    On node 0 totalpages: 8192                                             
+    zone(0): 8192 pages.                                                      
+    zone(1): 0 pages.                                                         
+    zone(2): 0 pages.  
+    ...
+
+Notes/Issues
+---------------------------------------------------------------------
+
+PCI Windows and available RAM
+
+  The current port only allows linux to use 32 out of the 128MB 
+  available on the board.  The reason for this is that the inbound
+  PCI windows on the BECC only allow for 2 separate 32MB windows,
+  not a single 128MB window.  This put several limitations on
+  the way drivers can allocate buffers for use by PCI, so it is
+  much easier to limit linux than to hack all the drivers.  It may
+  be possible to use the higmem stuff to use the upper 96MB of memory
+  only for user and vmalloc space, but I haven't had a chance to look
+  at that yet.
+
+  Update:
+
+  There is a new revision of the BRH EEPROM which adds a single 128MB
+  translation window. If you get this updated version from them
+  (v8), it will allow you to use all of RAM.
+
+MTD on the BRH board
+
+  There are several different ways to use MTD on the BRH board.
+  If you turn on CONFIG_MTD_CONCAT (off in the default config),
+  the driver will concatanate all available flash banks into a
+  single contigous regions and create two partitions (firmware,
+  and user access).  You can change the partioning scheme if you 
+  wish by editing the file drivers/mtd/maps/brh.c.
+
+  If you do not turn on MTD concatanation support, the driver will
+  split the boot flash device into two regions (firmware & user)
+  and then create a single partition on each user flash device.
+
+Network Timeouts
+
+  If using an EEPROM < v8, you will see network timeouts during
+  high traffice due to an issue with the PCI unit on the BECC
+  not releasing the bus.
+
+

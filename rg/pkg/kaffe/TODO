@@ -1,0 +1,37 @@
+* Create test cases for:
+ * symlink deletion(already fixed)
+ * writer.close() flushing the internal buffer on encoder(already fixed)
+ * Calendar.getInstance().get(YEAR) returning non-zero
+
+* Engine changes:
+ * JIT must support thread concurrency. Variable must be in thread local storage and not globally visible.
+
+* Architectural changes:
+ * Kaffe-GC must be capable of running without heap limit.
+ * Make threading model runtime selectable.
+ * Make runtime engine runtime selectable
+ * Make gc backend runtime selectable
+
+* Missing features
+ * Implement support for extension override mechanism, and allow overriding
+   with older versions of APIs as well, which is needed for DOM.
+
+* Integration issues
+ * Add support for using an external gjdoc.
+
+* Merging work:
+  * From GNU Classpath:
+    java.util.zip, java.lang.reflect, java.lang
+  * gcjwebplugin
+  * verifier from gcj (rob gonzalez)
+
+* AWT:
+  * Win32 port must be updated to use RawData.
+
+* Build system: (dalibor)
+  * Explicit support to use an installed javac/jikes/gcjx/kjc for bootstrap
+  * Non-recursive build, single Makefile.am for kaffe.
+
+* Pending patches (dalibor)
+  * L4 port from Ronald Aigner ?
+  * Regular resyncing with GNU Classpath, gjdoc.

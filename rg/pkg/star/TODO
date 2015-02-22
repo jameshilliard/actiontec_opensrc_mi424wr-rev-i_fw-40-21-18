@@ -1,0 +1,28 @@
+NOTE: Before blaming star for something found in this list, look at your favorite
+	tar implementation for the presence of similar bugs/missing features.
+
+
+-	Better telldir() error handling (break; in directory read loop???)
+
+-	Need a way to handle backups that include /export/home & /home: Missing links
+	message because loopback filesystem gives more hardlinks than really present.
+
+-	Linkcount below zero with the command: star -c /usr/bin /usr/bin
+
+-	Add Option to both (verbose print & errors) appear on stderr.
+
+-	malloc path buffers and 'chdir' to be able to deal with pathnames > 1024 bytes.
+
+-	add an option to reduce primary file name length to 99 chars
+	for all formats to enhance the portability of the archives.
+
+-	union member .dbuf is still star_header!!!
+
+-	If -p flag is ommited, files are handled different from old tar. 
+	Star always does does a chmod on non directories.
+	Tar uses creat(file, st_mode & 0x07777)
+
+-	AIX uses tape.h ??? for mt ioctl's
+
+-	Size for hard links cannot be checked!!!
+

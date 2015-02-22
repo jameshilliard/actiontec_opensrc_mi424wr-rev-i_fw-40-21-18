@@ -1,0 +1,49 @@
+# FreeS/WAN library
+# Copyright (C) 1998, 1999, 2000  Henry Spencer.
+# 
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2 of the License, or (at your
+# option) any later version.  See <http://www.fsf.org/copyleft/gpl.txt>.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+
+RGSRC=../../../../../..
+include $(RGSRC)/envir.mak
+
+MOD_O_TARGET = libfreeswan.o
+
+O_OBJS = addrtoa.o datatot.o goodmask.o \
+	pfkey_v2_build.o pfkey_v2_debug.o pfkey_v2_ext_bits.o pfkey_v2_parse.o \
+	prng.o rangetoa.o satoa.o \
+	subnetof.o subnettoa.o ultoa.o version.o
+
+MOD_CFLAGS += -I$(RGSRC)/pkg/freeswan/lib \
+  -I$(RGSRC)/pkg/freeswan/klips/net/ipsec
+
+ifeq ($(CONFIG_IPSEC_DEBUG),y)
+  MOD_CFLAGS += -g
+endif
+
+ifeq ($(CONFIG_IPSEC_NAT_TRAVERSAL),y)
+  MOD_CFLAGS+=-DNAT_TRAVERSAL
+endif
+
+MOD_CFLAGS += -Wall 
+# MOD_CFLAGS += -Wconversion 
+# MOD_CFLAGS += -Wmissing-prototypes 
+MOD_CFLAGS += -Wpointer-arith 
+# MOD_CFLAGS += -Wcast-qual 
+# MOD_CFLAGS += -Wmissing-declarations 
+MOD_CFLAGS += -Wstrict-prototypes
+# MOD_CFLAGS += -pedantic
+# MOD_CFLAGS += -O3
+# MOD_CFLAGS += -W
+# MOD_CFLAGS += -Wwrite-strings 
+MOD_CFLAGS += -Wbad-function-cast 
+
+include $(RGMK)

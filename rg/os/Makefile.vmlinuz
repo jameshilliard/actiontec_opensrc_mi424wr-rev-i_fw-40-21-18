@@ -1,0 +1,251 @@
+include $(RGSRC)/util.mak
+
+MAKE_KERNEL_COMMAND=echo "No Kernel By Default"
+ifdef CONFIG_ARMNOMMU
+  LINUX_BOOTLOADER_DIR=$(CURDIR)/kernel/arch/armnommu/mach-$(CONFIG_ARCH_MACHINE)/boot/
+  LINUX_BOOTLOADER_OBJECT=bootldr.o
+  BOOTJUMP=bootjump
+  BOOTSTRAP=$(BOOTJUMP)
+endif
+ifdef CONFIG_MIPS_IDT
+  LINUX_BOOTLOADER_DIR=$(CURDIR)/kernel/arch/mips/boot/
+  LINUX_BOOTLOADER_OBJECT=bootldr.o
+endif
+
+RAMDISK_SIZE:=$(call MSIZE,$(COMPRESSED_DISK))
+
+CLEAN+=$(LINUX_BOOTLOADER_OBJECT) $(OPENRG_IMG) \
+  $(wildcard vmlinuz* vmlinux* *.o *.bin *.strip) \
+  $(OPENRG_PROD) $(BOOTJUMP) *.inc
+
+KERNEL_SIZE=$(call MSIZE,vmlinuz)
+KERNEL_SIZE_PAD=$(call MSIZE,vmlinuz.pad)
+BOOTLOADER_SIZE=$(call MSIZE,$(LINUX_BOOTLOADER_OBJECT).bin)
+
+VPATH=$(LINUX_BOOTLOADER_DIR):$(CURDIR)
+
+ifdef LINUX_BOOTLOADER_DIR
+  # Include the arch specific bootloader makefile to create the bootloader
+  include $(LINUX_BOOTLOADER_DIR)/Makefile
+endif
+.PHONY : make_image
+
+# For PCBOX we use an external bootloader (lilo) so we let the kernel do the
+# dirty work. For all other archs, we compile the final image here.
+ifneq ($(CONFIG_PCBOX),)
+MAKE_KERNEL_COMMAND=$(MAKE) -C $(KERNEL_DIR) $(OPENRG_IMG)
+make_image: dummy
+else
+ifneq ($(CONFIG_RG_UML),)
+MAKE_KERNEL_COMMAND=$(MAKE) -C $(KERNEL_DIR) openrg.uml
+make_image:
+	make -C $(RGSRC)/vendor/jungo/uml/boot $(OPENRG_IMG)
+else
+# This is a workaround to create the image for IXP425, eventually this should
+# be solved in a more elegent fashion 
+ifneq ($(CONFIG_ARCH_IXP425)$(CONFIG_ARCH_CX8620X)$(CONFIG_ARCH_SL2312)$(CONFIG_ARCH_KS8695)$(CONFIG_ARCH_COMCERTO),)
+ZIMAGE=$(CURDIR)/kernel/arch/arm/boot/zImage
+
+MAKE_KERNEL_COMMAND=make -C $(KERNEL_DIR) zImage
+make_image:
+	cp -f $(ZIMAGE) $(OPENRG_IMG)
+else
+ifneq ($(CONFIG_ARCH_FEROCEON),)
+ZIMAGE=$(CURDIR)/kernel/arch/arm/boot/zImage
+
+MAKE_KERNEL_COMMAND=make -C $(KERNEL_DIR) zImage
+make_image:
+	make -C $(RGSRC)/pkg/boot/u-boot $(OPENRG_IMG)
+else
+ifdef CONFIG_BOOTLDR_UBOOT
+  VMLINUX=$(BUILDDIR)/os/linux/vmlinux
+  U_MKIMAGE=$(BUILDDIR)/pkg/boot/u-boot/mkimage
+  MAKE_KERNEL_COMMAND=$(MAKE) -C $(KERNEL_DIR) vmlinux
+make_image:
+	make -C $(RGSRC)/pkg/boot/u-boot $(OPENRG_IMG)
+else
+ifdef CONFIG_BCM947XX
+MAKE_KERNEL_COMMAND=make -C $(KERNEL_DIR) vmlinuz.bin.gz
+make_image:
+	make -C $(RGSRC)/vendor/broadcom/bcm947/boot
+	cp $(BUILDDIR)/vendor/broadcom/bcm947/boot/bootimg.bin $(BUILDDIR)/os/
+  ifeq ($(CONFIG_COPY_CRAMFS_TO_RAM)$(CONFIG_SIMPLE_RAMDISK),)
+	$(TRX) -o $(OPENRG_IMG) $(BUILDDIR)/os/bootimg.bin -b 768k $(COMPRESSED_DISK)
+  else
+	$(TRX) -o $(OPENRG_IMG) $(BUILDDIR)/os/bootimg.bin
+  endif
+  ifdef CONFIG_ARCH_BCM947_CYBERTAN
+	rm -f $(BUILDDIR)/code.bin
+	$(TOOLS_PREFIX)/tools/addpattern -i $(OPENRG_IMG) -o $(BUILDDIR)/code.bin -p W54G
+	@echo "Cybertan pattern image is ready at $(BUILDDIR)/code.bin"
+  endif
+else
+ifdef CONFIG_BCM963XX
+BCM963XX_BOOT_DIR=vendor/broadcom/bcm963xx/$(if $(CONFIG_RG_OS_LINUX_26),linux-2.6/,)boot
+OPENRG_SECTION_OFFSET=$(shell $(BUILDDIR)/pkg/perm_storage/image_flash_offset)
+# kernel loader offset is 16k
+KERNEL_LDR_OFFSET=16384
+MAKE_KERNEL_COMMAND=$(MAKE) -C $(KERNEL_DIR) vmlinuz.bin.gz
+
+ifdef CONFIG_RG_CRAMFS_IN_FLASH
+BOOTIMG_SIZE_GET=wc -c $1 | awk '{ print $$1 }'
+
+# Consecutive compressions of the same linux kernel should differ by no more than
+# BOOTIMG_COMPRESSION_RESERVE bytes
+BOOTIMG_COMPRESSION_RESERVE=256
+
+# The CRAMFS address must be alligned with the page size. This is a restriction
+# of the MTD implementation.
+ifdef CONFIG_PAGE_SIZE_4KB
+ALLIGNMENT=4096
+else
+$(error page allignment must be set)
+endif
+
+# When cramfs resides in the flash the kernel is built twice during image
+# creation. The first time kernel is built, its size is messured and is used to 
+# calculate the location of cramfs in the flash. The second time this location
+# is passed to the kernel via the make command line, enabling it to refer to the
+# correct location of cramfs during run time.
+make_image:
+	[ -n "$(OPENRG_SECTION_OFFSET)" ] || ( echo "failed to determine openrg image offset"; false )
+	$(MAKE) -C $(RGSRC)/$(BCM963XX_BOOT_DIR) bootimg.bin
+	BOOTIMG_SIZE_ESTIMATION=$$(( \
+	    $$($(call BOOTIMG_SIZE_GET,$(BUILDDIR)/$(BCM963XX_BOOT_DIR)/bootimg.bin)) + $(BOOTIMG_COMPRESSION_RESERVE) )) && \
+	  UNALLIGNED_CRAMFS_FLASH_ADDR=$$(($(OPENRG_SECTION_OFFSET) + $(KERNEL_LDR_OFFSET) + $$BOOTIMG_SIZE_ESTIMATION)) && \
+	  CRAMFS_FLASH_ADDR=$$(($$(($$(($$UNALLIGNED_CRAMFS_FLASH_ADDR + $(ALLIGNMENT) - 1)) / $(ALLIGNMENT))) * $(ALLIGNMENT))) && \
+	  CRAMFS_FLASH_SIZE=$$($(call BOOTIMG_SIZE_GET,$(COMPRESSED_DISK))) && \
+	  \
+	  $(MAKE_KERNEL_COMMAND) \
+	    CRAMFS_FLASH_ADDR=$$CRAMFS_FLASH_ADDR CRAMFS_FLASH_SIZE=$$CRAMFS_FLASH_SIZE && \
+	  \
+	  $(MAKE) -C $(RGSRC)/$(BCM963XX_BOOT_DIR) $(OPENRG_IMG) \
+	    CRAMFS_FLASH_ADDR=$$CRAMFS_FLASH_ADDR CRAMFS_FLASH_SIZE=$$CRAMFS_FLASH_SIZE \
+	    OPENRG_SECTION_OFFSET=$(OPENRG_SECTION_OFFSET) KERNEL_LDR_OFFSET=$(KERNEL_LDR_OFFSET) && \
+	  \
+	  BOOTIMG_SIZE_FINAL=$$($(call BOOTIMG_SIZE_GET,$(BUILDDIR)/$(BCM963XX_BOOT_DIR)/bootimg.bin)) && \
+	  ( [ $$BOOTIMG_SIZE_FINAL -le $$BOOTIMG_SIZE_ESTIMATION ] || \
+	    ( echo Internal Error: increase BOOTIMG_COMPRESSION_RESERVE; false ) \
+	  )
+else
+make_image:
+	$(MAKE) -C $(RGSRC)/$(BCM963XX_BOOT_DIR) $(OPENRG_IMG) \
+	  OPENRG_SECTION_OFFSET=$(OPENRG_SECTION_OFFSET) KERNEL_LDR_OFFSET=$(KERNEL_LDR_OFFSET)
+endif
+
+else
+ifdef CONFIG_MACH_ADI_FUSIV
+  ifeq ($(CONFIG_OPENRG)$(CONFIG_RG_OS_LINUX_26),yy)
+    MAKE_KERNEL_COMMAND=$(MAKE) -C $(KERNEL_DIR) vmlinuz.bin.gz
+  else
+    MAKE_KERNEL_COMMAND=$(MAKE) -C $(KERNEL_DIR) vmlinux
+  endif
+make_image:	
+ifdef CONFIG_RG_OS_LINUX_24
+	make -C $(RGSRC)/vendor/adi/ad6843/boot $(OPENRG_IMG)
+endif
+ifdef CONFIG_RG_OS_LINUX_26
+	make -C $(RGSRC)/vendor/ikanos/fusiv/boot \
+	  IMG_NAME=$(RG_PROD_STR) $(OPENRG_IMG)
+endif
+
+else
+ifdef CONFIG_SIBYTE_SB1250
+	# TODO: Bad: For Linux-2.6 we have to initiate linux kernel
+	# build here and not in generic place like os/Makefile as for Linux-2.4
+	# TODO: requires patch in binutils to relax GAS on bl(s)
+MAKE_KERNEL_COMMAND=$(MAKE) -C $(KERNEL_DIR) vmlinuz.bin.gz
+make_image:	
+	make -C $(BUILDDIR)/vendor/broadcom/bcm91125e/boot $(OPENRG_IMG)
+else
+ifdef CONFIG_CAVIUM_OCTEON
+	# TODO: Bad: For Linux-2.6 we have to initiate linux kernel
+	# build here and not in generic place like os/Makefile as for Linux-2.4
+	# TODO: requires patch in binutils to relax GAS on bl(s)
+MAKE_KERNEL_COMMAND=$(MAKE) -C $(KERNEL_DIR) vmlinux
+make_image:
+	# TODO: Implement generic uncompress for mips
+	cp $(BUILDDIR)/os/linux/vmlinux $(BUILDDIR)/os/linux/vmlinuz
+	$(STRIP) $(BUILDDIR)/os/linux/vmlinuz
+	#gzip -vf9 $(OPENRG_IMG)
+	#mv $(BUILDDIR)/os/linux/vmlinuz.gz $(OPENRG_IMG)
+	lzma -vf9 $(BUILDDIR)/os/linux/vmlinuz
+	mv $(BUILDDIR)/os/linux/vmlinuz.lzma $(OPENRG_IMG)
+else
+ifdef CONFIG_INCAIP
+MAKE_KERNEL_COMMAND=make -C $(BUILDDIR)/os/linux/arch/mips/boot vmlinuz.bin.gz
+make_image:	
+	make -C $(RGSRC)/vendor/infineon/incaip/boot $(OPENRG_IMG)
+else
+ifdef CONFIG_ADM5120_COMMON
+MAKE_KERNEL_COMMAND=make -C $(BUILDDIR)/os/linux/arch/mips/boot vmlinuz.bin.gz
+make_image:	
+	make -C $(RGSRC)/vendor/admtek/adm5120/boot $(OPENRG_IMG)
+else
+ifdef CONFIG_ARCH_SOLOS
+
+MAKE_KERNEL_COMMAND=$(MAKE) -C $(KERNEL_DIR) Image
+
+make_image:	
+	make -C $(RGSRC)/vendor/conexant/cx9451x/boot $(OPENRG_IMG)
+else
+make_image: vmlinuz.pad $(LINUX_BOOTLOADER_OBJECT).bin real_boot_obj
+    ifdef ARCH_PROLOG
+	cat $(ARCH_PROLOG) > $(OPENRG_IMG)
+    else
+	rm -f $(OPENRG_IMG)
+    endif
+	cat $(LINUX_BOOTLOADER_OBJECT).bin >> $(OPENRG_IMG)
+	cat vmlinuz.pad >> $(OPENRG_IMG)
+	cat $(COMPRESSED_DISK) >> $(OPENRG_IMG)
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+
+make_kernel:
+	$(MAKE_KERNEL_COMMAND)
+
+# ACTION_TEC - Changes for GPL distribution
+$(OPENRG_IMG):make_kernel make_image 
+
+# Compile LINUX_BOOTLOADER_OBJECT twice. First with dummy variable values.
+# Forcing $(LINUX_BOOTLOADER_OBJECT) to recompile.
+$(LINUX_BOOTLOADER_OBJECT): dummy
+
+real_boot_obj:
+	$(MAKE) $(LINUX_BOOTLOADER_OBJECT).bin
+
+STRIP_FLAGS=-R .comment -R .note
+
+$(LINUX_BOOTLOADER_OBJECT).strip : $(LINUX_BOOTLOADER_OBJECT) dummy
+	$(STRIP) $(STRIP_FLAGS) $< -o $@
+
+$(LINUX_BOOTLOADER_OBJECT).bin: $(LINUX_BOOTLOADER_OBJECT).strip dummy
+	$(OBJCOPY) -O binary $< $@
+
+vmlinuz.pad: vmlinuz
+	@cp vmlinuz vmlinuz.pad
+	@$(call PADD,vmlinuz,vmlinuz.pad)
+
+vmlinuz: vmlinux.bin
+	gzip -vf9 -c $< > $@
+
+vmlinux.bin: vmlinux.strip
+	$(OBJCOPY) -O binary $< $@
+	
+vmlinux.strip: kernel/vmlinux
+	$(STRIP) $(STRIP_FLAGS) $< -o $@
+
+$(BOOTJUMP): boot_jump.o
+	$(STRIP) $(STRIP_FLAGS) $^
+	$(OBJCOPY) -O binary $^ $@

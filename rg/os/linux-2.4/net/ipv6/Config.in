@@ -1,0 +1,95 @@
+#
+# IPv6 configuration
+#
+
+#mainmenu_option next_comment
+#comment '  IPv6 Configuration'
+
+# --- overall ---
+bool '    IPv6: Verbose debugging messages' CONFIG_IPV6_DEBUG
+
+# --- module interface ---
+if [ "$CONFIG_IPV6" = "m" ]; then
+   bool '    IPv6: inter-module support.' CONFIG_IPV6_IM
+   if [ "$CONFIG_NET_IPGRE" != "n" ]; then
+      bool '      IPv6: enable gre tunnel support with modulized ipv6' CONFIG_IPV6_MODULE_IP_GRE
+   fi
+fi
+
+# --- IPv6 Specification (RFC2460) and Addressing Architecture (RFC2373) ---
+#bool '    IPv6: Loose scope_id' CONFIG_IPV6_LOOSE_SCOPE_ID
+bool '    IPv6: drop packets with fake ipv4-mapped address(es)' CONFIG_IPV6_DROP_FAKE_V4MAPPED
+if [ "$CONFIG_IPV6" = "y" -o "$CONFIG_IPV6_IM" = "y" ]; then
+   bool '    IPv6: Restrict "double binding" only for same user' CONFIG_IPV6_RESTRICTED_DOUBLE_BIND
+fi
+bool '    IPv6: 6to4-address in nexthop support.' CONFIG_IPV6_6TO4_NEXTHOP
+bool '    IPv6: Privacy Extensions (RFC 3041) support' CONFIG_IPV6_PRIVACY
+bool '    IPv6: anycast support' CONFIG_IPV6_ANYCAST
+if [ "$CONFIG_IPV6_ANYCAST" != "n" ]; then
+	define_bool CONFIG_IPV6_ANYCAST_GROUP y
+fi
+
+# --- ISATAP interface ---
+if [ "$CONFIG_EXPERIMENTAL" = "y" ]; then
+    bool '    IPv6: ISATAP interface support (EXPERIMENTAL)' CONFIG_IPV6_ISATAP
+fi
+
+# --- NDP (RFC2461) ---
+if [ "$CONFIG_IPV6_DEBUG" = "y" ]; then
+   bool '    IPv6: Neighbor Discovery debugging' CONFIG_IPV6_NDISC_DEBUG
+fi
+
+# --- Stateless Address Configuration (RFC2462) ---
+if [ "$CONFIG_IPV6_DEBUG" = "y" ]; then
+   bool '    IPv6: Address Autoconfigration debugging' CONFIG_IPV6_ACONF_DEBUG
+   if [ "$CONFIG_IPV6_ACONF_DEBUG" = "y" ]; then
+      bool '      IPv6: Debug on source address selection' CONFIG_IPV6_ACONF_DEBUG_SADDR
+   fi
+fi
+
+# --- Routing ---
+if [ "$CONFIG_IPV6_DEBUG" = "y" ]; then
+   bool '    IPv6: Routing Information debugging' CONFIG_IPV6_RT6_DEBUG
+fi
+bool '    IPv6: sub-tree in routing table support (just for testing)' CONFIG_IPV6_SUBTREES
+
+# --- MLD (RFC2710) ---
+if [ "$CONFIG_IPV6_DEBUG" = "y" ]; then
+   bool '    IPv6: Multicast Listener Discovery debugging' CONFIG_IPV6_MLD6_DEBUG
+fi
+bool '    IPv6: disable optimization MLD6 Done message' CONFIG_IPV6_MLD6_ALL_DONE
+
+# --- Node Information Queries (Internet Draft) ---
+bool '    IPv6: enable Node Information Queries' CONFIG_IPV6_NODEINFO
+if [ "$CONFIG_IPV6_NODEINFO" = "y" ]; then
+   if [ "$CONFIG_IPV6_DEBUG" = "y" ]; then
+       bool '      IPv6: Node Information Queries debugging' CONFIG_IPV6_NODEINFO_DEBUG
+   fi
+   bool '      IPv6: regard NIS domain as DNS domain' CONFIG_IPV6_NODEINFO_USE_UTS_DOMAIN
+fi
+
+# --- Socket Interface (RFC2292, RFC2553) ---
+
+# --- Filtering ---
+if [ "$CONFIG_NETFILTER" != "n" ]; then
+   source net/ipv6/netfilter/Config.in
+fi
+
+# --- Misc. ---
+#bool '    IPv6: flow policy support' CONFIG_RT6_POLICY
+#bool '    IPv6: firewall support' CONFIG_IPV6_FIREWALL
+
+# -- IPsec --
+if [ "$CONFIG_EXPERIMENTAL" = "y" ]; then
+   if [ "$CONFIG_IPSEC" != "n" ] ; then
+      bool '    IPv6: IP Security Support (EXPERIMENTAL)' CONFIG_IPV6_IPSEC 
+   fi
+   if [ "$CONFIG_IPSEC_TUNNEL" != "n" ]; then
+      define_bool CONFIG_IPV6_IPSEC_TUNNEL y
+   fi
+fi
+
+# --- Mobile IP ---
+dep_tristate '    IPv6: IPv6 over IPv6 Tunneling (EXPERIMENTAL)' CONFIG_IPV6_IPV6_TUNNEL m
+
+#endmenu

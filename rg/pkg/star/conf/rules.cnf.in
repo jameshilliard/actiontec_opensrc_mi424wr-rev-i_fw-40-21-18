@@ -1,0 +1,9 @@
+# @(#)rules.cnf.in	1.4 01/12/09 Copyright 1998 J. Schilling
+
+EXEEXT= @EXEEXT@
+
+LARGEFILE_CC_OPT= @largefile_cc_opt@
+
+SCSILIB= @scsi_lib@
+LIB_CRYPT= @lib_crypt@
+LIB_ACL= @lib_acl@

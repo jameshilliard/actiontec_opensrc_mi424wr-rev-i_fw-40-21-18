@@ -1,0 +1,514 @@
+<ui version="4.0" >
+ <class>TestbedAp</class>
+ <widget class="QMainWindow" name="TestbedAp" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>841</width>
+    <height>450</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize" >
+   <size>
+    <width>841</width>
+    <height>450</height>
+   </size>
+  </property>
+  <property name="maximumSize" >
+   <size>
+    <width>841</width>
+    <height>450</height>
+   </size>
+  </property>
+  <property name="windowTitle" >
+   <string>WiFi - Protected Setup Access Point Application</string>
+  </property>
+  <property name="autoFillBackground" >
+   <bool>true</bool>
+  </property>
+  <property name="animated" >
+   <bool>true</bool>
+  </property>
+  <widget class="QWidget" name="centralwidget" >
+   <widget class="QTabWidget" name="tabWidget" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>291</width>
+      <height>371</height>
+     </rect>
+    </property>
+    <property name="font" >
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="currentIndex" >
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="tabRegSta" >
+     <attribute name="title" >
+      <string>Register Station</string>
+     </attribute>
+     <widget class="QLabel" name="label_2" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>51</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="font" >
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text" >
+       <string>Pin :</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbRegStaPbc" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>80</y>
+        <width>261</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font" >
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text" >
+       <string>Use &amp;PBC method</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbRegStaAuth" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>300</y>
+        <width>261</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="font" >
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text" >
+       <string>Start &amp;Authentication</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lblRegStaCmt" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>120</y>
+        <width>251</width>
+        <height>151</height>
+       </rect>
+      </property>
+      <property name="font" >
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text" >
+       <string>Comment</string>
+      </property>
+      <property name="alignment" >
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lePin" >
+      <property name="geometry" >
+       <rect>
+        <x>70</x>
+        <y>48</y>
+        <width>191</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <property name="font" >
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text" >
+       <string/>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbWriteConfig" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>261</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font" >
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text" >
+       <string>&amp;Write NFC Config Token</string>
+      </property>
+     </widget>
+     <widget class="QProgressBar" name="prgRegSta" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>265</y>
+        <width>261</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="font" >
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="maximum" >
+       <number>1200</number>
+      </property>
+      <property name="value" >
+       <number>0</number>
+      </property>
+      <property name="orientation" >
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="format" >
+       <string>Process</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tabGetConfig" >
+     <attribute name="title" >
+      <string>Get configuration</string>
+     </attribute>
+     <widget class="QLabel" name="label" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>51</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="font" >
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text" >
+       <string>Pin :</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lblPin" >
+      <property name="geometry" >
+       <rect>
+        <x>70</x>
+        <y>50</y>
+        <width>191</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="font" >
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text" >
+       <string>12345670</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lblGetConfigCmt" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>120</y>
+        <width>251</width>
+        <height>151</height>
+       </rect>
+      </property>
+      <property name="font" >
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text" >
+       <string>Comment</string>
+      </property>
+      <property name="alignment" >
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbGetConfigAuth" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>300</y>
+        <width>261</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="font" >
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text" >
+       <string>Start &amp;Authentication</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbGetConfigPbc" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>80</y>
+        <width>261</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font" >
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text" >
+       <string>Use &amp;PBC method</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbReadConfig" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>261</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font" >
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text" >
+       <string>&amp;Read NFC Config Token</string>
+      </property>
+     </widget>
+     <widget class="QProgressBar" name="prgGetConfig" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>265</y>
+        <width>261</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="font" >
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="maximum" >
+       <number>1200</number>
+      </property>
+      <property name="value" >
+       <number>0</number>
+      </property>
+      <property name="orientation" >
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="format" >
+       <string>Process</string>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="horizontalLayout" >
+    <property name="geometry" >
+     <rect>
+      <x>310</x>
+      <y>360</y>
+      <width>521</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" >
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <property name="leftMargin" >
+      <number>0</number>
+     </property>
+     <property name="topMargin" >
+      <number>0</number>
+     </property>
+     <property name="rightMargin" >
+      <number>0</number>
+     </property>
+     <property name="bottomMargin" >
+      <number>0</number>
+     </property>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pbBack" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text" >
+        <string>&amp;Back</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pbNext" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text" >
+        <string>&amp;Next</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pbCancel" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text" >
+        <string>&amp;Cancel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QFrame" name="frame" >
+    <property name="geometry" >
+     <rect>
+      <x>310</x>
+      <y>20</y>
+      <width>521</width>
+      <height>331</height>
+     </rect>
+    </property>
+    <property name="frameShadow" >
+     <enum>QFrame::Raised</enum>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>841</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_Application" >
+    <property name="title" >
+     <string>&amp;Application</string>
+    </property>
+    <addaction name="actQuit" />
+   </widget>
+   <widget class="QMenu" name="menu_Help" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actAbout" />
+   </widget>
+   <addaction name="menu_Application" />
+   <addaction name="menu_Help" />
+  </widget>
+  <widget class="QStatusBar" name="statusbar" />
+  <action name="actQuit" >
+   <property name="text" >
+    <string>&amp;Quit</string>
+   </property>
+  </action>
+  <action name="actAbout" >
+   <property name="text" >
+    <string>A&amp;bout</string>
+   </property>
+  </action>
+ </widget>
+ <tabstops>
+  <tabstop>pbNext</tabstop>
+  <tabstop>pbCancel</tabstop>
+  <tabstop>pbBack</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>pbWriteConfig</tabstop>
+  <tabstop>lePin</tabstop>
+  <tabstop>pbRegStaPbc</tabstop>
+  <tabstop>pbRegStaAuth</tabstop>
+  <tabstop>pbReadConfig</tabstop>
+  <tabstop>pbGetConfigPbc</tabstop>
+  <tabstop>pbGetConfigAuth</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

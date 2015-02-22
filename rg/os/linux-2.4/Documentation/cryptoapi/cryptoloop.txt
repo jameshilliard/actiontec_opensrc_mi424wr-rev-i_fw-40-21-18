@@ -1,0 +1,169 @@
+cryptoloop - a generic cryptographic loop device filter
+=======================================================
+
+To enable cryptoloop, you must fetch the cryptoloop-version.tar.gz source from
+your kernel.org mirror or directly from the non-US <http://www.kerneli.org>.
+
+Quickstart
+~~~~~~~~~~
+
+(if you have old encrypted volumes, please read the section about
+conversion below)
+
+you need a kernel compiled with 
+ *) loop device driver
+ *) cryptographic support
+ *) generic crypto loop filter
+ *) one or more ciphers you want to use for encryption either as module or
+    statically (if you build them as module, don't forget to insmod them!)
+
+Download the cryptoloop latest version tarball from the Internet and enter
+the untarred directory. The following commands will patch your kernel and
+copy the cryptoloop source in.
+
+        $ make patch-kernel KDIR=/your/kernel/source LOOP=[iv or jari]
+
+Which will patch your kernel, and enable you to select cryptoloop in the
+Cryptography section of the kernel configuration. Note, you have to manually
+enable both CryptoAPI and cryptoloop in your kernel configuration.
+
+If you would rather build modules you can use the following commands.
+
+        $ make modules KDIR=/your/kernel/source CDIR=/cryptoapi/source \
+	    LOOP=[iv or jari]
+	$ make modules_install KDIR=/your/kernel/source
+
+You also need a util-linux patched package (see
+<http://www.kernel.org/pub/linux/kernel/people/hvr/> for some recent
+patches)
+
+Read on at <http://encryptionhowto.sourceforge.net/>
+
+
+How Loopback Encryption Works
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Here is a small overview of how the loopback filesystem encryption works.
+For all the of the data to be encrypted on a drive we need to interrupt the
+disk write/read *after* the filesystem meta data is attached.  Instead of hi-
+jacking the system call we pipe the the filesystem commands through a loopback
+device.
+  One advantage of this is that you can either encrypt a device(hard drive) or
+a file already on a drive and mount it as a file system.  This allows you to
+have encrypted folders on an unencrypted drive, useful if you don't want to
+encrypt everything.
+
+  The loopback device fits in like this:
+
+  device-->loop-->mountpoint
+
+  The loop stage is actually divided into a couple stages, which is why the
+cryptoloop module is included.  It splits the input and output from the
+loopback into pieces for the ciphers.  Since they operate on a specific 
+blocksize(i.e. 64-bits, 128-bits) the data must be chopped up for them.
+
+  device-->cryptoloop-->loop-->mountpoint
+
+  The cryptoloop module is also where the actual encryption and decryption of
+the data takes place.
+
+Some words about IV Calculation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+There are some problems with the IV calculation up to recent 2.4.x
+linux kernels. It's been calculated more or less by 
+
+IV = rel_sector / (blocksize >> 9) + (lo_offset / blocksize)
+
+The first problem which arises, is that data transfers are not always
+guaranteed to have a size of an integral multiple of the blocksize;
+This is a problem, because of CBC mode's property of needing the
+complete ciphertext block, i.e. you can't cipher or decipher only the
+2nd half of a block if you don't know the first half of it!
+
+Another problem which may be experienced is, when the soft blocksize
+changes, i.e. due to different medias, as CDROM block devices and
+alike, or when the filesystem layer sets the blocksize to some other
+size.
+
+But there's hope, as all transfer sizes are usually (except for the
+last block on file backed loop devices sometimes...) an integral
+multiple of 512 byte units (which is linux' atomic sector size);
+
+So the solution is to stick to a portable, uniform 512 byte based IV
+metric! Alas this can't be accomplished without modifying the loop
+driver, as the more granular IV metric can't be calculated from the
+current dynamic IV metric.
+
+This change also renders most previously used encrypted volumes
+unreadable, which need to be converted to the new IV metric.
+
+Converting from Older IV Metrics
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The recommended procedure is as follow, in case you don't want to
+backup your old data in a conventional manner, and then restore it to
+a freshly created encrypted volume with the new IV-metric.
+
+The more valuable your data is, the more important it is, that you try
+the following procedure with some dummy data, before risking your real
+data! Cause if something goes wrong you'll have to keep both pieces...
+
+1) decrypt from within your old kernel version
+
+ 1.1) setup your encrypted loop device, and mount it (this is also
+ important for making sure, the filesystem layer sets the soft block
+ size accordingly!)
+
+ 1.2) unmount the filesystem (but leave the loop device setted up)
+
+ 1.3) dd if=/dev/loop0 of=/dev/<underlying blockdev/file> make sure
+ the process does not get interrupted, otherwise you will have a hard
+ time, reconstructing your data, since you are decrypting the data
+ back to the same area where the ciphertext was.
+
+3) make sure the block/file contains the properly deciphered content!!
+
+2) boot the new kernel featuring the 512byte based IV
+ follow the instructions for 'encrypting unencrypted volumes' below
+
+
+Encrypting Unencrypted Volumes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+just as simple as that (please test this before trying on important data)
+
+ 1) set up a new encrypted loop device over the still unencrypted data
+ 2) dd if=/dev/<underlying blockdev/file> of=/dev/loop0
+
+
+Migrating from loop-AES to CryptoAPI
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  If you want to move from using the loop-AES filesystem encryption to
+CryptoAPI it only requires a small tweak.  After loading cryptoapi and loading
+the cipher-aes module use the following line when setting up your loopback
+device:
+
+        $ losetup -e aes -k 256 -P sha512 /dev/loop0 /dev/<your drive>
+
+Then proceed to mount your loop device as you normall would.  Here is the
+table for mapping loop-AES to cryptoapi losetup flags:
+
+loop-AES                        cryptoapi
+============================================================
+-e aes128 -H rmd160             -e aes -k 128
+-e aes128 -H sha256             -e aes -k 128 -P sha256
+-e aes128 -H sha384             -e aes -k 128 -P sha384
+-e aes128 -H sha512             -e aes -k 128 -P sha512
+
+-e aes256 -H rmd160             -e aes -k 256
+-e aes256 -H sha256             -e aes -k 256 -P sha256
+-e aes256 -H sha384             -e aes -k 256 -P sha384
+-e aes256 -H sha512             -e aes -k 256 -P sha512
+
+-e aes128                       -e aes -k 128 -P sha256
+-e aes192                       -e aes -k 192 -P sha384
+-e aes256                       -e aes -k 256 -P sha512
+
+--
+$Id: cryptoloop.txt,v 1.1.1.1 2007/05/07 23:29:53 jungo Exp $

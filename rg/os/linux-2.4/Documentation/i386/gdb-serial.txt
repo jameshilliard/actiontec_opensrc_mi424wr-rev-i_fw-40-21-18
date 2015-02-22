@@ -1,0 +1,386 @@
+Version
+========
+
+This version of the gdbstub package was developed and tested on
+kernel version 2.3.48.  It will not install on a 2.2 kernel.  It may
+not work on earlier versions of 2.3 kernels.  It is possible that
+it will continue to work on later versions of 2.3 and then
+versions of 2.4 (I hope).
+
+
+Debugging Setup
+===============
+
+Designate one machine as the "development" machine.  This is the
+machine on which you run your compiles and which has your source
+code for the kernel.  Designate a second machine as the "target"
+machine.  This is the machine that will run your experimental
+kernel.
+
+The two machines will be connected together via a serial line out
+one or the other of the COM ports of the PC.  You will need a modem
+eliminator and the appropriate cables.
+
+On the DEVELOPMENT machine you need to apply the patch for the gdb
+hooks.  You have probably already done that if you are reading this
+file.
+
+On your DEVELOPMENT machine, go to your kernel source directory and
+do "make menuconfig".  Go down to the kernel hacking menu item and
+open it up.  Enable the kernel gdb stub code by selecting that item.
+
+Save and exit the menuconfig program.  Then do "make clean" and
+"make bzImage" (or whatever target you want to make).  This gets
+the kernel compiled with the "-g" option set -- necessary for
+debugging.
+
+You have just built the kernel on your DEVELOPMENT machine that you
+intend to run on our TARGET machine.
+
+To install this new kernel, use the following installation procedure.
+Remember, you are on the DEVELOPMENT machine patching the kernel source
+for the kernel that you intend to run on the TARGET machine.
+
+Copy this kernel to your target machine using your usual procedures.
+I usually arrange to copy development:/usr/src/linux/arch/i386/boot/zImage
+to /vmlinuz on the TARGET machine via a LAN based NFS access.  That is,
+I run the cp command on the target and copy from the development machine
+via the LAN.  Run Lilo on the new kernel on the target machine so that it
+will boot!  Then boot the kernel on the target machine.
+
+There is an utility program named "gdbstart" in the
+development:/usr/src/linux/arch/i386/kernel directory.
+You should copy this program over to your target machine, probably into
+/sbin.  This utility program is run on the target machine to
+activate the kernel hooks for the debugger.  It is invoked as follows:
+
+    gdbstart [-s speed] [-t tty-dev]
+    defaults:  /dev/ttyS0 with speed unmodified by gdbstart
+
+Don't run the program just yet.  We'll get to that in a bit.
+
+Decide on which tty port you want the machines to communicate, then
+cable them up back-to-back using the null modem.  COM1 is /dev/ttyS0
+and COM2 is /dev/ttyS1.
+
+On the DEVELOPMENT machine, create a file called .gdbinit in the
+directory /usr/src/linux.  An example .gdbinit file looks like this:
+
+define rmt
+set remotebaud 38400
+target remote /dev/ttyS0
+end
+
+Assuming that you added my gdbinit stuff to your .gdbinit, edit .gdbinit
+and find the section that looks like this:
+
+	define rmt
+	set remotebaud 38400
+	target remote /dev/ttyS0
+	end
+
+Change the "target" definition so that it specifies the tty port that
+you intend to use.  Change the "remotebaud" definition to match the
+data rate that you are going to use for the com line.
+
+On the TARGET machine I find it helpful to create shell script file
+named "debug" in the root home directory with the following contents:
+
+	gdbstart -s 38400 -t /dev/ttyS0 <<EOF
+	<blank line>
+	EOF
+
+This runs the gdbstart program and gives it the carriage return that
+it prompts for.  This sets the data rate from the target machine's side.
+
+You are now ready to try it out.
+
+On your TARGET machine, freshly rebooted with your gdbstub-equipped
+kernel, type "debug" in the root home directory.  The system will appear
+to hang with some messages on the screen from the debug stub.  What
+it is doing is waiting for contact from the development machine.
+
+On your DEVELOPMENT machine, cd /usr/src/linux and enter "gdb vmlinux".
+When gdb gets the symbols loaded and prompts you, enter "rmt" (that's
+the macro from the .gdbinit file that you just edited).  If everything
+is working correctly you should see gdb print out a few lines indicating
+that a breakpoint has been taken.  It will actually show a line of
+code in the target kernel inside the gdbstub activation code.
+
+The gdb interaction should look something like this:
+
+    linux-dev:/usr/src/linux# gdb vmlinux
+    GDB is free software and you are welcome to distribute copies of it
+     under certain conditions; type "show copying" to see the conditions.
+    There is absolutely no warranty for GDB; type "show warranty" for details.
+    GDB 4.15.1 (i486-slackware-linux), 
+    Copyright 1995 Free Software Foundation, Inc...
+    (gdb) rmt
+    breakpoint () at i386-stub.c:750
+    750     }
+    (gdb) 
+
+
+You can now use whatever gdb commands you like to set breakpoints.
+Enter "continue" to start your target machine executing again.  At this
+point the target system will run at full speed until it encounters
+your breakpoint or gets a segment violation in the kernel, or whatever.
+
+
+Triggering gdbstub at Kernel Boot Time
+======================================
+
+The gdbstub patch now has the ability for gdb to connect to the kernel during
+bootup (as opposed to waiting for the system to come all the way up and then
+running the gdbstart program on the target machine).  This new functionality was
+added by Scott Foehner <sfoehner@engr.sgi.com> at SGI.
+
+To force a kernel that has been compiled with gdbstub to pause during the boot
+process and wait for a connection from gdb, the paramter "gdb" should be passed
+to the kernel. This can be done by typing "gdb" after the name of the kernel
+on the LILO command line.  The patch defaults to use ttyS1 at a baud rate of
+38400. These parameters can be changed by using "gdbttyS=<port number>" and
+"gdbbaud=<baud rate>" on the command line.
+
+Example:
+
+LILO boot: linux gdb gdbttyS=1 gdbbaud=38400
+
+Note that this command is entered on the TARGET machine as it is booting
+the kernel that was compiled on the DEVELOPMENT machine.
+
+An alternate approach is to place a line in the /etc/lilo.conf file on
+your TARGET machine.  Under the heading for the kernel that you intend
+to boot, place a line that looks like this:
+
+    append = "gdb gdbttyS=1 gdbbaud=38400"
+
+This will cause the kernel to enter the gdbstub automatically at boot
+time.
+
+BE SURE to run "lilo" after changing the /etc/lilo.conf file.
+
+
+The "gdbstart" Program
+=====================
+
+This utility program is used to set up the com port and data rate
+for the connection from the target system to the development system.
+Its usage has been described above.
+
+This version of the patch uses the same tty ioctl for kernel versions
+2.0.30 onwards.  Thus, the gdbstart utility does not need to be re-compiled
+to install the patch in a later version of the kernel.  The ioctl added
+to the kernel for this purpose is far enough "off the end" of existing
+ioctls (as of 2.1.120) that it should not interfere with any new kernel
+tty ioctls for quite some time (famous last words).
+
+The source for the gdbstart program resides in the arch/i386/kernel directory.
+
+
+Debugging hints
+===============
+
+You can break into the target machine at any time from the development
+machine by typing ^C.  If the target machine has interrupts enabled
+this will stop it in the kernel and enter the debugger.
+
+There is unfortunately no way of breaking into the kernel if it is
+in a loop with interrupts disabled, so if this happens to you then
+you need to place exploratory breakpoints or printk's into the kernel
+to find out where it is looping.
+
+There is a copy of an e-mail in the kgdb distribution directory which
+describes how to create an NMI on an ISA bus machine using a paper
+clip.  I have a sophisticated version of this made by wiring a push
+button switch into a PC104/ISA bus adapter card.  The adapter card
+nicely furnishes wire wrap pins for all the ISA bus signals.
+
+When you are done debugging the kernel on the target machine it is
+a good idea to leave it in a running state.  This makes reboots
+faster, bypassing the fsck.  So do a gdb "continue" as the last gdb
+command if this is possible.  To terminate gdb itself on the development
+machine and leave the target machine running, type ^Z to suspend gdb
+and then kill it with "kill %1" or something similar.
+
+If gdbstub Does Not Work
+========================
+
+If it doesn't work, you will have to troubleshoot it.  Do the easy things
+first like double checking your cabling and data rates.  You might
+try some non-kernel based programs to see if the back-to-back connection
+works properly.  Just something simple like cat /etc/hosts >/dev/ttyS0
+on one machine and cat /dev/ttyS0 on the other will tell you if you
+can send data from one machine to the other.  There is no point in tearing
+out your hair in the kernel if the line doesn't work.
+
+All of the real action takes place in the file
+/usr/src/linux/arch/i386/kernel/gdbstub.c.  That is the code on the target
+machine that interacts with gdb on the development machine.  In gdb you can
+turn on a debug switch with the following command:
+
+	set remotedebug
+
+This will print out the protocol messages that gdb is exchanging with
+the target machine.
+
+Another place to look is /usr/src/linux/drivers/char/gdbserial.c
+That is the code that talks to the serial port on the target side.
+There might be a problem there.
+
+If you are really desperate you can use printk debugging in the
+gdbstub code in the target kernel until you get it working.  In particular,
+there is a global variable in /usr/src/linux/arch/i386/kernel/gdbstub.c
+named "remote_debug".  Compile your kernel with this set to 1, rather
+than 0 and the debug stub will print out lots of stuff as it does
+what it does.
+
+
+Debugging Loadable Modules
+==========================
+
+This technique comes courtesy of Edouard Parmelan
+<Edouard.Parmelan@quadratec.fr>
+
+When you run gdb, enter the command
+
+source gdbinit-modules
+
+This will read in a file of gdb macros that was installed in your
+kernel source directory with kgdb was installed.  This file implements
+the following commands:
+
+mod-list
+    Lists the loaded modules in the form <module-address> <module-name>
+
+mod-print-symbols <module-address>
+    Prints all the symbols in the indicated module.
+
+mod-add-symbols <module-address> <object-file-path-name>
+    Loads the symbols from the object file and associates them
+    with the indicated module.
+
+After you have loaded the module that you want to debug, use the command
+mod-list to find the <module-address> of your module.  Then use that
+address in the mod-add-symbols command to load your module's symbols.
+From that point onward you can debug your module as if it were a part
+of the kernel.
+
+The file gdbinit-modules also contains a command named mod-add-lis as
+an example of how to construct a command of your own to load your
+favorite module.  The idea is to "can" the pathname of the module
+in the command so you don't have to type so much.
+
+Threads
+========
+
+Each process in a target machine is seen as a gdb thread. gdb thread related
+commands (info threads, thread n) can be used. 
+
+ia-32 hardware breakpoints
+==========================
+
+gdb stub contains support for hardware breakpoints using debugging features
+of ia-32(x86) processors. These breakpoints do not need code modification.
+They use debugging registers. 4 hardware breakpoints are available in ia-32
+processors.
+
+Each hardware breakpoint can be of one of the following three types.
+1. Execution breakpoint - An Execution breakpoint is triggered when code at the
+	breakpoint address is executed.
+
+	As limited number of hardware breakpoints are available, it is advisable
+	to use software breakpoints ( break command ) instead of execution
+	hardware breakpoints, unless modification of code is to be avoided.
+
+2. Write breakpoint - A write breakpoint is triggered when memory location at the
+	breakpoint address is written.
+
+	A write or can be placed for data of variable length. Length of a write
+	breakpoint indicates length of the datatype to be watched. Length is 1
+	for 1 byte data , 2 for 2 byte data, 3 for 4 byte data.
+
+3. Access breakpoint - An access breakpoint is triggered when memory location at
+	the breakpoint address is either read or written.
+
+	Access breakpoints also have lengths similar to write breakpoints.
+
+IO breakpoints in ia-32 are not supported.
+
+Since gdb stub at present does not use the protocol used by gdb for hardware
+breakpoints, hardware breakpoints are accessed through gdb macros. gdb macros
+for hardware breakpoints are described below.
+
+hwebrk	- Places an execution breakpoint
+	hwebrk breakpointno address
+hwwbrk	- Places a write breakpoint
+	hwwbrk breakpointno length address
+hwabrk	- Places an access breakpoint
+	hwabrk breakpointno length address
+hwrmbrk	- Removes a breakpoint
+	hwrmbrk breakpointno
+exinfo	- Tells whether a software or hardware breakpoint has occured.
+	Prints number of the hardware breakpoint if a hardware breakpoint has
+	occured.
+
+Arguments required by these commands are as follows
+breakpointno	- 0 to 3
+length		- 1 to 3
+address		- Memory location in hex digits ( without 0x ) e.g c015e9bc
+
+MP support
+==========
+
+When a breakpoint occurs or user issues a break ( Ctrl + C ) to gdb client,
+all the processors are forced to enter the debugger. Current thread
+corresponds to the thread running on the processor where breakpoint occured.
+Threads running on other processor(s) appear similar to other non running
+threads in the 'info threads' output.
+
+ia-32 hardware debugging registers on all processors are set to same values.
+Hence any hardware breakpoints may occur on any processor.
+
+gdb troubleshooting
+===================
+
+1. gdb hangs
+Kill it. restart gdb. Connect to target machine.
+
+2. gdb cannot connect to target machine (after killing a gdb and restarting
+another)
+If the target machine was not inside debugger when you killed gdb, gdb cannot
+connect because the target machine won't respond.
+In this case echo "Ctrl+C"(ascii 3) in the serial line.
+e.g. echo -e "\003" > /dev/ttyS1 
+This forces that target machine into debugger after which you can connect.
+
+3. gdb cannot connect even after echoing Ctrl+C into serial line
+Try changing serial line settings min to 1 and time to 0
+e.g. stty min 1 time 0 < /dev/ttyS1
+Try echoing again
+
+check serial line speed and set it to correct value if required
+e.g. stty ispeed 115200 ospeed 115200 < /dev/ttyS1
+
+Final Items
+===========
+
+I picked up this code from Dave Grothe and enhanced it.
+
+If you make some really cool modification to this stuff, or if you 
+fix a bug, please let me know.
+
+Amit S. Kale
+<akale@veritas.com>
+
+(First kgdb by David Grothe <dave@gcom.com>)
+
+(modified by Tigran Aivazian <tigran@sco.com>)
+    Putting gdbstub into the kernel config menu.
+
+(modified by Scott Foehner <sfoehner@engr.sgi.com>)
+    Hooks for entering gdbstub at boot time.
+
+(modified by Amit S. Kale <akale@veritas.com>)
+    Threads, ia-32 hw debugging, mp support, console support,
+    nmi watchdog handling.

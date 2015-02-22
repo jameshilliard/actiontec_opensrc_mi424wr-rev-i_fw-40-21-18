@@ -1,0 +1,12 @@
+EXPORT_HEADERS_DIR=openssl
+
+CFLAG=-DTERMIO
+
+ifeq ($(TARGET_ENDIANESS),BIG)
+  CFLAGS+=-DB_ENDIAN
+else
+  CFLAGS+=-DL_ENDIAN
+endif
+
+PERL=perl
+

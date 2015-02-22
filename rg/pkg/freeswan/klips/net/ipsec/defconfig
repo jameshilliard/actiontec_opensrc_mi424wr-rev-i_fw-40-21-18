@@ -1,0 +1,59 @@
+
+#
+# FreeS/WAN IPSec implementation, KLIPS kernel config defaults
+#
+
+#
+# First, lets override stuff already set or not in the kernel config.
+#
+# We can't even think about leaving this off...
+CONFIG_INET=y
+
+#
+# This must be on for subnet protection.
+CONFIG_IP_FORWARD=y
+
+# Shut off IPSEC masquerading if it has been enabled, since it will 
+# break the compile.  IPPROTO_ESP and IPPROTO_AH were included in 
+# net/ipv4/ip_masq.c when they should have gone into include/linux/in.h.
+CONFIG_IP_MASQUERADE_IPSEC=n
+
+# modular algo extensions (and new ALGOs)
+CONFIG_IPSEC_ALG=y
+CONFIG_IPSEC_ALG_AES=m
+CONFIG_IPSEC_ALG_TWOFISH=m
+CONFIG_IPSEC_ALG_SERPENT=m
+
+
+# Use CryptoAPI for ALG?
+CONFIG_IPSEC_ALG_CRYPTOAPI=n
+
+#
+# Next, lets set the recommended FreeS/WAN configuration.
+#
+
+# To config as static (preferred), 'y'.  To config as module, 'm'.
+CONFIG_IPSEC=m
+
+# To do tunnel mode IPSec, this must be enabled.
+CONFIG_IPSEC_IPIP=y
+
+# To enable authentication, say 'y'.   (Highly recommended)
+CONFIG_IPSEC_AH=y
+
+# Authentication algorithm(s):
+CONFIG_IPSEC_AUTH_HMAC_MD5=y
+CONFIG_IPSEC_AUTH_HMAC_SHA1=y
+
+# To enable encryption, say 'y'.   (Highly recommended)
+CONFIG_IPSEC_ESP=y
+
+# Encryption algorithm(s):
+CONFIG_IPSEC_ENC_3DES=y
+
+# IP Compression: new, probably still has minor bugs. (changed to 'n' for PCBOX)
+CONFIG_IPSEC_IPCOMP=n
+
+# To enable userspace-switchable KLIPS debugging, say 'y'.
+CONFIG_IPSEC_DEBUG=y
+

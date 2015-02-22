@@ -1,0 +1,291 @@
+What's New in Kaffe 1.1.6
+------------------------------------------------------
+
+* Many cleanups, warning fixes and bug fixes.
+* Moved tools.jar to the location where Maven 1 expects it,
+  so that Maven 1 builds now work.
+* Added an otions to turn off boehm-gc configuration for
+  operating environments boehm gc has not been ported to.
+* Updated to GNU Classpath 0.18
+* Fixed native library loading for Cygwin. 
+  Kaffe now builds and runs on Win32 again.
+* Merged java.lang.Class from GNU Classpath.
+* Kaffe's home-grown system class loader was replaced by
+  GNU classpath's system class loader. This improves support
+  for the Java Extension Mechanism and the Java security
+  model.
+* Force double precision on x86 FPU for Linux OS.
+* Fixes for regression tests on sparc.
+* JIT3/PowerPC operational on Darwin/OSX (real applications 
+  do not work yet though).
+* JVMPI cleaned up. Kaffe now works with JMP 
+  (http://www.khelekore.org/jmp/)
+* Xlib-AWT fixed on Darwin.
+* Runtime/VMProcess merged from GNU Classpath.
+* Merged in antlr 2.7.5 for gjdoc.
+
+What's New in Kaffe 1.1.5
+------------------------------------------------------
+
+* Resynced with latest GNU Classpath.
+* Added GNU EmbbededWindow extension from GNU Classpath.
+  * gcjwebplugin is known to work with the extension.
+* Improved AWT implementations.
+  * GNU Classpath's implementation of AWT/Swing has 
+    been merged.
+  * New Nano-X AWT backend.
+  * Xlib AWT backend supports xi18n wide-character
+    display.
+  * Dynamic switch among existing AWT implementations 
+    via command line options.
+* Better stack pointer / stack size handling.
+* JNI direct invocation fixes.
+* Verifier moved to its own directory.
+* JNI upgrades to 1.2
+* New experimental Boehm-Weiser garbage collector.
+* Merged in JIT3 for powerpc from JanosVM.
+* Implemented weak references in the VM.
+* KJC temporarily replaced by jikes.
+* DNSJava, Jessie, JZLib and gjdoc merged in.
+* Added some internationalization support to kaffe's
+  executable (fr, zh_TW).
+* Many compiler warning fixes.
+* Tested in Ch environment.
+* Fixes for NetBSD, OpenBSD, FreeBSD, Darwin.
+* New ports to FreeBSD on x86-64, Darwin on x86 and 
+  HP-UX on ia64.
+* Some successes: Resin2, JSDL, SwingWT, gcjwebplugin, 
+  ME4SE, MicroEmulator, VNCj, LwVCL, DirectFB kawt,
+  Eclipse 3.0.1, 3.1M6.
+
+What's New in Kaffe 1.1.3
+------------------------------------------------------
+* More merges from GNU Classpath:
+  * java.beans
+  * java.util.Date
+  * java.util.jar
+  * java.net
+  * java.io
+  * javax.swing.EventListenerList
+* More JVMPI support implemented.
+* More NIO support implemented.
+* java.security.SecureRandom bugfix (with security
+   implications)
+* JIT fixes for x86, ARM and Sparc.
+* Interpreter fixes (underflow problem)
+* Fixes for Solaris, Darwin, FreeBSD.
+* Build fixes for powerpc64.
+* IPv6 fixes.
+* KJC fixes:
+  * inner class access
+  * switch labels
+  * constant initializers
+  * concatenating a null to a string
+* Fixes for SHIFT_JIS (Japanese) encoding.
+* Fix for Jetty 4.2.14.
+* AppletViewer fix for <applet> tag.
+* Lots of minor bug fixes.
+* Cleaned up GC code.
+* Compiler warning fixes.
+* Resynced with existing Classpath, GNU JAXP, Jessie.
+* Some successes: JBoss, Eclipse 3.0M4, gjdoc/libxmlj.
+
+What's New in Kaffe 1.1.2
+------------------------------------------------------
+* New packages:
+  * javax.net
+  * javax.net.ssl
+* Lots of configuration/compile fixes, including: arm-linux, 
+  parisc-hpux, parisc-linux, sparc-solaris.
+* Improved RMI, JVMPI, java.text and NIO support.
+* Improved garbage collector and jit3 memory consumption.
+* Further merge with GNU Classpath: Collections, many networking,
+  IO and zip classes.
+* Fixes for several bugs in kjc.
+* Improved support for building without GNU make.
+* Lots of bug fixes, compiler warning fixes, and small
+  improvements.
+* Some successes: Tomcat4, eXist, JavaLayer, JOrbis.
+
+What's New in Kaffe 1.1.1
+------------------------------------------------------
+* Much of the new bytecode verifier has been added (but not all of
+  it).  Soon, we will be able to safely run untrusted code!
+* Lots of configuration/compile fixes, including: NetBSD, OpenBSD,
+  Linux 2.0, Linux/S390, AmigaOS, OpenBSD/Sparc, Cygwin
+* Lots of class library fixes
+* Added JNI 1.2/1.4 features
+* The beginnings of JVMPI support
+* Some infrastructure for NIO support
+* Some successes: Eclipse (loads, doesn't completely work yet),
+  Jetty w/JSP, Java-Gnome, Qt AWT under QTopia, Snark, hsqldb
+
+What's New in Kaffe 1.1.0
+------------------------------------------------------
+* Port to x86-64 GNU/Linux
+
+* Port to RISC OS
+
+* Port to Playstation 2 GNU/Linux
+
+* Port to SuperH GNU/Linux
+
+* Qt based AWT backend
+
+* Support for javax.sound from tritonus.org
+
+* Support for JAXP from GNU JAXP
+
+* Support for java.util.regex from GNU regexp
+
+* New java.lang.reflect.Proxy from GNU Classpath.
+
+* Built-in XML parser (Aelfred2).
+
+* New packages:
+
+  * java.awt.color
+  * java.awt.dnd
+  * java.awt.font
+  * java.awt.geom
+  * java.awt.im
+  * java.awt.image.renderable
+  * java.awt.print
+  * java.beans.beancontext
+  * java.nio
+  * java.nio.channels
+  * java.nio.channels.spi
+  * java.nio.charset
+  * java.nio.charset.spi
+  * java.security.acl
+  * java.util.logging
+  * java.util.prefs
+  * java.util.regex
+  * javax.accessibility
+  * javax.naming
+  * javax.naming.directory
+  * javax.naming.event
+  * javax.naming.ldap
+  * javax.naming.spi
+  * javax.rmi
+  * javax.rmi.CORBA
+  * javax.sound.midi
+  * javax.sound.midi.spi
+  * javax.sound.sampled
+  * javax.sound.sampled.spi
+  * javax.sql
+  * javax.swing.text
+  * javax.transaction
+  * javax.transaction.xa
+  * javax.xml.parsers
+  * javax.xml.transform
+  * javax.xml.transform.dom
+  * javax.xml.transform.sax
+  * javax.xml.transform.stream
+  * org.w3c.dom
+  * org.w3c.dom.css
+  * org.w3c.dom.events
+  * org.w3c.dom.html
+  * org.w3c.dom.ranges
+  * org.w3c.dom.stylesheets
+  * org.w3c.dom.traversal
+  * org.w3c.dom.views
+  * org.xml.sax
+  * org.xml.sax.ext
+  * org.xml.sax.helpers
+
+* New build system.
+
+* Support for user defined class library profiles
+
+* New version of KJC (2.1B).
+
+* Many improvements to serialization, localization,
+  and reflection.
+
+* Implemented native2ascii, javah.
+
+* Lots of bug fixes.
+
+What's New in Kaffe 1.0.7
+------------------------------------------------------
+
+This release is dedicated to the memory of Edouard G. Parmelan, one of
+the most active Kaffe developers, a member of the core team, and one of
+the driving forces behind the project.
+
+* Port to ia64 GNU/Linux
+
+* Port to s390 GNU/Linux
+
+* Port to PA-RISC GNU/Linux
+
+* Port to Darwin (Mac OS X).
+
+* JIT port for Alpha on Compaq Tru64, GNU/Linux.
+
+* Support of PowerPC without libffi.
+
+* New version of KJC (2.1A with patches from kopi CVS).
+
+* New encoding converters based on iconv().
+
+* Lots of bug fixes.
+
+
+What's New in Kaffe 1.0.6
+--------------------------------
+
+* New cross language debugging support for JIT3 engine.
+
+* New cross language profiling support for JIT3 engine.
+
+* Support of libffi.
+
+* Port to i386 GNU Hurd.
+
+* Port i386 hardware profiler from JIT engine to JIT3 engine.
+
+* Alpha GCJ Integration.
+
+* New version of KJC (1.4F).
+
+* Lots of bug fixes.
+
+
+What's New in Kaffe 1.0.5
+--------------------------------
+
+* JIT port for StrongARM
+
+* JIT port for MIPS
+
+* New JIT3 - increases performance of JIT code by a factor of 3 over the
+  old JIT system.
+	- Supports: x86, MIPS, StrongARM, M68K
+	- Coming soon: Sparc, Alpha
+
+* RMI implementation (released under the Lesser GPL in conjuntion with
+  the Classpath project)
+	- Provide JDK 1.1 and JDK 1.2 compatible RMI
+	- Unimplemented: Distributed GC, Activations.
+
+* Now ships with KJC Java compiler, a truly Open Source Java compiler.
+
+* SuperFast locking implementation.
+
+* Pthreads implementation (currently for GLIBC 2.1.2 LinuxThreads only)
+
+* Resurrected M68K JIT.
+
+* New JDK 1.2 style class loading.
+
+* New JDK 1.2 java.util Collections classes
+
+* New JDK 1.2 java.security classes
+
+* Improved i18n support.
+
+* New utilities: serialver, rmiregistry, rmic, javap
+
+* Lots of bug fixes.

@@ -1,0 +1,132 @@
+gjobread.o gjobread.o: gjobread.c \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/stdio.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/features.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/sys/cdefs.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/uClibc_config.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/lib/gcc-lib/mipsel-linux-uclibc/3.3.2/include/stddef.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/types.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/kernel_types.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/pthreadtypes.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/sched.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/uClibc_stdio.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/wchar.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/wchar.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/lib/gcc-lib/mipsel-linux-uclibc/3.3.2/include/stdarg.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/stdio_lim.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/string.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/stdlib.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/sys/types.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/time.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/endian.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/endian.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/sys/select.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/select.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/sigset.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/time.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/sys/sysmacros.h \
+  /usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/alloca.h \
+  ../include/libxml/xmlmemory.h ../include/libxml/xmlversion.h \
+  ../include/libxml/xmlexports.h ../include/libxml/threads.h \
+  ../include/libxml/globals.h ../include/libxml/parser.h \
+  ../include/libxml/tree.h ../include/libxml/xmlstring.h \
+  ../include/libxml/xmlregexp.h ../include/libxml/dict.h \
+  ../include/libxml/hash.h ../include/libxml/valid.h \
+  ../include/libxml/xmlerror.h ../include/libxml/list.h \
+  ../include/libxml/xmlautomata.h ../include/libxml/entities.h \
+  ../include/libxml/encoding.h ../include/libxml/xmlIO.h \
+  ../include/libxml/SAX.h ../include/libxml/xlink.h \
+  ../include/libxml/SAX2.h
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/stdio.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/features.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/sys/cdefs.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/uClibc_config.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/lib/gcc-lib/mipsel-linux-uclibc/3.3.2/include/stddef.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/types.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/kernel_types.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/pthreadtypes.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/sched.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/uClibc_stdio.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/wchar.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/wchar.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/lib/gcc-lib/mipsel-linux-uclibc/3.3.2/include/stdarg.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/stdio_lim.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/string.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/stdlib.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/sys/types.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/time.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/endian.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/endian.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/sys/select.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/select.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/sigset.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/bits/time.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/sys/sysmacros.h:
+
+/usr/local/mipsel-toolchain/toolchain_mipsel/mipsel-linux-uclibc/sys-include/alloca.h:
+
+../include/libxml/xmlmemory.h:
+
+../include/libxml/xmlversion.h:
+
+../include/libxml/xmlexports.h:
+
+../include/libxml/threads.h:
+
+../include/libxml/globals.h:
+
+../include/libxml/parser.h:
+
+../include/libxml/tree.h:
+
+../include/libxml/xmlstring.h:
+
+../include/libxml/xmlregexp.h:
+
+../include/libxml/dict.h:
+
+../include/libxml/hash.h:
+
+../include/libxml/valid.h:
+
+../include/libxml/xmlerror.h:
+
+../include/libxml/list.h:
+
+../include/libxml/xmlautomata.h:
+
+../include/libxml/entities.h:
+
+../include/libxml/encoding.h:
+
+../include/libxml/xmlIO.h:
+
+../include/libxml/SAX.h:
+
+../include/libxml/xlink.h:
+
+../include/libxml/SAX2.h:

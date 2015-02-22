@@ -1,0 +1,183 @@
+<ui version="4.0" >
+ <class>NetConfig</class>
+ <widget class="QWidget" name="NetConfig" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>532</width>
+    <height>319</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string/>
+  </property>
+  <widget class="QLabel" name="label" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>521</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font" >
+    <font>
+     <pointsize>14</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text" >
+    <string>Network Configuration</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="gridLayout" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>50</y>
+     <width>511</width>
+     <height>261</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" >
+    <property name="margin" >
+     <number>0</number>
+    </property>
+    <property name="spacing" >
+     <number>12</number>
+    </property>
+    <item row="3" column="2" >
+     <widget class="QPushButton" name="pbGenNetKey" >
+      <property name="text" >
+       <string>Generate</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0" >
+     <widget class="QLabel" name="label_5" >
+      <property name="text" >
+       <string>Network Key</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0" >
+     <widget class="QLabel" name="label_2" >
+      <property name="text" >
+       <string>SSID</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0" >
+     <widget class="QLabel" name="label_6" >
+      <property name="text" >
+       <string>State</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1" >
+     <widget class="QComboBox" name="cmbConfFlag" />
+    </item>
+    <item row="5" column="0" >
+     <widget class="QLabel" name="label_7" >
+      <property name="text" >
+       <string>Wireless Mode</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1" >
+     <widget class="QLineEdit" name="leSsid" >
+      <property name="maxLength" >
+       <number>32</number>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" >
+     <widget class="QLabel" name="label_3" >
+      <property name="text" >
+       <string>Authentication</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0" >
+     <widget class="QLabel" name="label_4" >
+      <property name="text" >
+       <string>Encryption</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1" >
+     <widget class="QComboBox" name="cmbEncr" />
+    </item>
+    <item row="3" column="1" >
+     <widget class="QLineEdit" name="leNetKey" >
+      <property name="maxLength" >
+       <number>64</number>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1" >
+     <widget class="QComboBox" name="cmbAuth" />
+    </item>
+    <item row="0" column="2" >
+     <widget class="QPushButton" name="pbGenSsid" >
+      <property name="text" >
+       <string>Generate</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0" >
+     <widget class="QLabel" name="label_8" >
+      <property name="text" >
+       <string>Channel / Frequency</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1" >
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QCheckBox" name="cb11a" >
+        <property name="text" >
+         <string>802.11 a</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="cb11gb" >
+        <property name="text" >
+         <string>802.11 g/b</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="6" column="1" >
+     <widget class="QComboBox" name="cmbChannelList" />
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>leSsid</tabstop>
+  <tabstop>pbGenSsid</tabstop>
+  <tabstop>cmbAuth</tabstop>
+  <tabstop>cmbEncr</tabstop>
+  <tabstop>leNetKey</tabstop>
+  <tabstop>pbGenNetKey</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

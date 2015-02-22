@@ -1,0 +1,107 @@
+config CAVIUM_OCTEON_SPECIFIC_OPTIONS
+	bool "Enable Octeon specific options"
+	depends on CPU_CAVIUM_OCTEON
+	default "y"
+
+config CAVIUM_OCTEON_BOOTBUS_COMPACT_FLASH
+	bool "Enable support for Compact flash hooked to the Octeon Boot Bus"
+	depends on CAVIUM_OCTEON_SPECIFIC_OPTIONS
+	default "y"
+	help
+	  This option enables a polled compact flash driver for use with
+	  compact flash cards attached to the Octeon boot bus. This interface
+	  is quite slow. It has a maximum rate of about 1.5 MB/s.
+
+config CAVIUM_OCTEON_HW_FIX_UNALIGNED
+	bool "Enable hardware fixups of unaligned loads and stores"
+	depends on CAVIUM_OCTEON_SPECIFIC_OPTIONS
+	default "y"
+	help
+	  Configure the Octeon hardware to automatically fix unaligned loads
+	  and stores. Normally unaligned accesses are fixed using a kernel
+	  exception handler. This option enables the hardware automatic fixups,
+	  which requires only an extra 3 cycles. Disable this option if you
+	  are running code that relies on address exceptions on unaligned
+	  accesses.
+
+config CAVIUM_OCTEON_CVMSEG_SIZE
+	int "Number of L1 cache lines reserved for CVMSEG memory"
+	depends on CAVIUM_OCTEON_SPECIFIC_OPTIONS
+	range 0 54
+	default 0
+	help
+          CVMSEG LM is a segment that accesses portions of the dcache as a
+	  local memory; the larger CVMSEG is, the smaller the cache is.
+	  This selects the size of CVMSEG LM, which is in cache blocks. The
+	  legally range is from zero to 54 cache blocks (i.e. CVMSEG LM is
+	  between zero and 6192 bytes).
+
+config CAVIUM_OCTEON_USER_IO
+	bool "Allow User space to access hardware IO directly"
+	depends on CAVIUM_OCTEON_SPECIFIC_OPTIONS
+	help
+	  Allows user applications to directly access the Octeon hardware
+	  IO addresses (0x1000000000000 - 0x1ffffffffffff). This allows high
+	  performance networking applications to run in user space with minimal
+	  performance penalties. This also means a user application can bring
+	  down the entire system. Only use this option on embedded devices
+	  where all user applications are strictly controlled.
+
+config CAVIUM_OCTEON_USER_MEM
+	bool "Allow User space to access memory directly"
+	depends on CAVIUM_OCTEON_SPECIFIC_OPTIONS
+	depends on CAVIUM_OCTEON_USER_IO
+	help
+	  Allows user applications to use XKPHYS addresses directly to memory.
+	  This allows user space direct access to shared memory not in use by
+	  Linux. This memory is suitable for use with the Octeon hardware.
+	  Cavium simple executive applications also share this memory. Since
+	  this bypass all of the Linux memory protection, only use this option
+	  on embedded devices where all user applications are strictly
+	  controlled.
+
+config CAVIUM_RESERVE32
+	int "Memory to reserve for user processes shared region (MB)"
+	range 0 1024
+	depends on CAVIUM_OCTEON_SPECIFIC_OPTIONS
+	depends on CAVIUM_OCTEON_USER_IO
+	default "0"
+	help
+	  Reserve a shared memory region for user processes to use for hardware
+	  memory buffers. This is required for 32bit applications to be able to
+	  send and receive packets directly. Applications access this memory by
+	  memory mapping /dev/mem for the addresses in /proc/octeon_info. For
+	  optimal performance with HugeTLBs, keep this size an even number of
+	  megabytes.
+
+config CAVIUM_OCTEON_NUM_PACKET_BUFFERS
+	int "Number of packet buffers (and work queue entries) for shared access"
+	range 0 8192
+	depends on CAVIUM_OCTEON_SPECIFIC_OPTIONS
+	depends on CAVIUM_OCTEON_USER_IO
+	default "0"
+	help
+	  Number of packet buffers (and work queue entries) to allocate from
+	  reserved user memory. These buffers are in the userspace address
+	  range and may be used for zero copy access to ethernet packets from
+	  userspace. Normal kernel ethernet performance will suffer since
+	  received ethernet packets will need to be copied from these buffers
+	  into the normal kernel skbuf structures. Only use this option if
+	  high performance ethernet is need in userspace, bypassing the kernel.
+	  This will reduce the userspace shared region by
+	  (2048 + 128) * (number of buffers).
+
+config ARCH_SPARSEMEM_ENABLE
+	def_bool y
+	depends on CPU_CAVIUM_OCTEON
+    
+config CAVIUM_OCTEON_IPSEC
+   bool "Enable enhancements to the IPSec stack to allow procotol offload."
+   depends on CAVIUM_OCTEON_SPECIFIC_OPTIONS
+   default "n"
+   help
+     This enables enhancements to the IPSec stack to allow some of the
+     processing required for IPSec to be performed on another processor
+     which must be running the ipsec-filter application.
+
+

@@ -1,0 +1,8 @@
+SECTIONS
+{
+  .initrd :
+  {
+       *(.data)
+  }
+}
+

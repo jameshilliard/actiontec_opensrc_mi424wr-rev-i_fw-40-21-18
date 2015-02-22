@@ -1,0 +1,34 @@
+CFILES_STDIO=	stdio/cvmod.c stdio/dat.c stdio/fcons.c stdio/fdown.c \
+		stdio/ffileread.c stdio/ffilewrite.c \
+		stdio/fgetline.c stdio/file_raise.c \
+		stdio/fileopen.c \
+		stdio/fileread.c stdio/fileseek.c  \
+		stdio/filesize.c \
+		stdio/filewrite.c stdio/flag.c stdio/flush.c  \
+		stdio/fpipe.c \
+		stdio/niread.c stdio/niwrite.c stdio/nixread.c  \
+		stdio/nixwrite.c stdio/openfd.c \
+		stdio/fcons64.c stdio/fileopen64.c stdio/filesize64.c \
+		stdio/openfd64.c
+
+#
+# Note: getfp.c must be before getav0.c
+# Otherwise getfp.o would be made as dependency of avoffset
+#
+
+CFILES_REST=	astoi.c astoll.c \
+		comerr.c cmpbytes.c cmpnullbytes.c \
+		error.c \
+		fconv.c cvt.c fexec.c fillbytes.c \
+		format.c \
+		getargs.c geterrno.c \
+		getpagesize.c \
+		jsprintf.c jssnprintf.c jssprintf.c \
+		match.c movebytes.c \
+		printf.c \
+		raisecond.c \
+		saveargs.c seterrno.c \
+		sprintf.c strcatl.c streql.c \
+		swabbytes.c
+
+CFILES=		$(CFILES_STDIO) $(CFILES_REST)

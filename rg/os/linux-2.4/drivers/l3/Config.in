@@ -1,0 +1,21 @@
+#
+# L3 bus configuration
+#
+mainmenu_option next_comment
+comment 'L3 serial bus support'
+
+tristate 'L3 support' CONFIG_L3
+dep_bool '  L3 bit-banging interfaces' CONFIG_L3_ALGOBIT $CONFIG_L3
+dep_bool '    SA11x0 GPIO adapter' CONFIG_L3_BIT_SA1100_GPIO $CONFIG_L3_ALGOBIT $CONFIG_ARCH_SA1100
+
+comment 'Other L3 adapters'
+dep_bool '  SA1111 adapter' CONFIG_L3_SA1111 $CONFIG_L3
+endmenu
+
+# i2c must come before this
+if [ "$CONFIG_L3_BIT_SA1100_GPIO" = "y" -o \
+     "$CONFIG_I2C_BIT_SA1100_GPIO" = "y" ]; then
+   define_bool CONFIG_BIT_SA1100_GPIO y
+else
+   define_bool CONFIG_BIT_SA1100_GPIO n
+fi

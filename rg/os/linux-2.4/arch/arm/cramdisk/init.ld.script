@@ -1,0 +1,8 @@
+SECTIONS
+{
+  .cramdisk_init :
+  {
+       *(.data)
+  }
+}
+

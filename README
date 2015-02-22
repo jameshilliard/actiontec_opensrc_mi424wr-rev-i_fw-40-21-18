@@ -1,0 +1,119 @@
+--------------------------------------------------------------
+HOW TO BUILD A FIRMWARE FOR THE ACTIONTEC MI424WR Rev-I Router
+--------------------------------------------------------------
+
+* How to install the MI424WR Rev-I source code onto the Linux workstation
+* How to build the firmware that can be loaded on to a Actiontec 
+  MI424WR Rev-I board
+* How to upgrade the MI424WR Rev-I with the new firmware image file.
+
+NOTE: The following procedures are known to work with recent versions of 
+Fedora, like versions 10, 11 or 12. Along with the Basic Fedora Install you 
+will want to add the Software Developement packages that are provided with 
+Fedora. 
+
+Warning!! These instructions do not build a fully functional modem/router. You
+will need to add a way to access the device into the code, before compiling it.
+(i.e. SSH, Telnet, or some type of GUI)
+
+The Actiontec MI424WR Rev-I Source Code, i386-jungo-linux-gnu compiler, 
+arm-none-linux-gnueabi toolchain and jpkg package can be obtained from 
+the Actiontec support website at http://opensource.actiontec.com.
+
+1. Download source code, i386 GNU compiler, ARM toolchain and JPKG package
+   (4 files)
+   Source code: actiontec_opensrc_mi424wr-rev-i_fw-40-21-10-2.tar.gz
+   i386 GNU compiler: i386-jungo-linux-gnu.tar.gz
+   ARM Toochain: toolchain-arm-none-linux-gnueabi.jpkg
+   JPKG package: jpkg.tar.gz
+ 
+2. Copy or Move the source code to the HOME directory
+   $ cp actiontec_opensrc_mi424wr-rev-i_fw-40-21-10-2.tar.gz $HOME
+
+3. Change to the Home directory
+   $ cd $HOME
+
+4. Extract the contents of the source code
+   $ tar -zxvf actiontec_opensrc_mi424wr-rev-i_fw-40-21-10-2.tar.gz
+
+   IMPORTANT: Extracting the source code creates the directory 
+   "opensource-mi424wr-rev-i" and the subdirectory "rg". The bulk 
+   of the source code resides in "rg". The Makefiles in the distribution 
+   expects that Jungo's openrg GCC 3.3.2 based compiler will be located 
+   at "/usr/local/openrg". Both the x86 (i386-jungo-linux-gnu) and 
+   ARM (arm-none-linux-gnueabi) compilers should be installed to the 
+   "openrg" directory.
+
+5. The following commands assume that the User is still in the Home directory.
+
+6. Change to Super User for the following commands, requires the root password
+   $ su - 
+   PASSWORD:
+
+7. Create the "openrg" directory at "/usr/local"
+  # mkdir /usr/local/openrg
+
+8. Move the compiler, toolchain and jpkg package to the "openrg" directory
+  # mv i386-jungo-linux-gnu.tar.gz /usr/local/openrg
+  # mv jpkg.tar.gz /usr/local/openrg
+  # mv toolchain-arm-none-linux-gnueabi.jpkg /usr/local/openrg
+
+9. Change to the "openrg" directory
+  # cd /usr/local/openrg
+
+10. Extract the contents of the i386-jungo-linux-gnu compiler
+  # tar -zxvf i386-jungo-linux-gnu.tar.gz 
+
+11. Extract the contents of the jpkg package
+  # tar -zxvf jpkg.tar.gz
+
+12. Install and prepare the toolchain
+  # ./jpkg -x -C / toolchain-arm-none-linux-gnueabi.jpkg
+
+13. Change to the original Home directory, the place-holder called <account>, 
+  represents the name of the account you were using before you changed to Super 
+  User, earlier in these directions. If your login is "bobby", then there will 
+  be a directory within the Home directory named "bobby", and that is where you 
+  will find the "/opensource-mi424wr-rev-i/rg" directory. If so, the command 
+  would look like this: "cd /home/bobby/opensource-mi424wr-rev-i/rg".)
+  # cd /home/<account>/opensource-mi424wr-rev-i/rg
+
+14. When you have changed to the "rg" directory, the following command will 
+    build the new image.
+  # make config DIST=FEROCEON CONFIG_RG_GPL=y LIC=../jpkg_actiontec_gpl.lic && make
+
+
+-------------------------------------
+HOW TO UPLOAD THE IMAGE TO THE ROUTER
+-------------------------------------
+
+IMPORTANT: In order to load the firmware onto the router, the user will need 
+a serial debug board and a TFTP server.
+
+1. Set up the TFTP server, copy the newly created "MI424WR-GEN3I.img" file 
+   from the build to TFTP server folder as "openrg.img". The "MI424WR-GEN3I.img" 
+   is generated under /home/<account>/opensource-mi424wr-rev-i/rg/build/os/ 
+   directory.
+  # cp /home/<account>/opensource-mi424wr-rev-i/rg/build/os/MI424WR-GEN3I.img /tftpboot/openrg.img
+
+2. Boot up the Router with serial debug connected to PC. 
+
+3. Press Enter continuously to enter bootloader prompt.
+
+4. Set environment variables (if they're not set) to load from tftp:
+   set serverip <TFTP server IP>
+   set ipaddr <IP address>
+
+5. Load the firmware using TFTP dn boot the system:
+   run openrg_net
+
+PLEASE NOTE: The machine-readable software source code provided here is for 
+programmers who may wish to alter or customize the code, and typically will 
+not be of use to the vast majority of consumers. The software source code 
+provided here is subject to Version 2 of the GPL or other GPL or LGPL licenses 
+which are all included in the download and are available below and also at 
+"http://www.gnu.org/licenses/" and as such, the software source code is 
+distributed WITHOUT ANY WARRANTY and subject to the copyrights of the authors. 
+Compiling errors due to lack of public libraries/tools in the customer's 
+specific platform/OS are the responsibility of the user of this GPL source code.
+

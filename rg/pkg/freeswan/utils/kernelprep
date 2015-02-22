@@ -1,0 +1,33 @@
+#!/bin/sh
+
+case $# in
+    3);;
+    *) echo "Usage: kernelprep kernelsrc destdir cfg"; exit 10;;
+esac
+
+RH_KERNELSRC=$1; shift;
+RPMKERNDIR=$1; shift;
+cfg=$1; shift
+
+set -e
+rm -rf ${RPMKERNDIR}
+mkdir -p ${RPMKERNDIR}
+(cd ${RPMKERNDIR} && lndir ${RH_KERNELSRC} . );
+rm -rf ${RPMKERNDIR}/include/asm ;
+(cd ${RPMKERNDIR}/include/linux &&
+    sed -e '/#include "\/boot\/kernel.h"/d' <rhconfig.h >rhconfig.h-new &&
+    mv rhconfig.h-new rhconfig.h ) ;
+
+rm -f ${RPMKERNDIR}/include/linux/modules/*.stamp; 
+
+if [ -f $cfg ]
+then
+    cp $cfg ${RPMKERNDIR}/.config; 
+elif [ -f ${RPMKERNDIR}/configs/$cfg ] 
+then    
+    cp ${RPMKERNDIR}/configs/$cfg ${RPMKERNDIR}/.config; 
+else
+    echo Can not find $cfg; exit 2;
+fi
+
+

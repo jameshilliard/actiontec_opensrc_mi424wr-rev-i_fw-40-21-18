@@ -1,0 +1,98 @@
+#!/bin/bash
+
+set -x
+
+# check parameters
+if [ -z "$1" -o -z "$2" -o -z "$3" -o -z "$4" -o -z "$5" ]; then
+	echo "$0 [bridge-interface] [madwifi-interface] [wired-interface] [ipaddress] [netmask]";
+	exit -1;
+fi
+
+# kill process if it is running
+kill_process()
+{
+	running_process=$(ps -A|grep ${1})
+	if [ -n "$running_process" ]; then
+		killall -s SIGTERM $running_process 2>/dev/null;
+		sleep 1;
+		return 0;
+	fi
+	return -1;
+}
+
+# set local loopback
+lo=$(ifconfig -a|grep -i loopback|sed 's/[[:blank:]].*$//g')
+if [ -z $lo ]; then
+	ifup lo;
+fi
+
+# kill "hostapd" deamon if it is running
+main_daemon=hostapd
+kill_process $main_daemon
+
+# remove interface directory if it exists
+if [ -d /var/run/$main_daemon ]; then
+	rm -rf /var/run/$main_daemon
+fi
+
+# get index & current mode(0:sta, 1:ap, 53:monitor)
+index=$(echo $2|sed -ne "s:.*[^0-9*]::p")
+mode=$(iwpriv $2 get_uapsd 2>/dev/null|sed -ne "s:$2.*get_uapsd\:::p")
+
+# destroy madwifi-interface first
+if [ -z "$mode" ]; then
+	mode=-1
+elif [ $mode -ne 1 ]; then
+	wlanconfig $2 destroy >/dev/null;
+	sleep 1;
+fi
+
+# create madwifi-interface
+if [ $mode -ne 1 ]; then
+	res=$(wlanconfig $2 create wlandev wifi$index wlanmode ap)
+	if [ "$res" != "$2" ]; then
+		exit -1;
+	fi
+	sleep 1;
+fi
+iwpriv $2 wds 1
+
+# reset bridge interface
+br=$(ifconfig|grep -i $1|sed 's/[[:blank:]].*$//g')
+if [ ! -z "$br" ]; then
+	ifconfig $1 down
+	brctl delbr $1
+fi
+
+# setup all interfaces
+ifconfig $2 0.0.0.0 up
+if [ $? -ne 0 ]; then
+	exit -1;
+fi
+ifconfig $3 0.0.0.0 up
+if [ $? -ne 0 ]; then
+	exit -1;
+fi
+
+# create bridge interface
+brctl addbr $1
+if [ $? -ne 0 ]; then
+	exit -1;
+fi
+brctl addif $1 $3
+if [ $? -ne 0 ]; then
+	exit -1;
+fi
+brctl addif $1 $2
+if [ $? -ne 0 ]; then
+	exit -1;
+fi
+brctl setfd $1 1
+if [ $? -ne 0 ]; then
+	exit -1;
+fi
+ifconfig $1 $4 netmask $5 up
+if [ $? -ne 0 ]; then
+	exit -1;
+fi
+

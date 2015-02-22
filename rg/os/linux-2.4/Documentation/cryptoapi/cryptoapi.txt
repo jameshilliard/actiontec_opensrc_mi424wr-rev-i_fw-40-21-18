@@ -1,0 +1,159 @@
+CryptoAPI
+=========
+
+if you are interested in encrypting your data on persistent storage,
+you should take a look at <file:Documentation/crypto/cryptoloop.txt>
+
+/* this document is still incomplete */
+
+how to make use of the cryptographic API in kernelspace:
+(see also the <linux/crypto.h> header!)
+
+Ciphers
+~~~~~~~
+example code:
+
+#include <linux/crypto.h>
+
+struct cipher_context* 
+setup_cipher (const char *ciphername, const u8 *key, u32 keylen)
+{
+  int error = 0;
+  struct cipher_context *cx = NULL;
+  struct cipher_implementation* ci = NULL;
+  
+  ci = find_cipher_by_name (ciphername, 1 /* == atomic - i.e. cipher must not sleep */);
+  
+  if (!ci) /* cipher not found */
+    return NULL;
+
+  ci->lock ();
+
+  cx = ci->realloc_context (NULL, ci, /* max expected */ keylen);
+
+  if (!cx) /* some error */
+  {
+    ci->unlock ();
+    return NULL;
+  }
+
+  if (ci->set_key (cx, key, keylen) < 0)
+  { /* error while setting key */
+    ci->wipe_context(cx);
+    ci->free_context(cx);
+    ci->unlock ();
+    return NULL;
+  }
+ 
+  return cx; /* everything ok so far */
+}
+
+int 
+test_cipher (struct cipher_context *cx, u8 *data, u32 datalen)
+{
+  int error = 0;
+
+  /*
+   * operation when passing IV as argument
+   */
+
+  u8 iv[cx->ci->ivsize] = { 0, }; /* IV vector */
+ 
+  if ((error = cx->ci->encrypt_iv (cx, data, data, datalen, iv)) < 0) 
+    return error;
+
+  /* *data should contain ciphertext now */
+ 
+  if ((error = cx->ci->decrypt_iv ( cx, data, data, datalen, iv)) < 0) 
+    return error;
+
+  /* *data should contain plaintext again */
+
+  /*
+   * same stuff done w/ IV stored in context 
+   */
+
+  memset (cx->iv, 0, cx->ci->ivsize); /* clear IV */
+
+  if ((error = cx->ci->encrypt (cx, data, data, datalen)) < 0)
+    return error;
+
+  /* *data should contain ciphertext now */
+
+  if ((error = cx->ci->decrypt ( cx, data, data, datalen)) < 0)
+     return error;
+
+  return 0;
+}
+
+free_cipher (struct cipher_context* cx)
+{
+  /* assert (cx != NULL); */
+  struct cipher_implementation* ci = cx->ci;
+
+  ci->wipe_context(cx);
+  ci->free_context(cx);
+  ci->unlock();
+}
+
+Digests
+~~~~~~~
+example code:
+
+#include <linux/crypto.h>
+
+struct digest_context*
+setup_digest(const char *digestname)
+{
+	int error = 0;
+	struct digest_context *dx = NULL;
+	struct digest_implementation* di = NULL;
+
+	di = find_digest_by_name(digestname, 1); /* atomic */
+
+	if (!di) /* unknown digest */
+		return NULL;
+	
+	di->lock();
+	
+	dx = di->realloc_context(NULL, di); /* allocate a context */
+
+	if (!dx) { /* error */
+		di->unlock();
+		return NULL;
+	}
+
+	return dx; /* return the context, ready for use */
+}
+
+int
+test_digest(struct digest_context *dx, u8 *output, u8 *data, u32 datalen)
+{
+	int error = 0;
+	
+	/* Initialize the digest context */
+	if ((error = dx->di->open(dx)) < 0)
+		return error;
+
+	/* update the digest context with the data */
+	if ((error = dx->di->update(dx, data, datalen)) < 0)
+		return error;
+
+	if ((error = dx->di->close(dx, output)) < 0) /* output digest */
+		return error;
+
+	/* try printing the digest */
+	printk("digest: %s\n", output);
+
+	return 0;
+}
+	
+void
+free_digest(struct digest_context* dx)
+{
+        /* assert (dx != NULL); */
+        struct digest_implementation* di = dx->di;
+
+        di->free_context(dx);
+        di->unlock();
+}

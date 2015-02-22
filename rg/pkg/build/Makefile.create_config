@@ -1,0 +1,69 @@
+# This Makefile is used to create create_config from rg/archconfig.mak during 
+# archconfig stage.
+# In order to keep this code as direct as possible, don't use any of OpenRG
+# variables (like SRC, ...).
+
+JUTIL_SRC=rg_error.c rg_print.c alloc.c str.c rg_version.c
+CREATE_CONF_SRC=create_config.c \
+  dist_config.c feature_config.c hw_config.c config_opt.c major_features.c \
+  config_host.c config_target_os.c config_opt.h
+
+ifndef CONFIG_RG_GPL
+JUTIL_SRC+=conv.c lines.c
+CREATE_CONF_SRC+=device_config.c
+CONFIG_RG_DO_DEVICES=y
+endif
+CREATE_CONF_SRCS=$(addprefix $(RGSRC)/pkg/util/, $(JUTIL_SRC)) \
+  $(addprefix $(RGSRC)/pkg/build/,$(CREATE_CONF_SRC))
+
+CREATE_CONF_CFLAGS:=-DUSE_BASIC_HOST_CONFIG=1 -I$(BUILDDIR) \
+  -I$(RGSRC)/pkg/ -I$(RGSRC)/pkg/include -I$(RGSRC)/pkg/util -Wall -Werror -g \
+  -Wstrict-prototypes --static -DENTITY_ID=LOG_ENTITY_OTHER
+CREATE_CONF_CFLAGS+=-DLIC_RG_APP=\"$(LIC_RG_APP)\"
+CREATE_CONF_CFLAGS+=$(if $(IS_DISTRIBUTION),-DIS_DISTRIBUTION)
+CREATE_CONF_CFLAGS+=$(if $(CONFIG_RG_GPL),-DCONFIG_RG_GPL)
+CREATE_CONF_CFLAGS+=$(if $(CONFIG_RG_DO_DEVICES),-DCONFIG_RG_DO_DEVICES)
+
+# The _EXEC_AS_ROOT variables are for local use only and were defined to
+# support compilation under Cygwin.
+# Cannot use the name EXEC_AS_ROOT because it is already used in envir.mak
+ifndef CONFIG_WINDOWS_HOST
+  export _EXEC_AS_ROOT=exec_as_root
+  export _EXEC_AS_ROOT_COMMAND=./exec_as_root
+else
+  export _EXEC_AS_ROOT=
+  export _EXEC_AS_ROOT_COMMAND=
+endif
+
+EXPORT_SRC=
+ifneq "$(wildcard  $(RGSRC)/pkg/build/export_src.c)" ""
+EXPORT_SRC=export_src
+export_src: $(RGSRC)/pkg/build/export_src.c
+	. $(BUILDDIR)/host_config.sh ; \
+	$$CC $< \
+	-o $(BUILDDIR)/pkg/build/export_src -DBUILDDIR=\"$(BUILDDIR)\" \
+	-DRGSRC=\"$(RGSRC)\" 
+endif
+
+$(CREATE_CONFIG):: $(CREATE_CONF_SRCS) $(_EXEC_AS_ROOT) $(EXPORT_SRC)
+	$(MKDIR) $(BUILDDIR)/pkg/build
+	. $(BUILDDIR)/host_config.sh ; \
+	  $$CC \
+	  $(CREATE_CONF_CFLAGS) -o $@ $(call FILTER_SRC,$^) \
+	  $(CREATE_CONF_LDFLAGS)
+
+BLD=$(BUILDDIR)/pkg/build
+BLD_SRC=$(RGSRC)/pkg/build
+exec_as_root:
+	$(MKDIR) $(BLD)
+	@if ! chown root.root $(BLD)/exec_as_root > /dev/null 2>&1; then \
+	    . $(BUILDDIR)/host_config.sh ; \
+	    $$CC -o $(BLD)/exec_as_root $(BLD_SRC)/exec_as_root.c ; \
+	    if which rt > /dev/null ; then \
+	      rt chown root.root $(BLD)/exec_as_root ; \
+	      rt chmod 4755 $(BLD)/exec_as_root ; \
+	    else \
+	      echo "please enter root's password (needed by exec_as_root):" ; \
+	      su -c "chown root.root $(BLD)/exec_as_root && chmod 4755 $(BLD)/exec_as_root" ; \
+	    fi ; \
+	fi

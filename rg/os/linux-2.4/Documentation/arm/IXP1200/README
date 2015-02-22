@@ -1,0 +1,217 @@
+
+Linux 2.4.x for IXP1200 Based Systems
+--------------------------------------------------------------
+
+This document describes building and using Linux on IXP1200 
+based platforms.  The IXP1200 is a Network Processor from Intel
+based on an SA110 core with a set of six microgines around it.
+For more information on the IXP1200, please see:
+
+   http://developer.intel.com/design/network/products/npfamily/ixp1200.htm
+
+Supported Platforms
+-------------------
+
+Linux has been tested on the Intel IXM1200 Network Processor Base
+Board ("Spectacle Island) and the IXP12EB evaluation platform. Note
+that on the IXP12EB, there are issues with the PCI bus and you will
+get random bad packets on the network which will lead to things
+like NFS timeouts and other nastyness.
+
+Linux will NOT run on silicon older then Rev C0 IXP1200.  If you 
+have an IXP1240 or 1250 CPU, any Rev is OK as these are based
+on newer cores.  The IXP1200 B0 and A0 silicon do not have functional
+byte lane swapping hardware and thus each driver needs to be modified
+manually to work. 
+
+Linux requires your board to be running Cygmon as the boot loader.
+When you first get your board from Intel, it might be running the
+VxWorks boot manager instead of the Cygmon boot manager.  To change
+this, you need to hit the space bar when the Boot Manager tells you
+to do so and you will be given the Boot Manager prompt:
+
+   [BootMgr]: 
+
+At this point, type the letter 'c' and hit return.  You should see
+the following:
+
+   [BootMgr]: c
+   BootMgr Version 2.0.83
+   CPU Revision 6901C125
+   OS list:
+     0 Flash Utility
+     1 Diagnostics
+     2 VxWorks
+     3 Cygmon
+     4 Vmon
+   IO Type list:
+     0 Serial
+     1 HPC
+   Default OS: 2
+   Countdown value: 5
+   Disable initial display: 0
+   Default IO type: 0
+   SDRAM Window Size: 4K
+   SDRAM Window Offset: 06FFF000
+   Upstream Window Size: 1M
+   Enter blank line to leave value unchanged
+   Default OS:
+
+Type in '3' and press return for the 'Default OS' option and leave
+the other options blank. When you reboot your board, you should now 
+see a Cygmon prompt.  If your  board doesn't boot into cygmon, you 
+need to flash the cygmon image using the Intel provided futil.exe 
+program under Windows.  If you're using the IXM1200 board, please
+see your IXA SDK manual for information on how to do this. If
+using the IXP12EB, you can download a flash image, the futil.exe
+program, and directions on how to burn the flash @:
+
+   ftp://ftp.netwinder.org/users/u/urnaik/public_html/ixp1200_howto.html
+   ftp://ftp.netwinder.org/users/u/urnaik/Futil.exe
+   ftp://ftp.netwinder.org/users/u/urnaik/flash.img
+
+Currently, the following devices on the boards are supported:
+
+   - On board I82559/I82559ER ethernet
+   - On-chip serial port
+
+
+The TODO list at the moment is:
+
+   - Flash access (JFFS2) on IXM1200
+     o The driver is in this patch for those feeling brave.  Currently 
+       you can eraseall /dev/mtd1 and them mount it at jffs2, but when 
+       unmounting and remounting, all files with names > 3 bytes 
+       dissapear due to some bizzare endian related bug.
+
+   - Supporting all interrupt sources on IXP1200
+
+   - Getting rid of pci-auto library and using standard ARM PCI
+
+   - Porting to 2.5.x tree
+
+Building the Kernel
+-------------------
+
+To build the kernel, you need to make sure you have the latest
+GCC and binutils with arm BE support. You can grab a set of older
+binaries at: 
+
+   ftp://source.mvista.com/pub/ixp1200/ixa.arm-v4b-1.i386.rpm
+
+Note that these are somewhat old binaries from Intel and still have 
+a few big endian related issues that will show up if you use dynamic
+loading of libraries.  I'm working on building a newer toolchain 
+with more BE bug fixes and will have it on source.mvista.com ASAP.
+
+Once you have the toolchain installed, building a kernel is as easy as:
+
+   make ixm1200_config
+   make oldconfig dep
+   make zImage
+
+If you want to build for the IXP12EB board instead, just replace 
+ixm1200_config with ixp12eb_config. 
+
+The resulting kernel image will be in arch/arm/boot/zImage.
+
+Booting the Kernel
+------------------
+
+The default IXM1200 image is configure to boot from an NFS exported filesystem
+on your host development machine and grab the IP address from DHCPD. You
+can change this by editing the kernel command line option.  The IXP12EB 
+default config is to boot from a ramdisk since there are PCI issues
+which make NFS mostly unusable.
+
+You can grab a tarball of a big-endian busybox-based filesystem @:
+
+   ftp://source.mvista.com/pub/ixp1200/root_fs.tar.gz
+
+A prebuilt ramdisk of the same fs is also available:
+
+   ftp://source.mvista.com/pub/ixp1200/ramdisk_ixp.gz
+
+Also, cygmon only supports TFTP as a kernel download method, so you must
+install and configure tftpd on your system if it is not already installed.
+
+If you are using a ramdisk instead of NFS as the root fs, you need
+to tftp it to physical location 0xc1000000:
+
+   cygmon> tftp <host_ip> <target_ip> /tftpboot/ramdisk_ixp.gz 0xc1000000
+
+Note that you need to tftp the ramdisk image before you tftp the 
+kernel image.
+
+On the IXP12EB version of cygmon, the command is 'ftp', not tftp.
+
+Once everything is configured properly:
+
+   cygmon> tftp <host_ip> <target_ip> /tftpboot/zImage 0xc0800000
+
+Replace <host_ip> with your host's IP address and <target_ip> with the
+IP address you've assigned to your development board.
+
+   cygmon> go 0xc0800000
+
+
+Note that if your ramdisk image or kernel image length is a multiple of
+512 bytes, cygmon will lock up after it receives the last packet as it
+can't deal with such files.  You need to add an extra byte of data at
+the end of the files if this is the case:
+
+   echo ' ' >> zImage
+
+
+Migrating from Intel 2.3.99 Linux
+---------------------------------
+
+- Unlike the Intel Linux, this kernel does not reserve the lower 8MB 
+  of SDRAM for use by the microengines.  The ammount of RAM to be used by the
+  microengines is an application specific issue and thus the generic 
+  port does not attempt to make a decision on how much to map in and
+  where in memory to map it in.  
+
+  Instead of pre-reserving memory by moving the kernel around, the 2.4
+  kernel provides some capabilities that make this uneccessary.  If you
+  need xMB of memory, you can hook into the kernel initilazition code
+  and call alloc_bootmem() to reserve a contigous physical region of
+  SDRAM.  alloc_bootmem() returns a virtual address, but you can simply
+  do a virt_to_phys() to return a physical address for use by the uengines
+  and a virt_to_bus() to return a PCI accessible address.  You should put
+  your call to alloc_bootmem() in arch/arm/mach-ixp1200/mm.c:ixp1200_map_io()
+  and have it initialize a global variable with the address of the region.
+
+  If you still want to limit the RAM that Linux uses, just add a mem=xxxM
+  option to the command line and then __ioremap() the upper portion of
+  SDRAM into the kernel space. bootmem_alloc() is much preffered though.
+
+- The remainder of the devices on the IXP1200 are mapped into the kernel's
+  virtual address space in the same locations as they were in the Intel
+  2.3.99-pre3 port. This is to allow easy migration of existing applications
+  from the Intel Linux to the community tree. Note that these mapping may 
+  change in the future, so you should only use the pre-defined constants to 
+  access the on-chip devices and not use the vaddr's directly.
+
+- The IRQ numbering scheme remains the same between the Intel 2.3.99-pre3
+  and the new kernel at the moment.  Again, please only use the #defined
+  constants instead of the IRQ number themselves as the IRQ code is going
+  to be drastically rewritten to support all IRQs on the CPU.
+
+- Note that there is no uEngine driver at the moment for the 2.4.x kernel
+  as the original Intel drivers are not under an open source license and
+  can't just be forward ported and released. If and when time permits, 
+  I would love to write a separate open source driver, but I also don't 
+  want to see two separate drivers floating around and have people trying 
+  to use the Intel Developer's Workbench with the open source drivers and not
+  having them work, thus leading to headaches for end users, Intel, and
+  myself as we try to sort things out. Basically, until Intel releases a 2.4.x 
+  based SDK or until I or someone else in the community has the time
+  to do our own open source drivers, you'll have to forward port the 2.4.x 
+  drivers on your own time.  Same goes for drivers for the devices on the 
+  IX bus.
+
+------------------------------------------------------------------------------
+Please send all comments, corrections, suggestions, flames, etc to:
+Deepak Saxena <dsaxena@mvista.com>
+

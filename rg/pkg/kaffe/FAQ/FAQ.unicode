@@ -1,0 +1,11 @@
+Kaffe Unicode support
+
+Kaffe uses the java.lang.Character implementation from GNU
+Classpath. It is at the level of Unicode 3.0, which is used by JDK
+1.4.
+
+The unicode tests in Mauve are apparently quite out of date, so
+please don't bother reporting that kaffe has a ton of failures on
+them.
+
+Dalibor Topic <robilad@yahoo.com>

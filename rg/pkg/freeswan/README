@@ -1,0 +1,62 @@
+This is release 1.99 of Linux FreeS/WAN, our freely-redistributable IPsec
+implementation.  See http://www.freeswan.org for current news and pointers
+to more recent releases (if any).  The BUGS file lists bugs that we
+consider major, and the CHANGES file lists the major things that have been
+done since the last release; READ BOTH before installing. 
+
+The current development and target system for FreeS/WAN is Red Hat 7.3
+with either a current Red Hat kernel or 2.4.18. This is gradually
+shifting to Red Hat 8.0.
+
+We do not test with 2.0 kernels earlier than 2.0.39.
+
+We do not support obsolete kernels (e.g. 2.2.xx, xx < 20), and using them 
+is generally a bad idea anyway.
+
+It's likely to work with other Linux distributions using 2.2.xx or 2.4.xx
+kernels; if modifications are necessary, please tell us details, and we'll
+try to fix it so it'll drop in cleanly in future.  Other systems are a
+lower priority but we'd still like to hear details if you try it. 
+
+Several high-level documents are in the doc directory.  Most are in HTML
+format; do
+
+	lynx doc/index.html
+
+(or use your own favorite HTML reader) to read them.  See doc/README for
+two methods of getting plain-text versions if needed.  See doc/roadmap.html
+for a guide to what's where in this distribution. 
+
+Unpacking the distribution needs about 12MB, and compiling it perhaps
+another 50MB.  For setup procedures, start at doc/intro.html; the INSTALL
+file is now intended for experts only. 
+
+Please also see doc/makecheck.html for information on automated regression
+testing.
+
+Feedback is welcome, preferably (for legal reasons, among others) to the
+users mailing list (see http://www.freeswan.org/mail.html to subscribe).
+(Caution:  that mailing list goes all over the world.  If you are located
+in the US, or are a US citizen, read doc/politics.html before sending
+mail!)  If you're reporting a problem with the software, we ask that you
+read doc/trouble.html first. 
+
+The form "ipsec send-pr" may be used to report bugs directly to our
+tracking system. You may review tham at http://bugs.freeswan.org:81/
+Bug reports SHOULD include a reference to the output of "ipsec barf"
+(it is big, so put it on a stable web site), and way to reproduce the bug.
+If the bug can not be reproduced, we are unlikely to even reply.
+
+The bulk of this software is under the GNU General Public License; see
+COPYING.  Some parts of it are not; see CREDITS for the details.
+
+			Michael Richardson (technical lead)
+			Richard Guy Briggs (KLIPS)
+			D. Hugh Redelmeier (Pluto)
+			Claudia Schmeing (user support, documentation)
+			Sam Sgro (user support + build manager)
+
+Our thanks to Sandy Harris (former documentation)
+	      Henry Spencer (former technical lead)
+
+Bet you were just dying to know that.

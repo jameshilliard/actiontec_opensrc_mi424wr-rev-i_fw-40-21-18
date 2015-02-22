@@ -1,0 +1,36 @@
+#
+# PCMCIA bus subsystem configuration
+#
+# Right now the non-CardBus choices are not supported
+# by the integrated kernel driver.
+#
+mainmenu_option next_comment
+comment 'PCMCIA/CardBus support'
+
+#dep_tristate 'CardBus support' CONFIG_PCMCIA $CONFIG_PCI
+#if [ "$CONFIG_PCMCIA" != "n" ]; then
+#  define_bool CONFIG_CARDBUS y
+#fi
+
+tristate 'PCMCIA/CardBus support' CONFIG_PCMCIA
+if [ "$CONFIG_PCMCIA" != "n" ]; then
+   # yes, I really mean the following...
+   if [ "$CONFIG_ISA" = "y" -o "$CONFIG_ARCH_SA1100" = "y" ]; then
+      define_bool CONFIG_PCMCIA_PROBE y
+   fi
+   if [ "$CONFIG_PCI" != "n" ]; then
+      bool '  CardBus support' CONFIG_CARDBUS
+   fi
+   dep_bool '  i82092 compatible bridge support' CONFIG_I82092 $CONFIG_PCI
+   bool '  i82365 compatible bridge support' CONFIG_I82365
+   bool '  Databook TCIC host bridge support' CONFIG_TCIC
+   if [ "$CONFIG_HD64465" = "y" ]; then
+      dep_tristate '  HD64465 host bridge support' CONFIG_HD64465_PCMCIA $CONFIG_PCMCIA
+   fi
+fi
+if [ "$CONFIG_ARM" = "y" ]; then
+   dep_tristate '  CLPS6700 support' CONFIG_PCMCIA_CLPS6700 $CONFIG_ARCH_CLPS711X $CONFIG_PCMCIA
+   dep_tristate '  SA1100 support' CONFIG_PCMCIA_SA1100 $CONFIG_ARCH_SA1100 $CONFIG_PCMCIA
+fi
+
+endmenu

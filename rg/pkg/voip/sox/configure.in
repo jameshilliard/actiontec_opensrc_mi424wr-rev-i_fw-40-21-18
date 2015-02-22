@@ -1,0 +1,276 @@
+dnl Process this file with autoconf to produce a configure script.
+dnl
+dnl configure.in
+dnl
+
+AC_REVISION(1.9)
+
+AC_INIT(sox, 12.17.9, cbagwell@users.sourceforge.net, "sox-12.17.9")
+
+AC_CONFIG_SRCDIR(sox.1)
+
+dnl Parameters to configure
+
+AC_ARG_ENABLE(old_rate,
+	[  --enable-old-rate       Use old rate code],
+	enable_old_rate=$enableval, enable_old_rate=no)
+
+AC_ARG_ENABLE(fast_ulaw,
+	[  --disable-fast-ulaw     Disable fast ulaw compression (-32K memory)],
+	enable_fast_ulaw=$enableval, enable_fast_ulaw=yes)
+
+AC_ARG_ENABLE(fast_alaw,
+	[  --disable-fast-alaw     Disable fast alaw compression (-32K memory)],
+	enable_fast_alaw=$enableval, enable_fast_alaw=yes)
+
+AC_ARG_ENABLE(gsm,
+	[  --disable-gsm           Disable internal GSM support],
+	enable_gsm=$enableval, enable_gsm=yes)
+
+AC_ARG_ENABLE(alsa_dsp,
+	[  --disable-alsa-dsp      Disable detection of ALSA],
+	[enable_alsa_dsp=$enableval],
+	[enable_alsa_dsp=yes])
+
+AC_ARG_ENABLE(oss_dsp,
+	[  --disable-oss-dsp       Disable detection of OSS],
+	[enable_oss_dsp=$enableval],
+	[enable_oss_dsp=yes])
+
+AC_ARG_ENABLE(sun_audio,
+	[  --disable-sun-audio     Disable detection of SUN-style audio],
+	[enable_sun_audio=$enableval],
+	[enable_sun_audio=yes])
+
+AC_ARG_ENABLE(ogg_vorbis,
+	[  --disable-ogg-vorbis    Disable detection of Ogg Vorbis],
+	[enable_ogg_vorbis=$enableval],
+	[enable_ogg_vorbis=yes])
+
+AC_ARG_ENABLE(mad,
+	[  --disable-mad           Disable detection of MAD (MP3 Audio Decoder)],
+	[enable_mad=$enableval],
+	[enable_mad=yes])
+
+AC_ARG_ENABLE(lame,
+	[  --disable-lame          Disable detection of LAME (LAME Ain't an MP3 Encoder)],
+	[enable_lame=$enableval],
+	[enable_lame=yes])
+
+dnl Set host type
+AC_CANONICAL_SYSTEM
+
+dnl Checks for programs.
+AC_PROG_CC
+AC_PROG_RANLIB
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_CPP
+
+case "$target" in
+	*cygwin* )
+		CFLAGS="$CFLAGS -mno-cygwin"
+		CPPFLAGS="$CPPFLAGS -mno-cygwin"
+		LDFLAGS="$LDFLAGS -mno-cygwin"
+                ;;
+esac
+
+dnl Extra CFLAGS if we have gcc
+if test "$GCC" = yes; then
+    CFLAGS="$CFLAGS -Wall"
+fi
+
+dnl Check for system dependent features.
+AC_C_BIGENDIAN
+AC_C_CONST
+AC_C_INLINE
+AC_TYPE_SIZE_T
+
+if test "$enable_old_rate" = yes
+then
+    AC_DEFINE([USE_OLD_RATE], 1, 
+              [Define if you want to use old rate routines])
+fi
+if test "$enable_fast_ulaw" = yes
+then
+    AC_DEFINE([FAST_ULAW_CONVERSION], 1, 
+              [Define if you want to use fast ULAW conversions])
+fi
+if test "$enable_fast_alaw" = yes
+then
+    AC_DEFINE([FAST_ALAW_CONVERSION], 1, 
+              [Define if you want to use fast ALAW conversions])
+fi
+
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS(getopt.h fcntl.h limits.h malloc.h unistd.h byteswap.h errno.h)
+
+dnl Checks for libraries.
+
+dnl Check if math library is needed.
+
+AC_CHECKING(if math library is required during link)
+AC_CHECK_FUNC(pow)
+if test "$ac_cv_func_pow" = no
+then
+  AC_CHECK_LIB(m, pow)
+fi
+
+dnl Initial values for exported symbols.
+
+NEED_OSS=0
+NEED_SUNAU=0
+NEED_ALSA=0
+GSM_SUPPORT=0
+PLAY_SUPPORT=0
+
+dnl Checks for library functions.
+
+AC_CHECK_FUNCS(getopt strerror memmove rand strcasecmp strdup)
+
+dnl Test for Ogg Vorbis libraries.
+
+if test "$enable_ogg_vorbis" = yes
+then
+    AC_CHECK_HEADER(vorbis/codec.h, found_ogg_vorbis=yes, enable_ogg_vorbis=no)
+    if test "$found_ogg_vorbis" = yes
+    then
+        AC_CHECK_LIB(vorbis, vorbis_analysis_init,
+                     LIBS="-lvorbisfile -lvorbisenc -lvorbis -logg $LIBS"
+                     AC_DEFINE([HAVE_LIBVORBIS], 1, 
+		               [Define if you have Ogg Vorbis Library installed]),
+	             enable_ogg_vorbis=no, -logg)
+    fi
+fi
+
+dnl Test for MAD libraries.
+
+if test "$enable_mad" = yes
+then
+    AC_CHECK_HEADER(mad.h, found_mad=yes, enable_mad=no)
+    if test "$found_mad" = yes
+    then
+        AC_CHECK_LIB(mad, mad_stream_buffer,
+                     LIBS="$LIBS -lmad" 
+		     AC_DEFINE([HAVE_LIBMAD], 1, 
+		               [Define if you have MAD (MP3 Audio Decoder) Library installed]),
+		     enable_mad=no)
+     fi
+fi
+
+dnl Test for LAME library.
+
+if test "$enable_lame" = yes
+then
+    AC_CHECK_HEADER(lame/lame.h, found_lame=yes, enable_lame=no)
+    if test "$found_lame" = yes
+    then
+        AC_CHECK_LIB(mp3lame, lame_init,
+                     LIBS="$LIBS -lmp3lame"
+                     AC_DEFINE([HAVE_LAME], 1, 
+		               [Define if you have LAME (LAME Ain't an MP3 Encoder) library installed]),
+		     enable_lame=no)
+    fi
+fi
+
+dnl Checks for ASLA.
+
+if test "$enable_alsa_dsp" = yes
+then
+    AC_CHECK_HEADERS(alsa/asoundlib.h, found_alsa_dsp=yes)
+
+    if test "$found_alsa_dsp" = yes
+    then
+        AC_CHECK_LIB(asound, snd_pcm_open,
+                     LIBS="$LIBS -lasound"
+                     NEED_ALSA=1
+                     PLAY_SUPPORT=1
+                     AC_DEFINE([HAVE_ALSA], 1, 
+		               [Define if you have ALSA library installed]),
+		     enable_lame=no)
+    else
+        enable_alsa_dsp=no
+    fi
+fi
+
+if test "$enable_oss_dsp" = yes
+then
+    AC_CHECK_HEADERS(sys/soundcard.h machine/soundcard.h, found_oss_dsp=yes)
+
+    if test "$found_oss_dsp" = yes
+    then
+        AC_DEFINE([HAVE_OSS], 1, 
+                  [Define if you have OSS installed])
+	NEED_OSS=1
+	PLAY_SUPPORT=1
+    else
+        enable_oss_dsp=no
+    fi
+fi
+
+if test "$enable_sun_audio" = yes
+then
+    AC_CHECK_HEADERS(sys/audioio.h sun/audioio.h, found_sun_audio=yes)
+
+    if test "$found_sun_audio" = yes
+    then
+        AC_DEFINE([HAVE_SUNAUDIO], 1, 
+                  [Define if you have Sun /dev/audio installed])
+	NEED_SUNAU=1
+	PLAY_SUPPORT=1
+    else
+        enable_sun_audio=no
+    fi
+fi
+
+if test "$enable_gsm" = yes
+then
+        AC_DEFINE([ENABLE_GSM], 1, 
+                  [Define if you want to use internal GSM library])
+	GSM_SUPPORT=1
+fi
+
+AC_SUBST(NEED_OSS)
+AC_SUBST(NEED_SUNAU)
+AC_SUBST(NEED_ALSA)
+AC_SUBST(GSM_SUPPORT)
+AC_SUBST(PLAY_SUPPORT)
+
+dnl Generate output files...
+
+AC_CONFIG_HEADER(src/stconfig.h)
+
+AC_CONFIG_FILES([Makefile src/libst-config src/Makefile src/gsm/Makefile])
+AC_CONFIG_FILES([src/play], [chmod +x src/play])
+
+AC_OUTPUT()
+
+AC_CREATE_STDINT_H(src/ststdint.h)
+
+if test ! -f src/tests.sh; then cp ${srcdir}/src/tests.sh src/tests.sh; fi
+if test ! -f src/testall.sh; then cp ${srcdir}/src/testall.sh src/testall.sh; fi
+if test ! -f src/monkey.au; then cp ${srcdir}/src/monkey.au src/monkey.au; fi
+if test ! -f src/monkey.wav; then cp ${srcdir}/src/monkey.wav src/monkey.wav; fi
+
+echo
+echo "Old Rate enabled..................   $enable_old_rate"
+echo "Fast ulaw enabled.................   $enable_fast_ulaw"
+echo "Fast alaw enabled.................   $enable_fast_alaw"
+echo "GSM Support.......................   $enable_gsm"
+echo "ALSA Driver.......................   $enable_alsa_dsp"
+echo "OSS Driver........................   $enable_oss_dsp"
+echo "SUN /dev/audio....................   $enable_sun_audio"
+echo "Ogg Vorbis support................   $enable_ogg_vorbis"
+echo "MAD MP3 Decoder...................   $enable_mad"
+echo "LAME MP3 Encoder..................   $enable_lame"
+echo
+echo "Configure finished.  Do 'make; make install' to compile and install SoX."
+echo
+
+dnl Local Variables:
+dnl comment-start: "dnl "
+dnl comment-end: ""
+dnl comment-start-skip: "\\bdnl\\b\\s *"
+dnl compile-command: "autoconf"
+dnl End:

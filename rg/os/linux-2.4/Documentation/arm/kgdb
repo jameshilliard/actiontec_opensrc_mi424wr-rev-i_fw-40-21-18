@@ -1,0 +1,82 @@
+
+KGDB for ARM-Linux Usage Notes
+
+NOTE: This is an early access release of kgdb and thus there may be unknown
+      issues that still need to be fixed.  Please send all bug reports 
+      to dsaxena@mvista.com.
+
+
+Theory of Operation
+------------------------------------------------------------
+
+[to be completed]
+
+
+Adding KGDB Support to your Board Port
+------------------------------------------------------------
+
+Adding KGDB support to your ARM port is fairly simple.  You simply 
+need to create the three functions:
+
+   - kgdb_serial_init(void)
+     This function is called to initialize the serial port. In
+     the future, this will include a parameter with the cmdline
+     options sent to kgdb.
+
+   - kgdb_serial_putchar(unsigned char)
+     Output a single character over the serial port
+
+   - unsigned char kgdb_serial_getchar(void)
+     Receive a single character over the serial port
+
+Once those three functions have been created, the rest of KGDB is
+board independent and should work without any problems.
+
+Console Messages over KGDB
+------------------------------------------------------------
+
+Note that if you have only one serial port on your board, you cannot
+use that serial port for both serial console and KGDB.  In this case,
+you can add a 'console=ttyKGDB' option to your kernel command line
+and KGDB will output console messages to the GDB client.  
+
+
+Using KGDB
+------------------------------------------------------------
+
+To use kgdb you need to first turn on both the CONFIG_KGDB and 
+CONFIG_KGDB_SERIAL config options.  In addition to this, you can
+turn on CONFIG_KGDB_CONSOLE to enable console output to be
+viewed by the GDB client program.
+
+Once KGDB is enabled, the kernel will automatically breakpoint() 
+at arch/arm/kernel/trap.s:trap_init().  Note that this is the
+earliest point at which KGDB can be intialized due to the fact
+that it relies on the undefined instruction handler. Once KGDB
+is entered, you can connect to it from the client via 
+'target remote /dev/ttySx', where ttySx is the serial port on
+the host machine that is connected to your board.
+
+Note that you must let the kernel breakpoint() before trying to
+connect the debugger, otherwise the two will get out of sync and
+you will not be able to start the debug session.
+
+If you don't want the kernel to stop immediately at boot up, you can
+add the 'nohalt' option to the command line. If you have CONFIG_MAGICSYSRQ
+turned on, you can send a SysReq-G to the system console at anytime to 
+force a breakpoint.  In minicom, this is accomplished via the following
+key combination: Alt-A f g.  
+
+Once you've established a connection between the GDB client and the KGDB
+stub, you can debug as you normally would. Consult the GDB documentation
+if you need help with debugging commands.
+
+Finding Bugs
+------------------------------------------------------------
+
+If you think you've found a bug in the communication layer between
+the client and KGDB, add the following command to the beggining of 
+your gdb session: 'set debug remote 1'.  This will output all packet
+data to the screen and you can send the packet log along with a
+description of what you were doing at the time to me.
+

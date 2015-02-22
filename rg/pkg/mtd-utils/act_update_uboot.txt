@@ -1,0 +1,43 @@
+
+Procedure to update U-Boot on BHR Rev-I
+========================================
+
+CAUTION: PLEASE MAKE SURE THAT THE CORRECT U-BOOT IS AVAILABLE ON THE TARGET 
+BEFORE ERASING THE U-BOOT SECTORS ON THE TARGET, OTHERWISE THE BOARD MAY 
+BECOME UNUSABLE.
+
+
+On the HOST:
+============
+1. Setup TFTP Server
+
+2. Copy the following files to the TFTP root directory:
+    - flash_erase
+    - nandwrite
+    - U-Boot
+
+
+On the TARGET:
+==============
+1. Go to the Shell prompt (Using the 'system shell' command at BHR CLI Prompt)
+    Wireless Broadband Router> system shell
+
+2. Change to /tmp directory
+    cd /tmp
+
+3. TFTP the 'nandwrite' and 'flash_erase' MTD utils to the TARGET. 
+    tftp -l nandwrite -r nandwrite -g <TFTP Server IP Address>
+    tftp -l flash_erase -r flash_erase -g <TFTP Server IP Address>
+   Make the 'nandwrite' and 'flash_erase' binaries executable.
+    chmod +x nandwrite
+    chmod +x flash_erase
+
+4. Also TFTP the correct U-Boot to the TARGET.
+    tftp -l uboot-revI-128MbFlash.bin -r uboot-revI-128MbFlash.bin -g <TFTP Server IP Address>
+
+5. Erase the U-Boot sectors on the MTD device
+    ./flash_erase /dev/mtd1 0x0 5
+
+6. Write the new U-Boot on the MTD device
+    ./nandwrite -p /dev/mtd1 /tmp/uboot-revI-128MbFlash.bin -s 0x0
+

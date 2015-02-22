@@ -1,0 +1,11 @@
+
+mainmenu_option next_comment
+comment 'Synchronous Serial Interface'
+tristate 'Synchronous Serial Interface Support' CONFIG_SSI
+
+comment 'SSI Bus Drivers'
+dep_tristate '  CLPS711X SSI support' CONFIG_SSI_CLPS711X $CONFIG_SSI $CONFIG_ARCH_CLPS711X
+
+comment 'SSI Device Drivers'
+dep_tristate '  JUNO keyboard support' CONFIG_SSI_JUNO $CONFIG_SSI
+endmenu

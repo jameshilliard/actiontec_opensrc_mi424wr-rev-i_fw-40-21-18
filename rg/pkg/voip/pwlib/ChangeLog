@@ -1,0 +1,168 @@
+2006-03-12 16:07  csoutheren
+
+	* pwlib_cfg.dxy, version.h: Incremented major version for release
+
+2006-03-12 15:20  dsandras
+
+	* include/ptlib/ipsock.h: More backports from HEAD.
+
+2006-03-12 15:14  dsandras
+
+	* include/ptclib/pdns.h, src/ptclib/pdns.cxx: Backports from HEAD.
+
+2006-03-12 05:16  dsandras
+
+	* plugins/vidinput_v4l2/: vidinput_v4l2.cxx, vidinput_v4l2.h: Added
+	  multi-buffering support to V4L2 thanks to Luc Saillard. Thanks!
+	  Backport from HEAD.
+
+2006-03-12 05:15  dsandras
+
+	* include/ptlib/vconvert.h,
+	  plugins/vidinput_v4l2/vidinput_v4l2.cxx,
+	  src/ptlib/common/vconvert.cxx: Fix for MJPEG thanks to Luc
+	  Saillard. (Backport from HEAD).
+
+2006-03-09 14:30  dsandras
+
+	* plugins/sound_alsa/sound_alsa.cxx: Backports from HEAD.
+
+2006-03-07 14:55  dsandras
+
+	* src/ptlib/common/: vconvert.cxx, videoio.cxx: More backports from
+	  HEAD.
+
+2006-03-07 14:50  dsandras
+
+	* src/ptlib/common/: jidctflt.cxx, tinyjpeg-internal.h,
+	  tinyjpeg.cxx: Backports from CVS HEAD, thanks to Luc Saillard
+	  <luc saillard org>
+
+2006-03-06 13:11  dsandras
+
+	* plugins/vidinput_v4l2/vidinput_v4l2.cxx: Backports from HEAD.
+
+2006-03-06 05:54  csoutheren
+
+	* version.h, pwlib_cfg.dxy: Incremented version number
+
+2006-03-01 02:34  csoutheren
+
+	* src/ptlib/unix/tlibthrd.cxx: Backported patch #1439578 from CVS
+	  head
+
+2006-02-22 18:31  csoutheren
+
+	* include/ptbuildopts.h.in: Backport from head
+
+2006-02-22 05:53  csoutheren
+
+	* configure, configure.ac, include/ptbuildopts.h.in,
+	  include/ptlib/vconvert.h, src/ptlib/common/vconvert.cxx:
+	  Backports from HEAD
+
+2006-02-21 18:04  csoutheren
+
+	* src/ptlib/unix/socket.cxx: Backport interface table fix from HEAD
+
+2006-02-18 10:01  dsandras
+
+	* src/ptlib/unix/socket.cxx: Backport from HEAD.
+
+2006-02-15 01:23  csoutheren
+
+	* pwlib_cfg.dxy, version.h: Incremented version numbers
+
+2006-02-13 01:11  csoutheren
+
+	* src/ptlib/common/sockets.cxx: Backported fix from CVS head
+
+2006-02-11 14:04  dsandras
+
+	* src/ptlib/common/tinyjpeg.cxx: Fixed compilation on OpenSolaris
+	  thanks to Brian Lu <Brian Lu sun com>.  Thanks!
+
+2006-02-11 06:09  csoutheren
+
+	* src/ptlib/common/sockets.cxx: Backport from CVS head
+
+2006-02-06 16:28  dsandras
+
+	* plugins/vidinput_v4l2/vidinput_v4l2.cxx: Backported changes from
+	  CVS HEAD.
+
+2006-02-06 16:25  dsandras
+
+	* plugins/vidinput_v4l/vidinput_v4l.cxx: Backported changes from
+	  HEAD.
+
+2006-02-06 16:17  dsandras
+
+	* plugins/sound_alsa/sound_alsa.cxx: Backports from CVS HEAD.
+
+2006-01-31 03:23  csoutheren
+
+	* configure, configure.ac: Fixed autoconf problem
+
+2006-01-31 03:19  csoutheren
+
+	* src/ptlib/common/vconvert.cxx: Backport from CVS head
+
+2006-01-31 02:09  csoutheren
+
+	* make/ptbuildopts.mak.in, src/ptlib/msos/Makefile,
+	  src/ptlib/msos/winsock.cxx: Backported from CVS head
+
+2006-01-30 00:54  csoutheren
+
+	* configure, configure.ac: Removed -laa from SDL library list that
+	  was stopping SDL froming available
+
+2006-01-29 18:03  csoutheren
+
+	* include/ptlib/vconvert.h,
+	  plugins/vidinput_v4l2/vidinput_v4l2.cxx,
+	  src/ptlib/common/jidctflt.cxx,
+	  src/ptlib/common/tinyjpeg-internal.h,
+	  src/ptlib/common/tinyjpeg.cxx, src/ptlib/common/tinyjpeg.h,
+	  src/ptlib/common/vconvert.cxx, src/ptlib/common/videoio.cxx,
+	  src/ptlib/unix/Makefile: Backported support for cameras that
+	  return MJPEG streams Thanks to Luc Saillard and Damien Sandras
+
+2006-01-29 17:34  csoutheren
+
+	* src/ptlib/unix/tlibthrd.cxx, include/ptlib/thread.h: Backported
+	  thread destruction patch from Derek Smithies
+
+2006-01-29 16:46  csoutheren
+
+	* src/ptlib/common/jidctflt.cxx: file jidctflt.cxx was added on
+	  branch Phobos on 2006-01-30 00:03:12 +0000
+
+2006-01-29 16:46  csoutheren
+
+	* src/ptlib/common/tinyjpeg-internal.h: file tinyjpeg-internal.h
+	  was added on branch Phobos on 2006-01-30 00:03:12 +0000
+
+2006-01-29 16:46  csoutheren
+
+	* src/ptlib/common/tinyjpeg.cxx: file tinyjpeg.cxx was added on
+	  branch Phobos on 2006-01-30 00:03:12 +0000
+
+2006-01-29 16:46  csoutheren
+
+	* src/ptlib/common/tinyjpeg.h: file tinyjpeg.h was added on branch
+	  Phobos on 2006-01-30 00:03:12 +0000
+
+2006-01-26 21:43  csoutheren
+
+	* configure, include/ptclib/pnat.h, include/ptlib/critsec.h,
+	  include/ptlib/pluginmgr.h, include/ptlib/msos/ptlib/ptlib.inl,
+	  plugins/Makefile.in, plugins/configure, plugins/configure.in,
+	  plugins/vidinput_v4l/vidinput_v4l.cxx: Backported changes to CVS
+	  head into Phobos
+
+2006-01-26 18:57  csoutheren
+
+	* pwlib_cfg.dxy, version.h: Moved 1.9.3 to Phobos devel branch
+

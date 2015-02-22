@@ -1,0 +1,65 @@
+NOTES ABOUT THE BeOS PORT
+=========================
+The BeOS port requires BeOS R4 or higher.  It uses its own threading
+system designated "beos-native".  The "unix-jthreads" system can be
+made to work for the most part; however, that system relies on
+asynchronous I/O notifications, as well as virtual timer alarms, both
+of which are absent on BeOS R4.
+
+beos-native no longer uses its own implementation of condition variables.
+Instead, it implements and uses a new Kaffe locking primitive called
+a "Ksem".
+
+AWT for Kaffe is under separate development by the BeKaffe group, from
+whom source patches and tar balls are available (please refer to their
+web site on SourceForge for more information).
+
+Also, the following entry points in the jthread interface have yet to be
+implemented:
+
+	jthread_suspendall
+	jthread_unsuspendall
+	jthread_spinon
+	jthread_spinoff
+
+KNOWN PROBLEMS
+==============
+The jthread interface requires that the macros GET_JTHREAD/SET_JTHREAD
+and GET_COOKIE/SET_COOKIE store and retrieve per-thread information.
+Right now, this information is maintained in a large BeOS "area" containing
+an array of per_thread_info_t structures.  The info for a given thread
+with thread id 'T' is simply (T % MAX_THREADS).  Naturally, since
+successive calls to spawn_thread (invoked by jthread_create) will not
+necessarily yield contiguous thread ids, the maximum number of jthreads
+that can be successfully created will be somewhat less than MAX_THREADS.
+
+The implementation of forkexec() in beos-native/syscalls.c makes use of
+fork() instead of the recommended technique that uses load_image().
+
+Profiling output is unavailable, due to an apparent bug that causes
+BeOS to "forget" installed atexit() handlers when the main thread
+executes exit_thread().
+
+The gethostbyname() and gethostbyaddr() wrappers in beos-native/syscalls.c
+are not thread-safe.
+
+As of 25 June 2000, the following tests fail: CLTestJLock, ClassGC, GCTest,
+NullInvoke, ProcessClassInst, ThreadState, ThreadStop, CatchDeath and
+SoTimeout (again!).
+
+Although Kaffe has been built and tested on BeOS 5, it has not been
+configured for BONE, as that networking code is still unavailable to users.
+
+REV HISTORY
+===========
+27 Jan 99 -- Submitted for inclusion into Kaffe, alanlb@cs.vt.edu
+08 Feb 99 -- Fixed various segmentation violations
+18 Mar 99 -- Implemented jcondvar_wait timeout, forkexec;
+		fixed jthread_interrupt
+22 Mar 99 -- Fixed socket read/write in beos-native/syscalls.c, redid
+		thread cancellation (i.e., stoppage)
+24 Mar 99 -- Fixed forkexec; ProcessTest now passes
+26 Mar 99 -- Implemented most socket timeouts; SoTimeout now passes
+28 Jul 99 -- Fixed condition variable code (thanks to Chris Tate of Be DTS)
+31 Aug 99 -- Updated for JIT version 3
+25 Jun 00 -- Updated for Ksems

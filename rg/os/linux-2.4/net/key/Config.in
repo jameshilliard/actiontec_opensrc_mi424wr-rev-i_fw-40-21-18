@@ -1,0 +1,14 @@
+# $USAGI: Config.in,v 1.2.6.1 2002/09/03 11:11:20 mk Exp $
+#comment '  PF_KEY_V2 Configuration'
+
+if [ "$CONFIG_SYSCTL" = "y" ] ; then
+  if [ "$CONFIG_IPSEC" != "n" ]; then
+    bool '    IPsec: IPsec Debug messages' CONFIG_IPSEC_DEBUG
+    if [ "$CONFIG_IPSEC_DEBUG" = "y" ] ; then
+      bool '      IPsec: IPsec Debug disable Default' CONFIG_IPSEC_DEBUG_DISABLE_DEFAULT
+    fi
+  fi
+fi
+define_bool CONFIG_IPSEC_TUNNEL y
+
+#endmenu
